@@ -1,0 +1,69 @@
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    background-color: var(--primary);
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.header-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--text);
+}
+
+.header-search {
+    display: flex;
+    align-items: center;
+    background-color: var(--search);
+    border-radius: 4px;
+    padding: 5px 10px;
+}
+
+.header-search input {
+    border: none;
+    outline: none;
+    background: none;
+    padding: 5px;
+    font-size: 1rem;
+    color: var(--text);
+}
+
+.header-search-icon {
+    color: var(--text);
+    margin-left: 5px;
+}
+
+.header-profile {
+    display: flex;
+    align-items: center;
+}
+
+.header-profile img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.header-profile-name {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text);
+    margin-right: 10px;
+}
+
+.header-profile-role {
+    font-size: 0.875rem;
+    color: var(--text);
+}

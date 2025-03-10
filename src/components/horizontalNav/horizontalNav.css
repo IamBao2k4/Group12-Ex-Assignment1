@@ -1,0 +1,25 @@
+.horizontal-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    background-color: var(--primary);
+    height: 100%;
+    border-right: 1px solid var(--border);
+    padding: 10px;
+}
+
+.horizontal-nav-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding: 10px;
+    flex: 1;
+}
+
+.nav-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 10;
+    width: 100%;
+}
