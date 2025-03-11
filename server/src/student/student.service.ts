@@ -1,4 +1,41 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Student } from './interfaces/student.interface'; 
+import { Pagination } from '../paginator/pagination.class';
+import { PaginationOptions } from '../paginator/pagination.interface';
+import { PaginatedResponse } from '../paginator/pagination-response.dto';
 
 @Injectable()
-export class StudentService {}
+export class StudentService {
+  constructor(@InjectModel('Student') private studentModel: Model<Student>) {}
+
+  async create(studentData: any): Promise<Student> {
+    const student = new this.studentModel(studentData);
+    return student.save();
+  }
+
+  async get(paginationOpts: PaginationOptions): Promise<PaginatedResponse<Student>> {
+    const pagination = new Pagination(paginationOpts);
+    const skip = pagination.Skip();
+    const limit = pagination.Limit();
+
+    const students = await this.studentModel
+      .find()
+      .skip(skip)
+      .limit(limit)
+      .exec();
+
+    const page = pagination.Page();
+    const total = await this.studentModel.countDocuments();
+    const totalPages = pagination.TotalPages(total);
+
+    return new PaginatedResponse<Student>(
+        students,
+        page,
+        limit,
+        total,
+        totalPages
+        );
+  }
+}
