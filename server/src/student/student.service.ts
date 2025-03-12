@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Student } from './interfaces/student.interface'; 
@@ -37,5 +37,13 @@ export class StudentService {
         total,
         totalPages
         );
+  }
+
+  async update(id: string, studentData: Partial<Student>): Promise<Student> {
+    const updatedStudent = await this.studentModel.findByIdAndUpdate(id, studentData, { new: true }).exec();
+    if (!updatedStudent) {
+      throw new NotFoundException(`Student with ID ${id} not found`);
+    }
+    return updatedStudent;
   }
 }
