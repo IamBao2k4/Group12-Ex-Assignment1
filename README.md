@@ -11,16 +11,20 @@ Student Manager
 - Mở 2 terminal
   - terminal 1:
     - cd server
+    - npm install
     - npm run start:dev
   - terminal 2:
     - cd client
+    - npm install
     - npm run dev
 # Biên dịch (tùy theo ngôn ngữ sử dụng)
 # Chạy chương trình
 - Mở 2 terminal
   - terminal 1:
     - cd server
+    - npm install
     - npm run start:dev
   - terminal 2:
     - cd client
+    - npm install
     - npm run dev

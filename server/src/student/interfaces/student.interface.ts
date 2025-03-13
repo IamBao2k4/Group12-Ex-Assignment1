@@ -12,4 +12,7 @@ export interface Student extends Document {
   email?: string;
   so_dien_thoai?: string;
   tinh_trang: string;
+  created_at?: Date;
+  updated_at?: Date;
+  deleted_at?: Date;
 }
