@@ -101,6 +101,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
         }
 
         profileDialog.classList.toggle('hidden')
+        window.location.reload()
     }
 
     function CancelHandler() {
