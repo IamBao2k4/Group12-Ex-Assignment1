@@ -26,10 +26,8 @@ const StudentItem: React.FC<StudentItemProps> = ({ key, student, ProfileHandler,
             }
         })
         .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                window.location.reload()
-            }
+        .then(() => {
+            window.location.reload()
         })
     }
 
