@@ -26,15 +26,15 @@ export class StudentService {
     let query = {};
 
     if (searchString) {
-      query = searchString
-        ? {
-          $or: [
-            { ho_ten: { $regex: searchString, $options: 'i' } },
-            { ma_so_sinh_vien: { $regex: searchString, $options: 'i' } }
-          ],
-          deleted_at: { $exists: false }
-          }
-        : { deleted_at: { $exists: false } };
+      query = {
+        $or: [
+          { ho_ten: { $regex: searchString, $options: 'i' } },
+          { ma_so_sinh_vien: { $regex: searchString, $options: 'i' } }
+        ],
+        deleted_at: { $exists: false }
+      };
+    } else {
+      query = { deleted_at: { $exists: false } };
     }
 
     const students = await this.studentModel
