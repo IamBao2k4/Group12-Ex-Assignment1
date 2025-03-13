@@ -31,9 +31,10 @@ export class StudentService {
           $or: [
             { ho_ten: { $regex: searchString, $options: 'i' } },
             { ma_so_sinh_vien: { $regex: searchString, $options: 'i' } }
-          ]
-        }
-        : {};
+          ],
+          deleted_at: { $exists: false }
+          }
+        : { deleted_at: { $exists: false } };
     }
 
     const students = await this.studentModel
@@ -63,7 +64,8 @@ export class StudentService {
   }
 
   async delete(id: string): Promise<Student> {
-    const deletedStudent = await this.studentModel.findByIdAndDelete(id).exec();
+    const date = new Date()
+    const deletedStudent = await this.studentModel.findByIdAndUpdate(id, { deleted_at: date }, { new: true }).exec();
     if (!deletedStudent) {
       throw new NotFoundException(`Student with ID ${id} not found`);
     }

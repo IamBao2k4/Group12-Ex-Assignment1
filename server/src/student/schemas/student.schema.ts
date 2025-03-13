@@ -11,5 +11,8 @@ export const StudentSchema = new mongoose.Schema({
   dia_chi: { type: String, required: false },
   email: { type: String, required: false },
   so_dien_thoai: { type: String, required: false },
-  tinh_trang: { type: String, required: true }
+  tinh_trang: { type: String, required: true },
+  created_at: { type: Date, default: Date.now },
+  updated_at: { type: Date, default: Date.now },
+  deleted_at: { type: Date, required: false } 
 });
