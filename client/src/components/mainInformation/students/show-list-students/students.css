@@ -41,3 +41,30 @@
     gap:10px;
     font-weight: bold;
 }
+
+.students-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.students-pagination-btn {
+    padding: 10px 20px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.students-pagination-btn:hover {
+    background-color: #0056b3;
+}
+
+.students-pagination-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}

@@ -7,19 +7,31 @@ import ProfileDialog from './profileDialog/profileDialog';
 import { Student } from '../../../../model/student';
 import AddIcon from '@mui/icons-material/Add';
 
-const Students: React.FC = () => {
+interface StudentProps {
+    searchString: string
+}
+
+const Students: React.FC<StudentProps> = ({ searchString }) => {
     const [students, setStudents] = useState<Student[]>([])
     const [profileType, setProfileType] = useState('')
+    const [currentPage, setCurrentPage] = useState(1)
+    const [totalPages, setTotalPages] = useState(1)
+    const [chosenStudent, setChosenStudent] = useState<Student | null>(null)
 
     useEffect(() => {
         async function fetchStudents() {
-            const response = await fetch('http://localhost:3001/api/v1/students')
-            const data = await response.json()
-            setStudents(data.data)
+            try {
+                const response = await fetch(`http://localhost:3001/api/v1/students?searchString=${searchString}&page=${currentPage}`)
+                const data = await response.json()
+                setStudents(data.data)
+                setTotalPages(data.meta.total)
+            } catch (error) {
+                console.error('Error fetching students:', error)
+            }
         }
-
+    
         fetchStudents()
-    }, [])
+    }, [searchString, currentPage])
 
     function ProfileHandler(type: string) {
         const profileDialog = document.querySelector('.profile-dialog-container') as HTMLElement
@@ -27,25 +39,42 @@ const Students: React.FC = () => {
         setProfileType(type)
     }
 
+    function handlePreviousPage() {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1)
+        }
+    }
+
+    function handleNextPage() {
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1)
+        }
+    }
+
     return (
         <div className="students">
-            <ProfileDialog  student={students[0]} type={profileType}/>
-            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+            <ProfileDialog student={chosenStudent ? chosenStudent : students[0]} type={profileType} />
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <h1>Students</h1>
-                <button className="add-student" onClick={() => ProfileHandler('add')}><AddIcon/></button>
+                <button className="add-student" onClick={() => ProfileHandler('add')}><AddIcon /></button>
             </div>
-            
+
             <div className="students-list">
-            <div className="students-list-header row"> 
-                <div className="students-list-header-name">Họ tên</div>
-                <div className="students-list-header-id">Mã số sinh viên</div>
-                <div className="students-list-header-birthday">Ngày sinh</div>
-                <div className="students-list-header-status">Tình trạng</div>
-                <div className="students-list-header-action"></div>
-            </div>
+                <div className="students-list-header row">
+                    <div className="students-list-header-name">Họ tên</div>
+                    <div className="students-list-header-id">Mã số sinh viên</div>
+                    <div className="students-list-header-birthday">Ngày sinh</div>
+                    <div className="students-list-header-status">Tình trạng</div>
+                    <div className="students-list-header-action"></div>
+                </div>
                 {students.map((student) => (
-                    <StudentItem key={student.ma_so_sinh_vien} student={student} ProfileHandler={ProfileHandler}/>
+                    <StudentItem key={student.ma_so_sinh_vien} student={student} ProfileHandler={ProfileHandler} setChosenStudent={setChosenStudent}/>
                 ))}
+            </div>
+
+            <div className="students-pagination">
+                <button className='students-pagination-btn prev' onClick={handlePreviousPage} disabled={currentPage === 1}>Previous</button>
+                <button className='students-pagination-btn next' onClick={handleNextPage} disabled={currentPage === totalPages}>Next</button>
             </div>
         </div>
     )

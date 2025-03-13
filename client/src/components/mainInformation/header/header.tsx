@@ -1,12 +1,20 @@
 import './header.css'
 import SearchIcon from '@mui/icons-material/Search';
 
-const Header = () => {
+interface HeaderProps {
+  searchHandler: (query: string) => void
+}
+
+const Header: React.FC<HeaderProps> = ({ searchHandler }) => {
+  function searchHandlerFunc(e: React.ChangeEvent<HTMLInputElement>) {
+    searchHandler(e.target.value)
+  }
+
   return (
     <div className="header">
       <div className="header-content">
         <div className="header-search">
-          <input type="text" placeholder="Search" />
+          <input type="text" placeholder="Search" onChange={searchHandlerFunc}/>
           <SearchIcon className="header-search-icon" />
         </div>
         <div className="header-profile">
