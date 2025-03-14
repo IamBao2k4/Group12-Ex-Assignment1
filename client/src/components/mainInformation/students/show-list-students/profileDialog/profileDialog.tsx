@@ -218,6 +218,8 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                 }
 
                 alert("Cập nhật sinh viên thành công!");
+                profileDialog.classList.toggle("hidden");
+                window.location.reload();
                 return responseData;
             } catch (error) {
                 if (error instanceof Error) {
@@ -227,9 +229,6 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                 }
             }
         }
-
-        profileDialog.classList.toggle("hidden");
-        window.location.reload();
     };
 
     function CancelHandler() {
