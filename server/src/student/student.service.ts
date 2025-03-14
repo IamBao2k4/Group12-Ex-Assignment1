@@ -20,7 +20,10 @@ export class StudentService {
     const { email, so_dien_thoai } = studentData;
 
     const existingStudent = await this.studentModel
-      .findOne({ $or: [{ email }, { so_dien_thoai }] })
+      .findOne({ 
+        $or: [{ email }, { so_dien_thoai }],
+        deleted_at: { $exists: false }
+      })
       .exec();
 
     if (existingStudent) {
