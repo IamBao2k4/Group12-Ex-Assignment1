@@ -1,3 +1,12 @@
+import {
+  IsOptional,
+  IsString,
+  IsEmail,
+  IsDateString,
+  IsNotEmpty,
+  Matches,
+} from 'class-validator';
+
 export class CreateStudentDto {
   ma_so_sinh_vien: string;
   ho_ten: string;
@@ -7,12 +16,16 @@ export class CreateStudentDto {
   khoa_hoc: string;
   chuong_trinh: string;
   dia_chi?: string;
+
+  @IsEmail({}, { message: 'Email không hợp lệ' })
   email?: string;
+
+  @Matches(/(84|0[3|5|7|8|9])+([0-9]{8})\b/, {
+    message: 'Số điện thoại không hợp lệ',
+  })
   so_dien_thoai?: string;
   tinh_trang: string;
 }
-
-import { IsOptional, IsString, IsEmail, IsDateString } from 'class-validator';
 
 export class UpdateStudentDto {
   @IsOptional()
@@ -48,11 +61,13 @@ export class UpdateStudentDto {
   readonly dia_chi?: string;
 
   @IsOptional()
-  @IsEmail()
+  @IsEmail({}, { message: 'Email không hợp lệ' })
   readonly email?: string;
 
   @IsOptional()
-  @IsString()
+  @Matches(/(84|0[3|5|7|8|9])+([0-9]{8})\b/, {
+    message: 'Số điện thoại không hợp lệ',
+  })
   readonly so_dien_thoai?: string;
 
   @IsOptional()
@@ -94,11 +109,13 @@ export class FindStudentDto {
   readonly dia_chi?: string;
 
   @IsOptional()
-  @IsEmail()
+  @IsEmail({}, { message: 'Email không hợp lệ' })
   readonly email?: string;
 
   @IsOptional()
-  @IsString()
+  @Matches(/(84|0[3|5|7|8|9])+([0-9]{8})\b/, {
+    message: 'Số điện thoại không hợp lệ',
+  })
   readonly so_dien_thoai?: string;
 
   @IsOptional()

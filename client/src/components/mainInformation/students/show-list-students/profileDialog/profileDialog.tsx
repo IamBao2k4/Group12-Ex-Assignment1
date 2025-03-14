@@ -121,7 +121,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
         setInnerHTML();
     });
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         const form = event.currentTarget;
@@ -175,21 +175,57 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
         };
 
         if (type === "add") {
-            fetch("http://localhost:3001/api/v1/students", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(studentData),
-            });
+            try {
+                const response = await fetch(
+                    "http://localhost:3001/api/v1/students",
+                    {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(studentData),
+                    }
+                );
+
+                const responseData = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(responseData.message || "Có lỗi xảy ra");
+                }
+
+                alert("Tạo sinh viên thành công!");
+                return responseData;
+            } catch (error) {
+                if (error instanceof Error) {
+                    alert(error.message);
+                } else {
+                    alert("Lỗi không xác định!");
+                }
+            }
         } else {
-            fetch(`http://localhost:3001/api/v1/students/${student._id}`, {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(studentData),
-            });
+            try {
+                const response = await fetch(
+                    `http://localhost:3001/api/v1/students/${student._id}`,
+                    {
+                        method: "PATCH",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(studentData),
+                    }
+                );
+
+                const responseData = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(responseData.message || "Có lỗi xảy ra");
+                }
+
+                alert("Cập nhật sinh viên thành công!");
+                return responseData;
+            } catch (error) {
+                if (error instanceof Error) {
+                    alert(error.message);
+                } else {
+                    alert("Lỗi không xác định!");
+                }
+            }
         }
 
         profileDialog.classList.toggle("hidden");
