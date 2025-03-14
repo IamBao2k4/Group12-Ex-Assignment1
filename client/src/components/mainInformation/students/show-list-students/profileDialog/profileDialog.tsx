@@ -192,6 +192,8 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                 }
 
                 alert("Tạo sinh viên thành công!");
+                profileDialog.classList.toggle("hidden");
+                window.location.reload();
                 return responseData;
             } catch (error) {
                 if (error instanceof Error) {

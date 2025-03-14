@@ -66,7 +66,7 @@ export class StudentService {
       .limit(limit)
       .exec();
 
-    const total = await this.studentModel.countDocuments();
+      const total = await this.studentModel.countDocuments({deleted_at: { $exists: false }});
     const totalPages = pagination.TotalPages(total);
 
     return new PaginatedResponse<Student>(
