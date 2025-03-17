@@ -1,6 +1,8 @@
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
+
 
 export interface Student extends Document {
+  _id: mongoose.Schema.Types.ObjectId;
   ma_so_sinh_vien: string;
   ho_ten: string;
   ngay_sinh: string;

@@ -4,22 +4,23 @@ import './mainInformation.css';
 import Students from './students/show-list-students/students';
 import { createRoot, Root } from 'react-dom/client';
 
-
 const MainInformation = () => {
   const containerRef = useRef<HTMLElement | null>(null);
   const rootRef = useRef<Root | null>(null);
 
   function searchHandler(searchString: string) {
-    if (containerRef.current && rootRef.current) {
+    if (rootRef.current) {
       rootRef.current.render(<Students searchString={searchString} />);
     }
   }
 
   React.useEffect(() => {
-    const container = document.querySelector('.main-information-content') as HTMLElement;
-    containerRef.current = container;
-    rootRef.current = createRoot(container);
-    rootRef.current.render(<Students searchString={" "} />);
+    if (!rootRef.current) {
+      const container = document.querySelector('.main-information-content') as HTMLElement;
+      containerRef.current = container;
+      rootRef.current = createRoot(container);
+      rootRef.current.render(<Students searchString={" "} />);
+    }
   }, []);
 
   return (
@@ -32,4 +33,4 @@ const MainInformation = () => {
   )
 }
 
-export default MainInformation
+export default MainInformation;

@@ -11,6 +11,7 @@ import { Student } from './interfaces/student.interface';
 import { Pagination } from '../paginator/pagination.class';
 import { PaginationOptions } from '../paginator/pagination.interface';
 import { PaginatedResponse } from '../paginator/pagination-response.dto';
+import {Logger} from '@nestjs/common';
 
 @Injectable()
 export class StudentService {

@@ -68,7 +68,7 @@ const Students: React.FC<StudentProps> = ({ searchString }) => {
                     <div className="students-list-header-action"></div>
                 </div>
                 {students.map((student) => (
-                    <StudentItem key={student.ma_so_sinh_vien} student={student} ProfileHandler={ProfileHandler} setChosenStudent={setChosenStudent}/>
+                    <StudentItem key={student._id.toString()} id={student._id.toString()} student={student} ProfileHandler={ProfileHandler} setChosenStudent={setChosenStudent} />
                 ))}
             </div>
 

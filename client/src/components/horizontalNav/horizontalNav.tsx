@@ -1,6 +1,6 @@
 import './horizontalNav.css';
 import NavItem from './navigation/navItem/navItem';
-import { FaUser, FaBook, FaChalkboardTeacher, FaBuilding, FaChartBar, FaCog } from 'react-icons/fa';
+import { FaUser, FaBook, FaChalkboardTeacher, FaBuilding, FaChartBar, FaCog, FaGraduationCap, FaUserCheck } from 'react-icons/fa';
 
 const HorizontalNav = () => {
     return (
@@ -11,6 +11,9 @@ const HorizontalNav = () => {
             <div className="nav-container">
                 <NavItem name="Student" icon={<FaUser />} />
                 <NavItem name="Courses" icon={<FaBook />} />
+                <NavItem name="Faculty" icon={<FaChalkboardTeacher />} />
+                <NavItem name="Programs" icon={<FaGraduationCap />} />
+                <NavItem name="Student Status" icon={<FaUserCheck />} />
                 <NavItem name="Instructors" icon={<FaChalkboardTeacher />} />
                 <NavItem name="Departments" icon={<FaBuilding />} />
                 <NavItem name="Reports" icon={<FaChartBar />} />

@@ -5,13 +5,13 @@ import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 
 interface StudentItemProps {
-    key: string
+    id: string
     student: Student
     ProfileHandler: (type: string) => void
     setChosenStudent: (student: Student) => void
 }
 
-const StudentItem: React.FC<StudentItemProps> = ({ key, student, ProfileHandler, setChosenStudent }) => {
+const StudentItem: React.FC<StudentItemProps> = ({ id, student, ProfileHandler, setChosenStudent }) => {
 
     function EditBtnHandler() {
         ProfileHandler('edit')
@@ -32,7 +32,7 @@ const StudentItem: React.FC<StudentItemProps> = ({ key, student, ProfileHandler,
     }
 
     return (
-        <div className="student-item row" key={key}>
+        <div className="student-item row" key={id}>
             <div className="student-item-info">
                 <div className="student-item-info-name">{student.ho_ten}</div>
                 <div className="student-item-info-id">{student.ma_so_sinh_vien}</div>
