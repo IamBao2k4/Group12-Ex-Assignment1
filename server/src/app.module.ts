@@ -4,6 +4,9 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { StudentModule } from './student/student.module';
+import { FacultyModule } from './faculty/faculty.module';
+import { StudentStatusModule } from './student_status/student_status.module';
+import { ProgramModule } from './program/program.module';
 
 @Module({
   imports: [
@@ -13,6 +16,9 @@ import { StudentModule } from './student/student.module';
     }),
     MongooseModule.forRoot(process.env.MONGO_URI ?? 'mongodb://localhost:27017/default'),
     StudentModule,
+    FacultyModule,
+    StudentStatusModule,
+    ProgramModule,
   ],
   controllers: [AppController],
   providers: [AppService],
