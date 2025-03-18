@@ -11,7 +11,7 @@ export class BaseException extends HttpException {
   constructor(
     message: string,
     errorCode: string,
-    statusCode: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR,
+    statusCode: HttpStatus = HttpStatus.BAD_REQUEST,
     details?: any,
   ) {
     const errorResponse: IErrorResponse = {

@@ -42,17 +42,17 @@ export class StudentService {
   async update(id: string, studentData: Partial<Student>): Promise<Student> {
     const { email, so_dien_thoai } = studentData;
     
-    if (email || so_dien_thoai) {
-      const existingStudent = await this.studentRepository.findByEmailOrPhone(
-        email || '', 
-        so_dien_thoai || '', 
-        id
-      );
+    // if (email || so_dien_thoai) {
+    //   const existingStudent = await this.studentRepository.findByEmailOrPhone(
+    //     email || '', 
+    //     so_dien_thoai || '', 
+    //     id
+    //   );
 
-      if (existingStudent) {
-        throw new StudentExistsException();
-      }
-    }
+    //   if (existingStudent) {
+    //     throw new StudentExistsException();
+    //   }
+    // }
 
     const updatedStudent = await this.studentRepository.update(id, studentData);
     if (!updatedStudent) {

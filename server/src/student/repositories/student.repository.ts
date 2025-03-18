@@ -7,6 +7,7 @@ import { Pagination } from '../../common/paginator/pagination.class';
 import { PaginationOptions } from '../../common/paginator/pagination.interface';
 import { PaginatedResponse } from '../../common/paginator/pagination-response.dto';
 import { BaseException } from 'src/common/exceptions/base.exception';
+import { StudentNotFoundException } from '../exceptions/student-not-found.exception';
 
 @Injectable()
 export class StudentRepository implements IStudentRepository {
@@ -74,7 +75,13 @@ export class StudentRepository implements IStudentRepository {
       throw new BaseException(error, 'FIND_ALL_STUDENT_ERROR');
     }
 
-    const total = await this.studentModel.countDocuments({deleted_at: { $exists: false }});
+    let total = 0;
+    try {
+      total = await this.studentModel.countDocuments({deleted_at: { $exists: false }});
+    } catch (error) {
+      throw new BaseException(error, 'COUNT_STUDENTS_ERROR');
+    }
+    
     const totalPages = pagination.TotalPages(total);
 
     return new PaginatedResponse<Student>(
@@ -86,21 +93,56 @@ export class StudentRepository implements IStudentRepository {
     );
   }
 
-
+  async findById(id: string): Promise<Student | null> {
+    try {
+      const student = await this.studentModel.findOne({ 
+        _id: id, 
+        deleted_at: { $exists: false } 
+      }).exec();
+      
+      return student;
+    } catch (error) {
+      throw new BaseException(error, 'FIND_STUDENT_BY_ID_ERROR');
+    }
+  }
 
   async update(id: string, studentData: Partial<Student>): Promise<Student | null> {
-    return this.studentModel
-      .findByIdAndUpdate(id, studentData, { new: true })
-      .exec();
+    try {
+      const updatedStudent = await this.studentModel
+        .findByIdAndUpdate({
+          _id: id,
+          deleted_at: { $ne: null }
+        }, studentData, { new: true })
+        .exec();
+      
+      if (!updatedStudent) {
+        throw new StudentNotFoundException(id);
+      }
+      
+      return updatedStudent;
+    } catch (error) {
+      if (error instanceof StudentNotFoundException) {
+        throw error;
+      }
+      throw new BaseException(error, 'UPDATE_STUDENT_ERROR');
+    }
   }
 
   async softDelete(id: string): Promise<Student | null> {
-    const date = new Date();
     try {
-      return this.studentModel
-        .findByIdAndUpdate(id, { deleted_at: date }, { new: true })
+      const deletedStudent = await this.studentModel
+        .findByIdAndUpdate(id, { deleted_at: new Date() }, { new: true })
         .exec();
+      
+      if (!deletedStudent) {
+        throw new StudentNotFoundException(id);
+      }
+      
+      return deletedStudent;
     } catch (error) {
+      if (error instanceof StudentNotFoundException) {
+        throw error;
+      }
       throw new BaseException(error, 'DELETE_STUDENT_ERROR');
     }
   }
