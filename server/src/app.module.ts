@@ -7,7 +7,8 @@ import { StudentModule } from './student/student.module';
 import { FacultyModule } from './faculty/faculty.module';
 import { StudentStatusModule } from './student_status/student_status.module';
 import { ProgramModule } from './program/program.module';
-
+import { APP_FILTER } from '@nestjs/core';
+import { GlobalExceptionFilter } from './common/exceptions/http-exception.filter';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -21,6 +22,11 @@ import { ProgramModule } from './program/program.module';
     ProgramModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,
+    {
+      provide: APP_FILTER,
+      useClass: GlobalExceptionFilter,
+    },
+  ],
 })
 export class AppModule {}
