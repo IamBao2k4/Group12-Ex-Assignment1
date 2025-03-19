@@ -6,7 +6,7 @@ export class StudentNotFoundException extends BaseException {
     super(
       `Không tìm thấy sinh viên với ID ${id}`,
       'STUDENT_NOT_FOUND',
-      HttpStatus.BAD_REQUEST 
+      HttpStatus.BAD_REQUEST
     );
     this.name = 'StudentNotFoundException';
   }

@@ -11,7 +11,7 @@ import { StudentNotFoundException } from '../exceptions/student-not-found.except
 
 @Injectable()
 export class StudentRepository implements IStudentRepository {
-  constructor(@InjectModel('Student') private studentModel: Model<Student>) {}
+  constructor(@InjectModel('Student') private studentModel: Model<Student>) { }
 
   async create(studentData: any): Promise<Student> {
     const student = new this.studentModel(studentData);
@@ -27,7 +27,7 @@ export class StudentRepository implements IStudentRepository {
   async findByEmailOrPhone(email: string, so_dien_thoai: string, excludeId?: string): Promise<Student | null> {
     const query: any = {
       $or: [{ email }, { so_dien_thoai }],
-      deleted_at: { $exists: false }
+      deleted_at: { $e: null }
     };
 
     if (excludeId) {
@@ -59,10 +59,10 @@ export class StudentRepository implements IStudentRepository {
           { ho_ten: { $regex: searchString, $options: 'i' } },
           { ma_so_sinh_vien: { $regex: searchString, $options: 'i' } },
         ],
-        deleted_at: { $exists: false },
+        deleted_at: null
       };
     } else {
-      query = { deleted_at: { $exists: false } };
+      query = { deleted_at: null }
     }
     let students: Student[] = [];
     try {
@@ -77,11 +77,11 @@ export class StudentRepository implements IStudentRepository {
 
     let total = 0;
     try {
-      total = await this.studentModel.countDocuments({deleted_at: { $exists: false }});
+      total = await this.studentModel.countDocuments({ deleted_at: { $ne: null } });
     } catch (error) {
       throw new BaseException(error, 'COUNT_STUDENTS_ERROR');
     }
-    
+
     const totalPages = pagination.TotalPages(total);
 
     return new PaginatedResponse<Student>(
@@ -95,11 +95,11 @@ export class StudentRepository implements IStudentRepository {
 
   async findById(id: string): Promise<Student | null> {
     try {
-      const student = await this.studentModel.findOne({ 
-        _id: id, 
-        deleted_at: { $exists: false } 
+      const student = await this.studentModel.findOne({
+        _id: id,
+        deleted_at: null
       }).exec();
-      
+
       return student;
     } catch (error) {
       throw new BaseException(error, 'FIND_STUDENT_BY_ID_ERROR');
@@ -111,14 +111,14 @@ export class StudentRepository implements IStudentRepository {
       const updatedStudent = await this.studentModel
         .findByIdAndUpdate({
           _id: id,
-          deleted_at: { $ne: null }
+          deleted_at: null
         }, studentData, { new: true })
         .exec();
-      
+
       if (!updatedStudent) {
         throw new StudentNotFoundException(id);
       }
-      
+
       return updatedStudent;
     } catch (error) {
       if (error instanceof StudentNotFoundException) {
@@ -133,11 +133,11 @@ export class StudentRepository implements IStudentRepository {
       const deletedStudent = await this.studentModel
         .findByIdAndUpdate(id, { deleted_at: new Date() }, { new: true })
         .exec();
-      
+
       if (!deletedStudent) {
         throw new StudentNotFoundException(id);
       }
-      
+
       return deletedStudent;
     } catch (error) {
       if (error instanceof StudentNotFoundException) {

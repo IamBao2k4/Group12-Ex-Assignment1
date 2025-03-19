@@ -1,7 +1,7 @@
 {
   "name": "server",
   "version": "0.0.1",
-  "description": "",
+  "description": "Student Management System API Server",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
