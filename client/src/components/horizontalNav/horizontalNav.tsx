@@ -1,6 +1,7 @@
 import './horizontalNav.css';
 import NavItem from './navigation/navItem/navItem';
 import { FaUser, FaBook, FaChalkboardTeacher, FaBuilding, FaChartBar, FaCog, FaGraduationCap, FaUserCheck } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 const HorizontalNav = () => {
     return (
@@ -9,15 +10,33 @@ const HorizontalNav = () => {
                 Student<span style={{ color: 'var(--secondary)' }}>Manager</span>
             </p>
             <div className="nav-container">
-                <NavItem name="Student" icon={<FaUser />} />
-                <NavItem name="Courses" icon={<FaBook />} />
-                <NavItem name="Faculty" icon={<FaChalkboardTeacher />} />
-                <NavItem name="Programs" icon={<FaGraduationCap />} />
-                <NavItem name="Student Status" icon={<FaUserCheck />} />
-                <NavItem name="Instructors" icon={<FaChalkboardTeacher />} />
-                <NavItem name="Departments" icon={<FaBuilding />} />
-                <NavItem name="Reports" icon={<FaChartBar />} />
-                <NavItem name="Settings" icon={<FaCog />} />
+                <Link to="/students">
+                    <NavItem name="Student" icon={<FaUser />} />
+                </Link>
+                <Link to="/courses">
+                    <NavItem name="Courses" icon={<FaBook />} />
+                </Link>
+                <Link to="/faculties">
+                    <NavItem name="Faculty" icon={<FaChalkboardTeacher />} />
+                </Link>
+                <Link to="/programs">
+                    <NavItem name="Programs" icon={<FaGraduationCap />} />
+                </Link>
+                <Link to="/student-status">
+                    <NavItem name="Student Status" icon={<FaUserCheck />} />
+                </Link>
+                <Link to="/instructors">
+                    <NavItem name="Instructors" icon={<FaChalkboardTeacher />} />
+                </Link>
+                <Link to="/departments">
+                    <NavItem name="Departments" icon={<FaBuilding />} />
+                </Link>
+                <Link to="/reports">
+                    <NavItem name="Reports" icon={<FaChartBar />} />
+                </Link>
+                <Link to="/settings">
+                    <NavItem name="Settings" icon={<FaCog />} />
+                </Link>
             </div>
         </div>
     )

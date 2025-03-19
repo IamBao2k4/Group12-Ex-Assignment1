@@ -26,8 +26,12 @@ export class StudentRepository implements IStudentRepository {
 
   async findByEmailOrPhone(email: string, so_dien_thoai: string, excludeId?: string): Promise<Student | null> {
     const query: any = {
-      $or: [{ email }, { so_dien_thoai }],
-      deleted_at: { $exists: false }
+      $or: [
+        { email }, 
+        { so_dien_thoai },
+        { deleted_at: { $exists: false } }, 
+        { deleted_at: null }
+      ]
     };
 
     if (excludeId) {
@@ -58,11 +62,12 @@ export class StudentRepository implements IStudentRepository {
         $or: [
           { ho_ten: { $regex: searchString, $options: 'i' } },
           { ma_so_sinh_vien: { $regex: searchString, $options: 'i' } },
+          { deleted_at: { $exists: false } },
+          { deleted_at: null }
         ],
-        deleted_at: { $exists: false },
       };
     } else {
-      query = { deleted_at: { $exists: false } };
+      query = { $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] };
     }
     let students: Student[] = [];
     try {
@@ -77,7 +82,7 @@ export class StudentRepository implements IStudentRepository {
 
     let total = 0;
     try {
-      total = await this.studentModel.countDocuments({deleted_at: { $exists: false }});
+      total = await this.studentModel.countDocuments({$or: [{ deleted_at: { $exists: false } }, { deleted_at: null }]});
     } catch (error) {
       throw new BaseException(error, 'COUNT_STUDENTS_ERROR');
     }
@@ -97,7 +102,7 @@ export class StudentRepository implements IStudentRepository {
     try {
       const student = await this.studentModel.findOne({ 
         _id: id, 
-        deleted_at: { $exists: false } 
+        $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] 
       }).exec();
       
       return student;
@@ -111,7 +116,7 @@ export class StudentRepository implements IStudentRepository {
       const updatedStudent = await this.studentModel
         .findByIdAndUpdate({
           _id: id,
-          deleted_at: { $ne: null }
+          $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }]
         }, studentData, { new: true })
         .exec();
       
