@@ -1,0 +1,46 @@
+.program-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    background-color: var(--primary);
+    width: 100%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s;
+}
+
+.program-item-info {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr 0.5fr;
+    gap: 10px;
+    width: 100%;
+    padding: 10px;
+    align-items: center;
+}
+
+.program-item-info > div {
+    margin: 5px 0;
+}
+
+.program-item-info-action {
+    display: flex;
+    gap: 10px;
+}
+
+.program-item-info-action button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.program-item-info-action .program-item-info-action-delete:hover {
+    color: var(--danger);
+}
+
+.program-item-info-action .program-item-info-action-edit:hover {
+    color: var(--secondary);
+}
