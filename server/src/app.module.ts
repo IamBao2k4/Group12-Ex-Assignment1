@@ -8,6 +8,7 @@ import { FacultyModule } from './faculty/faculty.module';
 import { StudentStatusModule } from './student_status/student_status.module';
 import { ProgramModule } from './program/program.module';
 import { ImportModule } from './import/import.module';
+import { ExportModule } from './export/export.module';
 import { APP_FILTER } from '@nestjs/core';
 import { GlobalExceptionFilter } from './common/exceptions/http-exception.filter';
 import configuration from './config/configuration';
@@ -31,6 +32,7 @@ import configuration from './config/configuration';
     StudentStatusModule,
     ProgramModule,
     ImportModule,
+    ExportModule,
   ],
   controllers: [AppController],
   providers: [AppService,
