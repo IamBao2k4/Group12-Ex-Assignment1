@@ -15,9 +15,6 @@ export class ImportService {
         @InjectModel('Student') private studentModel: Model<Student>,
     ) { }
 
-    /**
-     * Import data from CSV file to students collection
-     */
     async importCSV(file: Express.Multer.File): Promise<{ success: boolean; imported: number; errors: any[] }> {
         if (!file) {
             throw new BadRequestException('File is required');
@@ -37,10 +34,8 @@ export class ImportService {
 
                         for (const record of results) {
                             try {
-                                // Transform data to match your Student model
                                 const studentData = this.transformStudentData(record);
 
-                                // Create or update student record
                                 await this.createOrUpdateStudent(studentData);
                                 importedCount++;
                             } catch (error) {
@@ -49,7 +44,6 @@ export class ImportService {
                             }
                         }
 
-                        // Delete the temporary file
                         fs.unlinkSync(file.path);
 
                         resolve({
@@ -68,21 +62,29 @@ export class ImportService {
         });
     }
 
-    /**
-     * Import data from Excel file to students collection
-     */
+
     async importExcel(file: Express.Multer.File): Promise<{ success: boolean; imported: number; errors: any[] }> {
         if (!file) {
             throw new BadRequestException('File is required');
         }
 
         try {
-            const workbook = XLSX.read(file.buffer);
+            // Đọc file Excel từ đường dẫn tạm thời
+            const workbook = XLSX.read(fs.readFileSync(file.path));
             const sheetName = workbook.SheetNames[0];
             const worksheet = workbook.Sheets[sheetName];
 
+            if (!worksheet) {
+                throw new BadRequestException('Excel file is empty or invalid');
+            }
+
             // Convert to JSON
             const results = XLSX.utils.sheet_to_json(worksheet);
+            
+            if (!results || results.length === 0) {
+                throw new BadRequestException('No data found in Excel file');
+            }
+
             this.logger.log(`Parsed ${results.length} records from Excel file`);
 
             let importedCount = 0;
@@ -90,20 +92,28 @@ export class ImportService {
 
             for (const record of results) {
                 try {
-                    // Transform data to match your Student model
+                    if (!record.ma_so_sinh_vien) {
+                        throw new BadRequestException('Mã số sinh viên is required');
+                    }
+
                     const studentData = this.transformStudentData(record);
 
-                    // Create or update student record
                     await this.createOrUpdateStudent(studentData);
                     importedCount++;
                 } catch (error) {
                     this.logger.error(`Error importing record: ${JSON.stringify(record)}`, error.stack);
-                    errors.push({ record, error: error.message });
+                    errors.push({ 
+                        record, 
+                        error: error instanceof BadRequestException 
+                            ? error.message 
+                            : 'Error processing record'
+                    });
                 }
             }
 
-            // Delete the temporary file
-            fs.unlinkSync(file.path);
+            if (fs.existsSync(file.path)) {
+                fs.unlinkSync(file.path);
+            }
 
             return {
                 success: true,
@@ -111,19 +121,24 @@ export class ImportService {
                 errors
             };
         } catch (error) {
-            fs.unlinkSync(file.path);
-            throw error;
+            if (fs.existsSync(file.path)) {
+                fs.unlinkSync(file.path);
+            }
+
+            this.logger.error('Error importing Excel file:', error.stack);
+            
+            if (error instanceof BadRequestException) {
+                throw error;
+            }
+            
+            throw new BadRequestException(
+                'Failed to import Excel file. Please check file format and try again.'
+            );
         }
     }
 
-    /**
-     * Transform raw data to match Student model
-     */
     private transformStudentData(rawData: any): Partial<Student> {
-        // This transformation depends on your CSV/Excel structure
-        // Here's a simple example; adjust according to your actual data structure
 
-        // Basic fields
         const studentData: Partial<Student> = {
             ma_so_sinh_vien: rawData.ma_so_sinh_vien,
             ho_ten: rawData.ho_ten,
@@ -137,7 +152,6 @@ export class ImportService {
             so_dien_thoai: rawData.so_dien_thoai,
         };
 
-        // Handle address if present
         if (rawData.dia_chi_chi_tiet) {
             studentData.dia_chi_thuong_tru = {
                 chi_tiet: rawData.dia_chi_chi_tiet,
@@ -148,7 +162,6 @@ export class ImportService {
             };
         }
 
-        // Handle ID document if present
         if (rawData.giay_to_loai && rawData.giay_to_so) {
             const idDoc: any = {
                 type: rawData.giay_to_loai,
@@ -158,7 +171,6 @@ export class ImportService {
                 ngay_het_han: rawData.giay_to_ngay_het_han,
             };
 
-            // Add type-specific fields
             if (idDoc.type === 'cccd') {
                 idDoc.co_gan_chip = rawData.giay_to_co_gan_chip === 'true'
                     || rawData.giay_to_co_gan_chip === true
@@ -176,29 +188,23 @@ export class ImportService {
         return studentData;
     }
 
-    /**
-     * Create a new student or update existing one
-     */
+
     private async createOrUpdateStudent(studentData: Partial<Student>): Promise<Student | null> {
-        // Require MSSV field
         if (!studentData.ma_so_sinh_vien) {
             throw new BadRequestException('Mã số sinh viên is required');
         }
 
-        // Check if student already exists
         const existingStudent = await this.studentModel.findOne({
             ma_so_sinh_vien: studentData.ma_so_sinh_vien
         }).exec();
 
         if (existingStudent) {
-            // Update existing student
             return this.studentModel.findOneAndUpdate(
                 { ma_so_sinh_vien: studentData.ma_so_sinh_vien },
                 { $set: studentData },
                 { new: true }
             ).exec();
         } else {
-            // Create new student
             const newStudent = new this.studentModel(studentData);
             return newStudent.save();
         }

@@ -4,7 +4,8 @@ import {
     UseInterceptors,
     UploadedFile,
     BadRequestException,
-    Logger
+    Logger,
+    UseGuards
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ImportService } from './import.service';
@@ -36,15 +37,28 @@ export class ImportController {
                 },
             }),
             fileFilter: (req, file, cb) => {
+                if (!file) {
+                    return cb(new BadRequestException('File is required'), false);
+                }
+
                 if (file.mimetype !== 'text/csv' && !file.originalname.endsWith('.csv')) {
                     return cb(new BadRequestException('Only CSV files are allowed'), false);
                 }
+
+                if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                    return cb(new BadRequestException('File size must be less than 5MB'), false);
+                }
+
                 cb(null, true);
             },
         }),
     )
     async importCSV(@UploadedFile() file: Express.Multer.File) {
-        this.logger.log(`Received CSV file: ${file?.originalname}`);
+        if (!file) {
+            throw new BadRequestException('File is required');
+        }
+
+        this.logger.log(`Received CSV file: ${file.originalname}`);
         return this.importService.importCSV(file);
     }
 
@@ -60,17 +74,31 @@ export class ImportController {
                 },
             }),
             fileFilter: (req, file, cb) => {
+                if (!file) {
+                    return cb(new BadRequestException('File is required'), false);
+                }
+
                 const validExtensions = ['.xlsx', '.xls'];
                 const fileExt = path.extname(file.originalname).toLowerCase();
+                
                 if (!validExtensions.includes(fileExt)) {
-                    return cb(new BadRequestException('Only Excel files are allowed'), false);
+                    return cb(new BadRequestException('Only Excel files (.xlsx, .xls) are allowed'), false);
                 }
+
+                if (file.size > 10 * 1024 * 1024) { // 10MB limit for Excel files
+                    return cb(new BadRequestException('File size must be less than 10MB'), false);
+                }
+
                 cb(null, true);
             },
         }),
     )
     async importExcel(@UploadedFile() file: Express.Multer.File) {
-        this.logger.log(`Received Excel file: ${file?.originalname}`);
+        if (!file) {
+            throw new BadRequestException('File is required');
+        }
+
+        this.logger.log(`Received Excel file: ${file.originalname}`);
         return this.importService.importExcel(file);
     }
 } 
