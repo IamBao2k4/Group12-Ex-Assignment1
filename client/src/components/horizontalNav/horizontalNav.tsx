@@ -22,7 +22,7 @@ const HorizontalNav = () => {
                 <Link to="/programs">
                     <NavItem name="Programs" icon={<FaGraduationCap />} />
                 </Link>
-                <Link to="/student-status">
+                <Link to="/student-statuses">
                     <NavItem name="Student Status" icon={<FaUserCheck />} />
                 </Link>
                 <Link to="/instructors">

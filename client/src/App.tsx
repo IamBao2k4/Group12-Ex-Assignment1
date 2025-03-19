@@ -4,6 +4,7 @@ import MainInformation from './components/mainInformation/mainInformation';
 import Students from './components/mainInformation/students/show-list-students/students';
 import Faculties from './components/mainInformation/faculties/faculties';
 import Programs from './components/mainInformation/programs/programs';
+import StudentStatuses from './components/mainInformation/student_statuses/student_statuses';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           </Route>
           <Route path="faculties" element={<Faculties />} />
           <Route path="programs" element={<Programs />} />
+          <Route path="student-statuses" element={<StudentStatuses />} />
         </Routes>
       </div>
     </Router>
