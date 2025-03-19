@@ -16,6 +16,9 @@ import { STUDENT_REPOSITORY } from './repositories/student.repository.interface'
       useClass: StudentRepository,
     }
   ],
-  exports: [StudentService],
+  exports: [
+    StudentService,
+    MongooseModule.forFeature([{ name: 'Student', schema: StudentSchema }])
+  ],
 })
-export class StudentModule {}
+export class StudentModule { }
