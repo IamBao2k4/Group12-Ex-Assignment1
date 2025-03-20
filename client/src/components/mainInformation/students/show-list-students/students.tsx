@@ -5,6 +5,7 @@ import StudentItem from './studentItem/studentItem';
 import ProfileDialog from './profileDialog/profileDialog';
 
 import { Student } from '../../../../model/student';
+import { Faculty } from '../../../../model/faculty';
 import AddIcon from '@mui/icons-material/Add';
 
 interface StudentProps {
@@ -17,11 +18,13 @@ const Students: React.FC<StudentProps> = ({ searchString }) => {
     const [currentPage, setCurrentPage] = useState(1)
     const [totalPages, setTotalPages] = useState(1)
     const [chosenStudent, setChosenStudent] = useState<Student | null>(null)
+    const [faculties, setFaculties] = useState<Faculty[]>([])
+    const [faculty, setFaculty] = useState('')
 
     useEffect(() => {
         async function fetchStudents() {
             try {
-                const response = await fetch(`http://localhost:3001/api/v1/students?searchString=${searchString}&page=${currentPage}`)
+                const response = await fetch(`http://localhost:3001/api/v1/students?searchString=${searchString}&faculty=${faculty}&page=${currentPage}`)
                 const data = await response.json()
                 setStudents(data.data)
                 setTotalPages(data.meta.total)
@@ -29,9 +32,25 @@ const Students: React.FC<StudentProps> = ({ searchString }) => {
                 console.error('Error fetching students:', error)
             }
         }
+
+        async function fetchFaculty() {
+            try {
+                const response = await fetch('http://localhost:3001/api/v1/faculties/all')
+                const data = await response.json()
+                setFaculties(data)
+            } catch (error) {
+                console.error('Error fetching faculty:', error)
+            }
+        }
     
+        fetchFaculty()
         fetchStudents()
-    }, [searchString, currentPage])
+    }, [faculty, searchString, currentPage])
+
+    function Filter(event: React.ChangeEvent<HTMLSelectElement>) {
+        setFaculty(event.target.value)
+    }
+
 
     function ProfileHandler(type: string) {
         const profileDialog = document.querySelector('.profile-dialog-container') as HTMLElement
@@ -51,13 +70,24 @@ const Students: React.FC<StudentProps> = ({ searchString }) => {
         }
     }
 
+    if(!students) {
+        return <div>Loading...</div>
+    }
+
     return (
         <div className="students">
-            <ProfileDialog student={chosenStudent ? chosenStudent : students[0]} type={profileType} />
+            <ProfileDialog student={chosenStudent ?? students[0]} type={profileType} />
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <h1>Students</h1>
                 <button className="add-student" onClick={() => ProfileHandler('add')}><AddIcon /></button>
             </div>
+
+            <select className="students-faculty" name="faculty" id="faculty" onChange={Filter}>
+                <option value="" defaultChecked>All</option>
+                {faculties.map((faculty) => (
+                    <option key={faculty._id.toString()} value={faculty._id.toString()}>{faculty.ten_khoa}</option>
+                ))}
+            </select>
 
             <div className="students-list">
                 <div className="students-list-header row">

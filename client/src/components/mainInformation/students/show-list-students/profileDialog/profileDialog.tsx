@@ -1,6 +1,9 @@
 import { Student } from "../../../../../model/student";
+import { Faculty } from "../../../../../model/faculty";
+import { Program } from "../../../../../model/program";
+import { StudentStatus } from "../../../../../model/student_status";
 import "./profileDialog.css";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 interface StudentItemProps {
     type: string;
@@ -35,12 +38,16 @@ const validatePhone = (phone: string) => {
 };
 
 const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
+    const [faculties, setFaculties] = useState<Faculty[]>([])
+    const [programs, setPrograms] = useState<Program[]>([])
+    const [studentStatuses, setStudentStatuses] = useState<StudentStatus[]>([])
+
     const profileDialog = document.querySelector(
         ".profile-dialog-container"
     ) as HTMLElement;
 
     function setInnerHTML() {
-        if (!student) {
+        if (!student || !faculties || !programs || !studentStatuses) {
             return <div>Loading...</div>;
         }
         const name = document.getElementById("name") as HTMLInputElement;
@@ -79,29 +86,12 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
             birthday.value = student.ngay_sinh;
             gender.value = student.gioi_tinh;
             faculty.value = student.khoa;
-            if (student.khoa === "Khoa Luật") {
-                faculty.value = "khoa-luat";
-            } else if (student.khoa === "Khoa Tiếng Anh thương mại") {
-                faculty.value = "khoa-tieng-anh";
-            } else if (student.khoa === "Khoa Tiếng Nhật") {
-                faculty.value = "khoa-tieng-nhat";
-            } else {
-                faculty.value = "khoa-tieng-phap";
-            }
             course.value = student.khoa_hoc;
             program.value = student.chuong_trinh;
             address.value = student.dia_chi || "";
             email.value = student.email || "";
             phone.value = student.so_dien_thoai || "";
-            if (student.tinh_trang === "Đang học") {
-                status.value = "dang-hoc";
-            } else if (student.tinh_trang === "Đã tốt nghiệp") {
-                status.value = "da-tot-nghiep";
-            } else if (student.tinh_trang === "Đã thôi học") {
-                status.value = "da-thoi-hoc";
-            } else {
-                status.value = "tam-dung-hoc";
-            }
+            status.value = student.tinh_trang;
         } else {
             name.value = "";
             id.value = "";
@@ -116,6 +106,45 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
             status.value = "";
         }
     }
+
+    useEffect(() => {
+
+        async function fetchFaculties() {
+            try {
+                const response = await fetch('http://localhost:3001/api/v1/faculties/all')
+                const data = await response.json()
+
+                setFaculties(data)
+            } catch (error) {
+                console.error('Error fetching faculties:', error)
+            }
+        }
+
+        async function fetchPrograms() {
+            try {
+                const response = await fetch('http://localhost:3001/api/v1/programs/all')
+                const data = await response.json()
+                setPrograms(data)
+            } catch (error) {
+                console.error('Error fetching programs:', error)
+            }
+        }
+
+        async function fetchStudentStatuses() {
+            try {
+                const response = await fetch('http://localhost:3001/api/v1/student-statuses/all')
+                const data = await response.json()
+                setStudentStatuses(data)
+            } catch (error) {
+                console.error('Error fetching student statuses:', error)
+            }
+        }
+
+        fetchFaculties()
+        fetchPrograms()
+        fetchStudentStatuses()
+
+    }, []);
 
     useEffect(() => {
         setInnerHTML();
@@ -140,26 +169,6 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
 
         const data = new FormData(form);
 
-        if (data.get("faculty") === "khoa-luat") {
-            data.set("faculty", "Khoa Luật");
-        } else if (data.get("faculty") === "khoa-tieng-anh") {
-            data.set("faculty", "Khoa Tiếng Anh thương mại");
-        } else if (data.get("faculty") === "khoa-tieng-nhat") {
-            data.set("faculty", "Khoa Tiếng Nhật");
-        } else {
-            data.set("faculty", "Khoa Tiếng Pháp");
-        }
-
-        if (data.get("status") === "dang-hoc") {
-            data.set("status", "Đang học");
-        } else if (data.get("status") === "da-tot-nghiep") {
-            data.set("status", "Đã tốt nghiệp");
-        } else if (data.get("status") === "da-thoi-hoc") {
-            data.set("status", "Đã thôi học");
-        } else {
-            data.set("status", "Tạm dừng học");
-        }
-
         const studentData = {
             ho_ten: data.get("name") as string,
             ma_so_sinh_vien: data.get("id") as string,
@@ -173,6 +182,8 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
             so_dien_thoai: data.get("phone") as string,
             tinh_trang: data.get("status") as string,
         };
+
+        console.log(JSON.stringify(studentData));
 
         if (type === "add") {
             try {
@@ -271,18 +282,9 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                                 <label htmlFor="faculty">Khoa</label>
                                 <div className="profile-dialog-info-form-select">
                                     <select name="faculty" id="faculty">
-                                        <option value="khoa-luat">
-                                            Khoa Luật
-                                        </option>
-                                        <option value="khoa-tieng-anh">
-                                            Khoa Tiếng Anh thương mại
-                                        </option>
-                                        <option value="khoa-tieng-nhat">
-                                            Khoa Tiếng Nhật
-                                        </option>
-                                        <option value="khoa-tieng-phap">
-                                            Khoa Tiếng Pháp
-                                        </option>
+                                        {faculties.map((faculty, index) => (
+                                            <option value={faculty._id.toString()} defaultChecked={index === 0}>{faculty.ten_khoa}</option>
+                                        ))}
                                     </select>
 
                                     <i className="fa-solid fa-caret-up"></i>
@@ -294,11 +296,14 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                             </div>
                             <div className="profile-dialog-info-form-group">
                                 <label htmlFor="program">Chương trình</label>
-                                <input
-                                    type="text"
-                                    id="program"
-                                    name="program"
-                                />
+                                <div className="profile-dialog-info-form-select">
+                                    <select name="program" id="program">
+                                        {programs.map((program) => (
+                                            <option value={program._id.toString()}>{program.name}</option>
+                                        ))}
+                                    </select>
+                                    <i className="fa-solid fa-caret-up"></i>
+                                </div>
                             </div>
                             <div className="profile-dialog-info-form-group">
                                 <label htmlFor="address">Địa chỉ</label>
@@ -345,18 +350,9 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                                 {/* <input type="text" id="status" name="status" /> */}
                                 <div className="profile-dialog-info-form-select">
                                     <select name="status" id="status">
-                                        <option value="dang-hoc">
-                                            Đang học
-                                        </option>
-                                        <option value="da-tot-nghiep">
-                                            Đã tốt nghiệp
-                                        </option>
-                                        <option value="da-thoi-hoc">
-                                            Đã thôi học
-                                        </option>
-                                        <option value="tam-dung-hoc">
-                                            Tạm dừng học
-                                        </option>
+                                        {studentStatuses.map((studentStatus) => (
+                                            <option value={studentStatus._id.toString()}>{studentStatus.tinh_trang}</option>
+                                        ))}
                                     </select>
 
                                     <i className="fa-solid fa-caret-up"></i>

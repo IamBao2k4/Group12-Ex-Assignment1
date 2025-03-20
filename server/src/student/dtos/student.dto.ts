@@ -1,15 +1,19 @@
 import {
+  IsNotEmpty,
   IsOptional,
   IsString,
   IsEmail,
   IsDateString,
-  IsNotEmpty,
   Matches,
   ValidateNested,
   IsObject,
   IsArray,
   ArrayMinSize,
 } from 'class-validator';
+import { IsFacultyExists } from '../validators/is-faculty-exists.validator';
+import { IsProgramExists } from '../validators/is-program-exists.validator';
+import { IsStudentStatusExists } from '../validators/is-student-status-exists.validator';
+import mongoose from 'mongoose';
 import { Type } from 'class-transformer';
 import { AddressDto } from './address.dto';
 import { IDDocumentDto } from './id-document.dto';
@@ -31,16 +35,14 @@ export class CreateStudentDto {
   @IsString()
   gioi_tinh: string;
 
-  @IsNotEmpty({ message: 'Khoa không được để trống' })
-  @IsString()
+  @IsFacultyExists({ message: 'Faculty does not exist' })
   khoa: string;
 
   @IsNotEmpty({ message: 'Khóa học không được để trống' })
   @IsString()
   khoa_hoc: string;
 
-  @IsNotEmpty({ message: 'Chương trình không được để trống' })
-  @IsString()
+  @IsProgramExists({ message: 'Program does not exist' })
   chuong_trinh: string;
 
   @IsOptional()
@@ -78,12 +80,70 @@ export class CreateStudentDto {
   })
   so_dien_thoai?: string;
 
-  @IsNotEmpty({ message: 'Tình trạng không được để trống' })
-  @IsString()
+  @IsStudentStatusExists({ message: 'Student status does not exist' })
   tinh_trang: string;
 }
 
 export class UpdateStudentDto {
+  @IsOptional()
+  @IsString()
+  readonly ma_so_sinh_vien?: string;
+
+  @IsOptional()
+  @IsString()
+  readonly ho_ten?: string;
+
+  @IsOptional()
+  @IsDateString()
+  readonly ngay_sinh?: string;
+
+  @IsOptional()
+  @IsString()
+  readonly gioi_tinh?: string;
+
+  @IsOptional()
+  @IsFacultyExists({ message: 'Faculty does not exist' })
+  readonly khoa?: mongoose.Schema.Types.ObjectId;
+
+  @IsOptional()
+  @IsString()
+  readonly khoa_hoc?: string;
+
+  @IsOptional()
+  @IsProgramExists({ message: 'Program does not exist' })
+  readonly chuong_trinh?: mongoose.Schema.Types.ObjectId;
+
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => AddressDto)
+  readonly dia_chi_thuong_tru?: AddressDto;
+
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => AddressDto)
+  readonly dia_chi_tam_tru?: AddressDto;
+
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => AddressDto)
+  readonly dia_chi_nhan_thu?: AddressDto;
+
+  @IsOptional()
+  @IsStudentStatusExists({ message: 'Student status does not exist' })
+  readonly tinh_trang?: mongoose.Schema.Types.ObjectId;
+
+  @IsNotEmpty({ message: 'Giấy tờ tùy thân không được để trống' })
+  @IsArray({ message: 'Giấy tờ tùy thân phải là một mảng' })
+  @ArrayMinSize(1, { message: 'Phải có ít nhất một giấy tờ tùy thân' })
+  @ValidateNested({ each: true })
+  @Type(() => IDDocumentDto)
+  giay_to_tuy_than: IDDocumentDto[];
+}
+
+export class FindStudentDto {
   @IsOptional()
   @IsString()
   readonly ma_so_sinh_vien?: string;
@@ -113,28 +173,8 @@ export class UpdateStudentDto {
   readonly chuong_trinh?: string;
 
   @IsOptional()
-  @IsObject()
-  @ValidateNested()
-  @Type(() => AddressDto)
-  readonly dia_chi_thuong_tru?: AddressDto;
-
-  @IsOptional()
-  @IsObject()
-  @ValidateNested()
-  @Type(() => AddressDto)
-  readonly dia_chi_tam_tru?: AddressDto;
-
-  @IsOptional()
-  @IsObject()
-  @ValidateNested()
-  @Type(() => AddressDto)
-  readonly dia_chi_nhan_thu?: AddressDto;
-
-  @IsOptional()
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => IDDocumentDto)
-  readonly giay_to_tuy_than?: IDDocumentDto[];
+  @IsString()
+  readonly dia_chi?: string;
 
   @IsOptional()
   @IsEmail({}, { message: 'Email không hợp lệ' })

@@ -33,9 +33,10 @@ export class StudentService {
   async get(
     paginationOpts: PaginationOptions,
     searchString: string,
+    faculty: string,
     page: number,
   ): Promise<PaginatedResponse<Student>> {
-    return this.studentRepository.findAll(paginationOpts, searchString, page);
+    return this.studentRepository.findAll(paginationOpts,faculty, searchString, page);
   }
 
   async detail(id: string): Promise<Student> {
