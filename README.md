@@ -6,8 +6,10 @@ Student Manager
 ## Hướng dẫn cài đặt & chạy chương trình
 - Tạo file .env trong folder server
   - Nội dùng file .env :
-    - PORT=3001
-    - MONGO_URI=mongodb+srv://miketsu:NVkYtMVX4sYFlHdC@thienchi.iwqdc.mongodb.net/University
+  - NODE_ENV=development
+  - MONGO_URI_DEV= 
+  - MONGO_URI_PROD=
+  - PORT=3001
 - Mở 2 terminal
   - terminal 1:
     - cd server
