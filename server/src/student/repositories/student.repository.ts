@@ -114,11 +114,17 @@ export class StudentRepository implements IStudentRepository {
   async update(id: string, studentData: Partial<Student>): Promise<Student | null> {
     try {
       const updatedStudent = await this.studentModel
-        .findByIdAndUpdate({
-          _id: id,
-          $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }]
-        }, studentData, { new: true })
-        .exec();
+      .findOneAndUpdate(
+        {
+          $and: [
+            { _id: id },
+            { $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] }
+          ]
+        },
+        studentData,
+        { new: true }
+      )
+      .exec();
       
       if (!updatedStudent) {
         throw new StudentNotFoundException(id);

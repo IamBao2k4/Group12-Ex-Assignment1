@@ -39,4 +39,14 @@ import {
     async delete(@Param('id') id: string) {
       return this.studentStatusService.delete(id);
     }
+
+    @Get('all')
+    async getAll() {
+      return this.studentStatusService.getAll();
+    }
+
+    @Get(':id')
+    async getOne(@Param('id') id: string) {
+      return this.studentStatusService.getOne(id);
+    }
   }

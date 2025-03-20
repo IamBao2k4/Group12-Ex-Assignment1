@@ -119,4 +119,14 @@ export class ProgramRepository implements IProgramRepository {
       throw new BaseException(error, 'DELETE_PROGRAM_ERROR');
     }
   }
+
+    async getAll(): Promise<Program[]> {
+        let programs: Program[] = [];
+        try {
+        programs = await this.programModel.find({ $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] }).exec();
+        } catch (error) {
+        throw new BaseException(error, 'GET_ALL_PROGRAMS_ERROR');
+        }
+        return programs;
+    }
 }

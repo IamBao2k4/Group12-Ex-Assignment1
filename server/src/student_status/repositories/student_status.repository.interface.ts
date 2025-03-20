@@ -9,4 +9,6 @@ export interface IStudentStatusRepository {
     update(id: string, studentStatusData: Partial<StudentStatus>): Promise<StudentStatus | null>;
     findAll(paginationOpts: PaginationOptions, searchString: string, page: number): Promise<PaginatedResponse<StudentStatus>>;
     softDelete(id: string): Promise<StudentStatus | null>;
+    getAll(): Promise<StudentStatus[]>;
+    getOne(id: string): Promise<StudentStatus>;
 }

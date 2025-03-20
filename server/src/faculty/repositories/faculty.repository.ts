@@ -115,4 +115,14 @@ export class FacultyRepository implements IFacultyRepository {
       throw new BaseException(error, 'DELETE_FACULTY_ERROR');
     }
   }
+
+    async getAll(): Promise<Faculty[]> {
+        let faculties: Faculty[] = [];
+        try {
+        faculties = await this.facultyModel.find({ $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] }).exec();
+        } catch (error) {
+        throw new BaseException(error, 'FIND_ALL_FACULTY_ERROR');
+        }
+        return faculties;
+    }
 }

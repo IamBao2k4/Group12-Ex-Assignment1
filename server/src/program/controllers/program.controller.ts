@@ -39,4 +39,9 @@ import {
     async delete(@Param('id') id: string) {
       return this.programService.delete(id);
     }
+
+    @Get('all')
+    async getAll() {
+        return this.programService.getAll();
+    }
   }

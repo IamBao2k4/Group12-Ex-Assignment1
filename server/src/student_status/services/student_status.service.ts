@@ -10,7 +10,7 @@ import { PaginatedResponse } from '../../common/paginator/pagination-response.dt
 export class StudentStatusService {
   constructor(
     @Inject(STUDENT_STATUS_REPOSITORY) private readonly studentStatusRepository: IStudentStatusRepository,
-  ) {}
+  ) { }
 
   async create(createReq: CreateStudentStatusDto): Promise<StudentStatus> {
     return this.studentStatusRepository.create(createReq);
@@ -30,5 +30,13 @@ export class StudentStatusService {
 
   async delete(id: string): Promise<StudentStatus | null> {
     return this.studentStatusRepository.softDelete(id);
+  }
+
+  async getAll(): Promise<StudentStatus[]> {
+    return this.studentStatusRepository.getAll();
+  }
+
+  async getOne(id: string): Promise<StudentStatus> {
+    return this.studentStatusRepository.getOne(id);
   }
 }

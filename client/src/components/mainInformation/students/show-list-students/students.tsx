@@ -53,7 +53,7 @@ const Students: React.FC<StudentProps> = ({ searchString }) => {
 
     return (
         <div className="students">
-            <ProfileDialog student={chosenStudent ? chosenStudent : students[0]} type={profileType} />
+            <ProfileDialog student={chosenStudent ?? students[0]} type={profileType} />
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <h1>Students</h1>
                 <button className="add-student" onClick={() => ProfileHandler('add')}><AddIcon /></button>

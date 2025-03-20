@@ -39,4 +39,9 @@ import {
     async delete(@Param('id') id: string) {
       return this.facultyService.delete(id);
     }
+
+    @Get('all')
+    async getAll() {
+      return this.facultyService.getAll();
+    }
   }

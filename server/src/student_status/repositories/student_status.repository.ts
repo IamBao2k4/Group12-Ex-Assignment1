@@ -118,4 +118,27 @@ export class StudentStatusRepository implements IStudentStatusRepository {
       throw new BaseException(error, 'DELETE_STUDENT_STATUS_ERROR');
     }
   }
+
+  async getAll(): Promise<StudentStatus[]> {
+    let studentStatuses: StudentStatus[] = [];
+    try {
+      studentStatuses = await this.studentStatusModel.find({ $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] }).exec();
+    } catch (error) {
+      throw new BaseException(error, 'GET_ALL_STUDENT_STATUSES_ERROR');
+    }
+    return studentStatuses;
+  }
+
+  async getOne(id: string): Promise<StudentStatus> {
+    let studentStatus: StudentStatus | null = null;
+    try {
+      studentStatus = await this.studentStatusModel.findOne({ _id: id, $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] }).exec();
+    } catch (error) {
+      throw new BaseException(error, 'GET_ONE_STUDENT_STATUS_ERROR');
+    }
+    if (!studentStatus) {
+      throw new StudentStatusNotFoundException(id);
+    }
+    return studentStatus;
+  }
 }

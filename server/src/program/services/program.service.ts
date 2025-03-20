@@ -31,4 +31,8 @@ export class ProgramService {
   async delete(id: string): Promise<Program | null> {
     return this.programRepository.softDelete(id);
   }
+
+    async getAll(): Promise<Program[]> {
+        return this.programRepository.getAll();
+    }
 }

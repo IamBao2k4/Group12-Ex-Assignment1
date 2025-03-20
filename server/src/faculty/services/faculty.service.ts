@@ -31,4 +31,8 @@ export class FacultyService {
   async delete(id: string): Promise<Faculty | null> {
     return this.facultyRepository.softDelete(id);
   }
+
+    async getAll(): Promise<Faculty[]> {
+        return this.facultyRepository.getAll();
+    }
 }

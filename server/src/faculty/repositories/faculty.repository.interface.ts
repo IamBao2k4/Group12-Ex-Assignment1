@@ -9,4 +9,5 @@ export interface IFacultyRepository {
     update(id: string, facultyData: Partial<Faculty>): Promise<Faculty | null>;
     findAll(paginationOpts: PaginationOptions, searchString: string, page: number): Promise<PaginatedResponse<Faculty>>;
     softDelete(id: string): Promise<Faculty | null>;
+    getAll(): Promise<Faculty[]>;
 }

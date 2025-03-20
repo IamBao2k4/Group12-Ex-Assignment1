@@ -9,4 +9,5 @@ export interface IProgramRepository {
     update(id: string, programData: Partial<Program>): Promise<Program | null>;
     findAll(paginationOpts: PaginationOptions, searchString: string, page: number): Promise<PaginatedResponse<Program>>;
     softDelete(id: string): Promise<Program | null>;
+    getAll(): Promise<Program[]>;
 }
