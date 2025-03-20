@@ -22,14 +22,12 @@ export const IDDocumentSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
-    // CCCD specific field
     co_gan_chip: {
         type: Boolean,
         required: function () {
             return this.type === 'cccd';
         }
     },
-    // Passport specific fields
     quoc_gia_cap: {
         type: String,
         required: function () {

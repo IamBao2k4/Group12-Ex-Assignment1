@@ -16,7 +16,7 @@ export const StudentSchema = new mongoose.Schema({
   giay_to_tuy_than: [{ type: IDDocumentSchema, required: false }],
   email: { type: String, required: false },
   so_dien_thoai: { type: String, required: false },
-  tinh_trang: { type: mongoose.Schema.Types.ObjectId, ref: 'StudentStatus', required: true },
+  tinh_trang: { type: mongoose.Schema.Types.ObjectId, ref: 'StudentStatus', required: false },
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now },
   deleted_at: { type: Date, required: false }

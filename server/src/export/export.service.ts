@@ -5,6 +5,10 @@ import { Student } from '../student/interfaces/student.interface';
 import * as XLSX from 'xlsx';
 import * as fs from 'fs';
 import * as path from 'path';
+import { StudentTransformer } from '../common/utils/student-transformer.util';
+import { FacultyService } from '../faculty/services/faculty.service';
+import { ProgramService } from '../program/services/program.service';
+import { StudentStatusService } from '../student_status/services/student_status.service';
 
 interface WorkSheet {}
 interface WorkBook {
@@ -29,23 +33,30 @@ export class ExportService {
 
     constructor(
         @InjectModel('Student') private studentModel: Model<Student>,
+        private readonly facultyService: FacultyService,
+        private readonly programService: ProgramService,
+        private readonly studentStatusService: StudentStatusService,
     ) {
         if (!fs.existsSync(this.exportsDir)) {
             fs.mkdirSync(this.exportsDir, { recursive: true });
         }
     }
 
-
     async exportStudentsToExcel(): Promise<{ filePath: string; fileName: string }> {
         try {
             const students = await this.studentModel
                 .find({ deleted_at: { $exists: false } })
+                .populate('khoa', 'ten_khoa ma_khoa')
+                .populate('chuong_trinh', 'name ma')
+                .populate('tinh_trang', 'tinh_trang')
                 .lean()
                 .exec();
             
             this.logger.log(`Exporting ${students.length} students to Excel file`);
 
-            const studentData = students.map(student => this.transformStudentToExcelRow(student));
+            const studentsWithNames = await this.enhanceStudentsWithNames(students);
+            
+            const studentData = studentsWithNames.map(student => StudentTransformer.toExcelRow(student));
             
             // @ts-ignore
             const worksheet = XLSX.utils.json_to_sheet(studentData);
@@ -72,17 +83,21 @@ export class ExportService {
         }
     }
 
-
     async exportStudentsToCSV(): Promise<{ filePath: string; fileName: string }> {
         try {
             const students = await this.studentModel
                 .find({ deleted_at: { $exists: false } })
+                .populate('khoa', 'ten_khoa ma_khoa')
+                .populate('chuong_trinh', 'name ma')
+                .populate('tinh_trang', 'tinh_trang')
                 .lean()
                 .exec();
             
             this.logger.log(`Exporting ${students.length} students to CSV file`);
 
-            const studentData = students.map(student => this.transformStudentToExcelRow(student));
+            const studentsWithNames = await this.enhanceStudentsWithNames(students);
+            
+            const studentData = studentsWithNames.map(student => StudentTransformer.toExcelRow(student));
             
             const headers = Object.keys(studentData[0]);
             const csvRows = [
@@ -113,37 +128,73 @@ export class ExportService {
             throw error;
         }
     }
-    
 
-    private transformStudentToExcelRow(student: Student): any {
-        const idDoc = student.giay_to_tuy_than && student.giay_to_tuy_than.length > 0 
-            ? student.giay_to_tuy_than[0] 
-            : null;
-            
-        return {
-            'Mã số sinh viên': student.ma_so_sinh_vien,
-            'Họ tên': student.ho_ten,
-            'Ngày sinh': student.ngay_sinh,
-            'Giới tính': student.gioi_tinh,
-            'Khoa': student.khoa,
-            'Khóa học': student.khoa_hoc,
-            'Chương trình': student.chuong_trinh,
-            'Email': student.email || '',
-            'Số điện thoại': student.so_dien_thoai || '',
-            'Tình trạng': student.tinh_trang,
-            'Địa chỉ chi tiết': student.dia_chi_thuong_tru?.chi_tiet || '',
-            'Phường/Xã': student.dia_chi_thuong_tru?.phuong_xa || '',
-            'Quận/Huyện': student.dia_chi_thuong_tru?.quan_huyen || '',
-            'Tỉnh/Thành phố': student.dia_chi_thuong_tru?.tinh_thanh_pho || '',
-            'Quốc gia': student.dia_chi_thuong_tru?.quoc_gia || '',
-            'Loại giấy tờ': idDoc?.type || '',
-            'Số giấy tờ': idDoc?.so || '',
-            'Ngày cấp': idDoc?.ngay_cap || '',
-            'Nơi cấp': idDoc?.noi_cap || '',
-            'Có gắn chip': idDoc?.type === 'cccd' ? idDoc['co_gan_chip'] || '' : '',
-            'Ngày hết hạn': idDoc?.ngay_het_han || '',
-            'Ngày tạo': student.created_at ? new Date(student.created_at).toLocaleString() : '',
-            'Ngày cập nhật': student.updated_at ? new Date(student.updated_at).toLocaleString() : '',
-        };
+
+    private async enhanceStudentsWithNames(students: any[]): Promise<any[]> {
+        try {
+            // Lấy tất cả các faculty, program và status để có map đầy đủ
+            const [faculties, programs, statuses] = await Promise.all([
+                this.facultyService.getAll(),
+                this.programService.getAll(),
+                this.studentStatusService.getAll()
+            ]);
+
+            // Tạo map từ ID tới tên và mã để tra cứu nhanh - sử dụng type assertion
+            const facultyMap = new Map(faculties.map(f => [(f as any)._id.toString(), { 
+                ten_khoa: (f as any).ten_khoa,
+                ma_khoa: (f as any).ma_khoa
+            }]));
+            const programMap = new Map(programs.map(p => [(p as any)._id.toString(), { 
+                name: (p as any).name,
+                ma: (p as any).ma 
+            }]));
+            const statusMap = new Map(statuses.map(s => [(s as any)._id.toString(), (s as any).tinh_trang]));
+
+            // Xử lý từng student để đảm bảo tên đã được populate
+            return students.map(student => {
+                const enhancedStudent = { ...student };
+
+                // Khoa
+                if (student.khoa) {
+                    if (typeof student.khoa === 'object' && student.khoa.ten_khoa) {
+                        enhancedStudent.khoa_ten = student.khoa.ten_khoa;
+                        enhancedStudent.khoa_ma = student.khoa.ma_khoa;
+                    } else {
+                        const facultyId = typeof student.khoa === 'object' ? student.khoa._id?.toString() : student.khoa.toString();
+                        const faculty = facultyMap.get(facultyId) || { ten_khoa: 'Không xác định', ma_khoa: '' };
+                        enhancedStudent.khoa_ten = faculty.ten_khoa;
+                        enhancedStudent.khoa_ma = faculty.ma_khoa;
+                    }
+                }
+
+                // Chương trình
+                if (student.chuong_trinh) {
+                    if (typeof student.chuong_trinh === 'object' && student.chuong_trinh.name) {
+                        enhancedStudent.chuong_trinh_ten = student.chuong_trinh.name;
+                        enhancedStudent.chuong_trinh_ma = student.chuong_trinh.ma;
+                    } else {
+                        const programId = typeof student.chuong_trinh === 'object' ? student.chuong_trinh._id?.toString() : student.chuong_trinh.toString();
+                        const program = programMap.get(programId) || { name: 'Không xác định', ma: '' };
+                        enhancedStudent.chuong_trinh_ten = program.name;
+                        enhancedStudent.chuong_trinh_ma = program.ma;
+                    }
+                }
+
+                // Tình trạng
+                if (student.tinh_trang) {
+                    if (typeof student.tinh_trang === 'object' && student.tinh_trang.tinh_trang) {
+                        enhancedStudent.tinh_trang_ten = student.tinh_trang.tinh_trang;
+                    } else {
+                        const statusId = typeof student.tinh_trang === 'object' ? student.tinh_trang._id?.toString() : student.tinh_trang.toString();
+                        enhancedStudent.tinh_trang_ten = statusMap.get(statusId) || 'Không xác định';
+                    }
+                }
+
+                return enhancedStudent;
+            });
+        } catch (error) {
+            this.logger.error('Error enhancing student data with names:', error.stack);
+            return students; // Trả về dữ liệu gốc nếu có lỗi
+        }
     }
 } 
