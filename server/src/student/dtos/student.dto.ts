@@ -3,18 +3,26 @@ import {
   IsString,
   IsEmail,
   IsDateString,
-  IsNotEmpty,
   Matches,
 } from 'class-validator';
+import { IsFacultyExists } from '../validators/is-faculty-exists.validator';
+import { IsProgramExists } from '../validators/is-program-exists.validator';
+import { IsStudentStatusExists } from '../validators/is-student-status-exists.validator';
 
 export class CreateStudentDto {
   ma_so_sinh_vien: string;
   ho_ten: string;
   ngay_sinh: string;
   gioi_tinh: string;
+
+  @IsFacultyExists({ message: 'Faculty does not exist' })
   khoa: string;
+
   khoa_hoc: string;
+
+  @IsProgramExists({ message: 'Program does not exist' })
   chuong_trinh: string;
+
   dia_chi?: string;
 
   @IsEmail({}, { message: 'Email không hợp lệ' })
@@ -24,6 +32,8 @@ export class CreateStudentDto {
     message: 'Số điện thoại không hợp lệ',
   })
   so_dien_thoai?: string;
+
+  @IsStudentStatusExists({ message: 'Student status does not exist' })
   tinh_trang: string;
 }
 
@@ -45,7 +55,7 @@ export class UpdateStudentDto {
   readonly gioi_tinh?: string;
 
   @IsOptional()
-  @IsString()
+  @IsFacultyExists({ message: 'Faculty does not exist' })
   readonly khoa?: string;
 
   @IsOptional()
@@ -53,7 +63,7 @@ export class UpdateStudentDto {
   readonly khoa_hoc?: string;
 
   @IsOptional()
-  @IsString()
+  @IsProgramExists({ message: 'Program does not exist' })
   readonly chuong_trinh?: string;
 
   @IsOptional()
@@ -71,7 +81,7 @@ export class UpdateStudentDto {
   readonly so_dien_thoai?: string;
 
   @IsOptional()
-  @IsString()
+  @IsStudentStatusExists({ message: 'Student status does not exist' })
   readonly tinh_trang?: string;
 }
 

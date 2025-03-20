@@ -18,6 +18,6 @@ import { StudentStatusSchema } from './schemas/student_status.schema';
       useClass: StudentStatusRepository,
     },
   ],
-  exports: [STUDENT_STATUS_REPOSITORY],
+  exports: [MongooseModule],
 })
 export class StudentStatusModule {}

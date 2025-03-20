@@ -18,6 +18,6 @@ import { ProgramSchema } from './schemas/program.schema';
       useClass: ProgramRepository,
     },
   ],
-  exports: [PROGRAM_REPOSITORY],
+  exports: [MongooseModule],
 })
 export class ProgramModule {}

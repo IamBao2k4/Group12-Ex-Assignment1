@@ -18,6 +18,6 @@ import { FacultySchema } from './schemas/faculty.schema';
       useClass: FacultyRepository,
     },
   ],
-  exports: [FACULTY_REPOSITORY],
+  exports: [MongooseModule],
 })
 export class FacultyModule {}

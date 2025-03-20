@@ -183,6 +183,8 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
             tinh_trang: data.get("status") as string,
         };
 
+        console.log(JSON.stringify(studentData));
+
         if (type === "add") {
             try {
                 const response = await fetch(

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { StudentStatus } from '../interfaces/student_status.interface';
@@ -11,6 +11,8 @@ import { StudentStatusNotFoundException } from '../exceptions/student_status-not
 
 @Injectable()
 export class StudentStatusRepository implements IStudentStatusRepository {
+  private readonly logger = new Logger(StudentStatusRepository.name);
+
   constructor(@InjectModel('StudentStatus') private studentStatusModel: Model<StudentStatus>) {}
 
   async create(studentStatusData: any): Promise<StudentStatus> {
@@ -18,7 +20,9 @@ export class StudentStatusRepository implements IStudentStatusRepository {
     let createdStudentStatus: StudentStatus | null = null;
     try {
       createdStudentStatus = await studentStatus.save();
+      this.logger.log(`Created student status with ID: ${createdStudentStatus._id}`);
     } catch (error) {
+      this.logger.error('Error creating student status', error.stack);
       throw new BaseException(error, 'CREATE_STUDENT_STATUS_ERROR');
     }
     return createdStudentStatus;
@@ -38,14 +42,17 @@ export class StudentStatusRepository implements IStudentStatusRepository {
         .exec();
       
       if (!updatedStudentStatus) {
+        this.logger.warn(`Student status not found for update with ID: ${id}`);
         throw new StudentStatusNotFoundException(id);
       }
       
+      this.logger.log(`Updated student status with ID: ${updatedStudentStatus._id}`);
       return updatedStudentStatus;
     } catch (error) {
       if (error instanceof StudentStatusNotFoundException) {
         throw error;
       }
+      this.logger.error(`Error updating student status with ID: ${id}`, error.stack);
       throw new BaseException(error, 'UPDATE_STUDENT_STATUS_ERROR');
     }
   }
@@ -78,14 +85,18 @@ export class StudentStatusRepository implements IStudentStatusRepository {
         .skip(skip)
         .limit(limit)
         .exec();
+      this.logger.log(`Found ${studentStatuses.length} student statuses`);
     } catch (error) {
+      this.logger.error('Error finding all student statuses', error.stack);
       throw new BaseException(error, 'FIND_ALL_STUDENT_STATUS_ERROR');
     }
 
     let total = 0;
     try {
       total = await this.studentStatusModel.countDocuments({ $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] });
+      this.logger.log(`Total student statuses count: ${total}`);
     } catch (error) {
+      this.logger.error('Error counting student statuses', error.stack);
       throw new BaseException(error, 'COUNT_STUDENT_STATUSES_ERROR');
     }
     
@@ -107,14 +118,17 @@ export class StudentStatusRepository implements IStudentStatusRepository {
         .exec();
       
       if (!deletedStudentStatus) {
+        this.logger.warn(`Student status not found for soft delete with ID: ${id}`);
         throw new StudentStatusNotFoundException(id);
       }
       
+      this.logger.log(`Soft deleted student status with ID: ${deletedStudentStatus._id}`);
       return deletedStudentStatus;
     } catch (error) {
       if (error instanceof StudentStatusNotFoundException) {
         throw error;
       }
+      this.logger.error(`Error soft deleting student status with ID: ${id}`, error.stack);
       throw new BaseException(error, 'DELETE_STUDENT_STATUS_ERROR');
     }
   }
@@ -123,7 +137,9 @@ export class StudentStatusRepository implements IStudentStatusRepository {
     let studentStatuses: StudentStatus[] = [];
     try {
       studentStatuses = await this.studentStatusModel.find({ $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] }).exec();
+      this.logger.log(`Found ${studentStatuses.length} student statuses`);
     } catch (error) {
+      this.logger.error('Error getting all student statuses', error.stack);
       throw new BaseException(error, 'GET_ALL_STUDENT_STATUSES_ERROR');
     }
     return studentStatuses;
@@ -133,10 +149,13 @@ export class StudentStatusRepository implements IStudentStatusRepository {
     let studentStatus: StudentStatus | null = null;
     try {
       studentStatus = await this.studentStatusModel.findOne({ _id: id, $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] }).exec();
+      this.logger.log(`Found student status by ID: ${studentStatus?._id}`);
     } catch (error) {
+      this.logger.error(`Error getting student status by ID: ${id}`, error.stack);
       throw new BaseException(error, 'GET_ONE_STUDENT_STATUS_ERROR');
     }
     if (!studentStatus) {
+      this.logger.warn(`Student status not found with ID: ${id}`);
       throw new StudentStatusNotFoundException(id);
     }
     return studentStatus;
