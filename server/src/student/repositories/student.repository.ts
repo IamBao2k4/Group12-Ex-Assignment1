@@ -55,11 +55,14 @@ export class StudentRepository implements IStudentRepository {
   async findAll(
     paginationOpts: PaginationOptions,
     searchString: string,
+    faculty: string,
     page: number,
   ): Promise<PaginatedResponse<Student>> {
     const pagination = new Pagination(paginationOpts);
     const skip = pagination.Skip();
     const limit = pagination.Limit();
+
+    console.log("faculty", faculty);
 
     let query = {};
 
@@ -83,6 +86,16 @@ export class StudentRepository implements IStudentRepository {
     } else {
       query = { $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] };
     }
+
+    if (faculty) {
+      query = {
+        $and: [
+          { khoa: faculty },
+          query,
+        ],
+      };
+    }
+
     let students: Student[] = [];
     try {
       students = await this.studentModel

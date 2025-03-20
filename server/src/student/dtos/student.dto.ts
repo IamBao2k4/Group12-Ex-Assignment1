@@ -8,6 +8,7 @@ import {
 import { IsFacultyExists } from '../validators/is-faculty-exists.validator';
 import { IsProgramExists } from '../validators/is-program-exists.validator';
 import { IsStudentStatusExists } from '../validators/is-student-status-exists.validator';
+import mongoose from 'mongoose';
 
 export class CreateStudentDto {
   ma_so_sinh_vien: string;
@@ -56,7 +57,7 @@ export class UpdateStudentDto {
 
   @IsOptional()
   @IsFacultyExists({ message: 'Faculty does not exist' })
-  readonly khoa?: string;
+  readonly khoa?: mongoose.Schema.Types.ObjectId;
 
   @IsOptional()
   @IsString()
@@ -64,7 +65,7 @@ export class UpdateStudentDto {
 
   @IsOptional()
   @IsProgramExists({ message: 'Program does not exist' })
-  readonly chuong_trinh?: string;
+  readonly chuong_trinh?: mongoose.Schema.Types.ObjectId;
 
   @IsOptional()
   @IsString()
@@ -82,7 +83,7 @@ export class UpdateStudentDto {
 
   @IsOptional()
   @IsStudentStatusExists({ message: 'Student status does not exist' })
-  readonly tinh_trang?: string;
+  readonly tinh_trang?: mongoose.Schema.Types.ObjectId;
 }
 
 export class FindStudentDto {

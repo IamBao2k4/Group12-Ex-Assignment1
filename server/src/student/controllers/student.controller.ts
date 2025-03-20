@@ -28,9 +28,10 @@ export class StudentController {
   async get(
     @Query() query: PaginationOptions,
     @Query('searchString') searchString: string,
+    @Query('faculty') faculty: string,
     @Query('page') page: number,
   ) {
-    return this.studentService.get(query, searchString, page);
+    return this.studentService.get(query,faculty, searchString, page);
   }
 
   @Patch(':id')
