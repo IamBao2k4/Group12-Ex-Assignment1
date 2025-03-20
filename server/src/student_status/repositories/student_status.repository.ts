@@ -70,9 +70,18 @@ export class StudentStatusRepository implements IStudentStatusRepository {
 
     if (searchString) {
       query = {
-        $or: [
-          { tinh_trang: { $regex: searchString, $options: 'i' } },
-          { deleted_at: { $exists: false } }, { deleted_at: null }
+        $and: [
+          {
+            $or: [
+              { tinh_trang: { $regex: searchString, $options: 'i' } },
+            ],
+          },
+          {
+            $or: [
+              { deleted_at: { $exists: false } },
+              { deleted_at: null },
+            ],
+          },
         ],
       };
     } else {

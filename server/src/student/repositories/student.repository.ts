@@ -65,11 +65,19 @@ export class StudentRepository implements IStudentRepository {
 
     if (searchString) {
       query = {
-        $or: [
-          { ho_ten: { $regex: searchString, $options: 'i' } },
-          { ma_so_sinh_vien: { $regex: searchString, $options: 'i' } },
-          { deleted_at: { $exists: false } },
-          { deleted_at: null }
+        $and: [
+          {
+            $or: [
+              { ho_ten: { $regex: searchString, $options: 'i' } },
+              { ma_so_sinh_vien: { $regex: searchString, $options: 'i' } },
+            ],
+          },
+          {
+            $or: [
+              { deleted_at: { $exists: false } },
+              { deleted_at: null },
+            ],
+          },
         ],
       };
     } else {

@@ -70,10 +70,18 @@ export class ProgramRepository implements IProgramRepository {
 
     if (searchString) {
       query = {
-        $or: [
-          { name: { $regex: searchString, $options: 'i' } },
-          { code: { $regex: searchString, $options: 'i' } },
-          { deleted_at: { $exists: false } }, { deleted_at: null }
+        $and: [
+          {
+            $or: [
+              { name: { $regex: searchString, $options: 'i' } },
+            ],
+          },
+          {
+            $or: [
+              { deleted_at: { $exists: false } },
+              { deleted_at: null },
+            ],
+          },
         ],
       };
     } else {

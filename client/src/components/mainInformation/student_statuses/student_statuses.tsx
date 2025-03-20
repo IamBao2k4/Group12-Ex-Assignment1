@@ -14,11 +14,12 @@ const StudentStatuses = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [type, setType] = useState('');
     const [chosenStudentStatus, setChosenStudentStatus] = useState<StudentStatus | null>(null);
+    const [search, setSearch] = useState('');
 
     useEffect(() => {
         async function fetchStudentStatuses() {
             try {
-                const response = await fetch(`http://localhost:3001/api/v1/student-statuses?page=${currentPage}`);
+                const response = await fetch(`http://localhost:3001/api/v1/student-statuses?page=${currentPage}&searchString=${search}`,);
                 const data = await response.json();
                 setStudentStatuses(data.data);
                 setTotalPages(data.meta.total);
@@ -28,7 +29,7 @@ const StudentStatuses = () => {
         }
 
         fetchStudentStatuses();
-    }, [currentPage]);
+    }, [search, currentPage]);
 
     function DetailHandler(type: string) {
         const detailDialog = document.querySelector('.dialog-container') as HTMLElement;
@@ -51,7 +52,7 @@ const StudentStatuses = () => {
     return (
         <div className="student-statuses">
             <DetailDialog type={type} studentStatus={chosenStudentStatus ?? studentStatuses[0]} />
-            <Header searchHandler={() => { }} />
+            <Header searchHandler={setSearch} />
             <div className="student-statuses-content">
                 <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                     <h1>Student Statuses</h1>

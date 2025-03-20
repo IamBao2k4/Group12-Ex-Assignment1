@@ -14,11 +14,12 @@ const Programs = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [type, setType] = useState('');
     const [chosenProgram, setChosenProgram] = useState<Program | null>(null);
+    const [search, setSearch] = useState('');
 
     useEffect(() => {
         async function fetchPrograms() {
             try {
-                const response = await fetch(`http://localhost:3001/api/v1/programs?page=${currentPage}`);
+                const response = await fetch(`http://localhost:3001/api/v1/programs?page=${currentPage}&searchString=${search}`,);
                 const data = await response.json();
                 setPrograms(data.data);
                 setTotalPages(data.meta.total);
@@ -28,7 +29,7 @@ const Programs = () => {
         }
 
         fetchPrograms();
-    }, [currentPage]);
+    }, [search, currentPage]);
 
     function DetailHandler(type: string) {
         const detailDialog = document.querySelector('.dialog-container') as HTMLElement;
@@ -51,7 +52,7 @@ const Programs = () => {
     return (
         <div className="programs">
             <DetailDialog type={type} program={chosenProgram ?? programs[0]} />
-            <Header searchHandler={() => { }} />
+            <Header searchHandler={setSearch} />
             <div className="programs-content">
                 <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                     <h1>Programs</h1>

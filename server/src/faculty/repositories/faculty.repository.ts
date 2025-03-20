@@ -66,10 +66,19 @@ export class FacultyRepository implements IFacultyRepository {
 
     if (searchString) {
       query = {
-        $or: [
-          { name: { $regex: searchString, $options: 'i' } },
-          { code: { $regex: searchString, $options: 'i' } },
-          { deleted_at: { $exists: false } }, { deleted_at: null }
+        $and: [
+          {
+            $or: [
+              { ten_khoa: { $regex: searchString, $options: 'i' } },
+              { ma_khoa: { $regex: searchString, $options: 'i' } },
+            ],
+          },
+          {
+            $or: [
+              { deleted_at: { $exists: false } },
+              { deleted_at: null },
+            ],
+          },
         ],
       };
     } else {

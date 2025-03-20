@@ -15,11 +15,12 @@ const Faculties = () => {
     const [totalPages, setTotalPages] = useState(1)
     const [type, setType] = useState('')
     const [chosenFaculty, setChosenFaculty] = useState<Faculty | null>(null)
+    const [search, setSearch] = useState('')
 
     useEffect(() => {
         async function fetchFaculties() {
             try {
-                const response = await fetch(`http://localhost:3001/api/v1/faculties?page=${currentPage}`)
+                const response = await fetch(`http://localhost:3001/api/v1/faculties?page=${currentPage}&searchString=${search}`,)
                 const data = await response.json()
                 setFaculties(data.data)
                 setTotalPages(data.meta.total)
@@ -29,7 +30,7 @@ const Faculties = () => {
         }
 
         fetchFaculties()
-    }, [currentPage])
+    }, [search, currentPage])
 
     function DetailHandler(type: string) {
         const detailDialog = document.querySelector('.dialog-container') as HTMLElement
@@ -52,7 +53,7 @@ const Faculties = () => {
     return (
         <div className="faculties">
             <DetailDialog type={type} faculty={chosenFaculty??faculties[0]}/>
-            <Header searchHandler={() => { }} />
+            <Header searchHandler={setSearch} />
             <div className="faculties-content">
                 <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                     <h1>Faculties</h1>
