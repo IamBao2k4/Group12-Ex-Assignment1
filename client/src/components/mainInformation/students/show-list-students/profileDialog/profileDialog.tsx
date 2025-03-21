@@ -617,9 +617,9 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
             id.value = student.ma_so_sinh_vien;
             birthday.value = student.ngay_sinh;
             gender.value = student.gioi_tinh;
-            faculty.value = student.khoa;
+            faculty.value = student.khoa.toString();
             course.value = student.khoa_hoc;
-            program.value = student.chuong_trinh;
+            program.value = student.chuong_trinh.toString();
             cmnd.value = student.giay_to_tuy_than[0].so;
             issue_date_cmnd.value = student.giay_to_tuy_than[0].ngay_cap;
             issue_place_cmnd.value = student.giay_to_tuy_than[0].noi_cap;
@@ -637,7 +637,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
             note_hc.value = student.giay_to_tuy_than[2].ghi_chu;
             email.value = student.email || "";
             phone.value = student.so_dien_thoai || "";
-            status.value = student.tinh_trang;
+            status.value = student.tinh_trang.toString();
         } else {
             name.value = "";
             id.value = "";
