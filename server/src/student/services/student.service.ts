@@ -17,7 +17,7 @@ export class StudentService {
   constructor(
     @Inject(STUDENT_REPOSITORY)
     private readonly studentRepository: IStudentRepository
-  ) {}
+  ) { }
 
   async create(studentData: any): Promise<Student> {
     const { email, so_dien_thoai } = studentData;
@@ -27,21 +27,29 @@ export class StudentService {
     if (existingStudent) {
       throw new StudentExistsException();
     }
-
     return this.studentRepository.create(studentData);
   }
 
   async get(
     paginationOpts: PaginationOptions,
     searchString: string,
+    faculty: string,
     page: number,
   ): Promise<PaginatedResponse<Student>> {
-    return this.studentRepository.findAll(paginationOpts, searchString, page);
+    return this.studentRepository.findAll(paginationOpts,faculty, searchString, page);
+  }
+
+  async detail(id: string): Promise<Student> {
+    const student = await this.studentRepository.findById(id);
+    if (!student) {
+      throw new StudentNotFoundException(id);
+    }
+    return student;
   }
 
   async update(id: string, studentData: Partial<Student>): Promise<Student> {
     const { email, so_dien_thoai } = studentData;
-    
+
     // if (email || so_dien_thoai) {
     //   const existingStudent = await this.studentRepository.findByEmailOrPhone(
     //     email || '', 

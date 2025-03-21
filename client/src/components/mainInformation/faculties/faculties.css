@@ -1,0 +1,85 @@
+.faculties {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 9;
+    background-color: var(--light);
+    height: 100%;
+    z-index: 1;
+}
+
+.faculties h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--text);
+}
+
+.faculties .add-faculty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background-color: var(--light);
+    color: var(--text);
+    border: none;
+    border-radius: 100%;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.faculties .add-faculty:hover {
+    background-color: var(--light);
+}
+
+.faculties-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+    flex: 9;
+}
+
+.faculties-list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.faculties-list .faculties-list-header {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr 0.5fr;
+    padding: 10px;
+    width: 100%;
+    gap: 10px;
+    font-weight: bold;
+}
+
+.faculties-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.faculties-pagination-btn {
+    padding: 10px 20px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.faculties-pagination-btn:hover {
+    background-color: #0056b3;
+}
+
+.faculties-pagination-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
