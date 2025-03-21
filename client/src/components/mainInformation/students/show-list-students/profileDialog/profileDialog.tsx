@@ -8,6 +8,7 @@ import "./profileDialog.css";
 import React, { use, useEffect, useState } from "react";
 import StudentItem from "../studentItem/studentItem";
 import Students from "../students";
+import { set } from "mongoose";
 
 interface StudentItemProps {
     type: string;
@@ -328,6 +329,30 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ student }) => {
 
     const giayToSelected = getGiayTo(selected);
 
+    const [so, setSo] = useState(giayToSelected?.so || "");
+    const [ngayCap, setNgayCap] = useState(giayToSelected?.ngay_cap || "");
+    const [noiCap, setNoiCap] = useState(giayToSelected?.noi_cap || "");
+    const [ngayHetHan, setNgayHetHan] = useState(
+        giayToSelected?.ngay_het_han || ""
+    );
+    const [quocGiaCap, setQuocGiaCap] = useState(
+        giayToSelected?.quoc_gia_cap || ""
+    );
+    const [ghiChu, setGhiChu] = useState(giayToSelected?.ghi_chu || "");
+    const [coGanChip, setCoGanChip] = useState(
+        giayToSelected?.co_gan_chip || false
+    );
+
+    useEffect(() => {
+        setSo(giayToSelected?.so || "");
+        setNgayCap(giayToSelected?.ngay_cap || "");
+        setNoiCap(giayToSelected?.noi_cap || "");
+        setNgayHetHan(giayToSelected?.ngay_het_han || "");
+        setQuocGiaCap(giayToSelected?.quoc_gia_cap || "");
+        setGhiChu(giayToSelected?.ghi_chu || "");
+        setCoGanChip(giayToSelected?.co_gan_chip || false);
+    }, [giayToSelected]);
+
     return (
         <div className="profile-dialog-info-form-group">
             <label style={{ marginTop: "20px" }}>
@@ -373,7 +398,8 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ student }) => {
                             type="text"
                             name="cmnd"
                             id="cmnd"
-                            value={giayToSelected?.so || ""}
+                            value={so}
+                            onChange={(e) => setSo(e.target.value)}
                         />
                     </div>
 
@@ -383,9 +409,8 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ student }) => {
                             type="date"
                             name="ngay_cap_cmnd"
                             id="ngay_cap_cmnd"
-                            value={formatDate(
-                                new Date(giayToSelected?.ngay_cap || "")
-                            )}
+                            value={formatDate(new Date(ngayCap))}
+                            onChange={(e) => setNgayCap(e.target.value)}
                         />
                     </div>
 
@@ -395,7 +420,8 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ student }) => {
                             type="text"
                             name="noi_cap_cmnd"
                             id="noi_cap_cmnd"
-                            value={giayToSelected?.noi_cap || ""}
+                            value={noiCap}
+                            onChange={(e) => setNoiCap(e.target.value)}
                         />
                     </div>
 
@@ -405,9 +431,8 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ student }) => {
                             type="date"
                             name="ngay_het_han_cmnd"
                             id="ngay_het_han_cmnd"
-                            value={formatDate(
-                                new Date(giayToSelected?.ngay_het_han || "")
-                            )}
+                            value={formatDate(new Date(ngayHetHan))}
+                            onChange={(e) => setNgayHetHan(e.target.value)}
                         />
                     </div>
                 </div>
@@ -422,7 +447,8 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ student }) => {
                                 type="text"
                                 name="cccd"
                                 id="cccd"
-                                value={giayToSelected?.so || ""}
+                                value={so}
+                                onChange={(e) => setSo(e.target.value)}
                             />
                         </div>
 
@@ -432,9 +458,8 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ student }) => {
                                 type="date"
                                 name="ngay_cap_cccd"
                                 id="ngay_cap_cccd"
-                                value={formatDate(
-                                    new Date(giayToSelected?.ngay_cap || "")
-                                )}
+                                value={formatDate(new Date(ngayCap))}
+                                onChange={(e) => setNgayCap(e.target.value)}
                             />
                         </div>
 
@@ -444,7 +469,8 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ student }) => {
                                 type="text"
                                 name="noi_cap_cccd"
                                 id="noi_cap_cccd"
-                                value={giayToSelected?.noi_cap || ""}
+                                value={noiCap}
+                                onChange={(e) => setNoiCap(e.target.value)}
                             />
                         </div>
 
@@ -456,9 +482,8 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ student }) => {
                                 type="date"
                                 name="ngay_het_han_cccd"
                                 id="ngay_het_han_cccd"
-                                value={formatDate(
-                                    new Date(giayToSelected?.ngay_het_han || "")
-                                )}
+                                value={formatDate(new Date(ngayHetHan))}
+                                onChange={(e) => setNgayHetHan(e.target.value)}
                             />
                         </div>
                     </div>
@@ -472,7 +497,8 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ student }) => {
                                 type="radio"
                                 name="co_gan_chip"
                                 value="true"
-                                checked={giayToSelected?.co_gan_chip === true}
+                                checked={coGanChip === true}
+                                onChange={() => setCoGanChip(true)}
                             />
                             Có
                         </label>
@@ -481,7 +507,8 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ student }) => {
                                 type="radio"
                                 name="co_gan_chip"
                                 value="false"
-                                checked={giayToSelected?.co_gan_chip === false}
+                                checked={coGanChip === false}
+                                onChange={() => setCoGanChip(false)}
                             />
                             Không
                         </label>
@@ -497,7 +524,8 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ student }) => {
                             type="text"
                             name="hc"
                             id="hc"
-                            value={giayToSelected?.so || ""}
+                            value={so}
+                            onChange={(e) => setSo(e.target.value)}
                         />
                     </div>
 
@@ -507,9 +535,8 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ student }) => {
                             type="date"
                             name="gay_cap_hc"
                             id="gay_cap_hc"
-                            value={formatDate(
-                                new Date(giayToSelected?.ngay_cap || "")
-                            )}
+                            value={formatDate(new Date(ngayCap))}
+                            onChange={(e) => setNgayCap(e.target.value)}
                         />
                     </div>
 
@@ -519,7 +546,8 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ student }) => {
                             type="text"
                             name="noi_cap_hc"
                             id="noi_cap_hc"
-                            value={giayToSelected?.noi_cap}
+                            value={noiCap}
+                            onChange={(e) => setNoiCap(e.target.value)}
                         />
                     </div>
 
@@ -529,9 +557,8 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ student }) => {
                             type="date"
                             name="ngay_het_han_hc"
                             id="ngay_het_han_hc"
-                            value={formatDate(
-                                new Date(giayToSelected?.ngay_het_han || "")
-                            )}
+                            value={formatDate(new Date(ngayHetHan))}
+                            onChange={(e) => setNgayHetHan(e.target.value)}
                         />
                     </div>
 
@@ -541,7 +568,8 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ student }) => {
                             type="text"
                             name="quoc_gia_cap_hc"
                             id="quoc_gia_cap_hc"
-                            value={giayToSelected?.quoc_gia_cap || ""}
+                            value={quocGiaCap}
+                            onChange={(e) => setQuocGiaCap(e.target.value)}
                         />
                     </div>
 
@@ -551,7 +579,8 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ student }) => {
                             type="text"
                             name="ghi_chu_hc"
                             id="ghi_chu_hc"
-                            value={giayToSelected?.ghi_chu || ""}
+                            value={ghiChu}
+                            onChange={(e) => setGhiChu(e.target.value)}
                         />
                     </div>
                 </div>
@@ -600,7 +629,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
         if (!student) {
             return <div>Loading...</div>;
         }
-        const name = document.getElementById("name") as HTMLInputElement;
+        // const name = document.getElementById("name") as HTMLInputElement;
         const id = document.getElementById("id") as HTMLInputElement;
         const birthday = document.getElementById(
             "birthday"
@@ -691,7 +720,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
         }
 
         if (type === "edit") {
-            name.value = student.ho_ten;
+            // name.value = student.ho_ten;
             id.value = student.ma_so_sinh_vien;
             birthday.value = student.ngay_sinh;
             gender.value = student.gioi_tinh;
@@ -736,7 +765,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
             //     status.value = "tam-dung-hoc";
             // }
         } else {
-            name.value = "";
+            // name.value = "";
             id.value = "";
             birthday.value = "";
             gender.value = "";
@@ -951,8 +980,71 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
     };
 
     function CancelHandler() {
+        resetForm();
         profileDialog.classList.toggle("hidden");
     }
+
+    const [name, setName] = useState(student?.ho_ten || "");
+    const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+        setName(e.target.value);
+
+    const [id, setId] = useState(student?.ma_so_sinh_vien || "");
+    const handleIdChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+        setId(e.target.value);
+
+    const [birthday, setBirthday] = useState(student?.ngay_sinh || "");
+    const handleBirthdayChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+        setBirthday(e.target.value);
+
+    const [gender, setGender] = useState(student?.gioi_tinh || "");
+    const handleGenderChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+        setGender(e.target.value);
+
+    const [selectedFaculty, setSelectedFaculty] = useState(
+        student?.khoa?.toString() || ""
+    );
+    const handleFacultyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedFaculty(e.target.value);
+    };
+
+    const [course, setCourse] = useState(student?.khoa_hoc || "");
+    const handleCourseChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+        setCourse(e.target.value);
+
+    const [selectedProgram, setSelectedProgram] = useState(
+        student?.chuong_trinh?.toString() || ""
+    );
+    const handleProgramChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedProgram(e.target.value);
+    };
+
+    const [phone, setPhone] = useState(student?.so_dien_thoai || "");
+    const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+        setPhone(e.target.value);
+
+    const [email, setEmail] = useState(student?.email || "");
+    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+        setEmail(e.target.value);
+
+    const [selectedStatus, setSelectedStatus] = useState(
+        student?.tinh_trang?.toString() || ""
+    );
+    const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedStatus(e.target.value);
+    };
+
+    const resetForm = () => {
+        setName(student?.ho_ten || "");
+        setId(student?.ma_so_sinh_vien || "");
+        setBirthday(student?.ngay_sinh || "");
+        setGender(student?.gioi_tinh || "");
+        setSelectedFaculty(student?.khoa?.toString() || "");
+        setCourse(student?.khoa_hoc || "");
+        setSelectedProgram(student?.chuong_trinh?.toString() || "");
+        setPhone(student?.so_dien_thoai || "");
+        setEmail(student?.email || "");
+        setSelectedStatus(student?.tinh_trang?.toString() || "");
+    };
 
     return (
         <div className="profile-dialog-container hidden">
@@ -970,7 +1062,8 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                                     type="text"
                                     id="name"
                                     name="name"
-                                    value={student?.ho_ten || ""}
+                                    value={name}
+                                    onChange={handleNameChange}
                                 />
                             </div>
                             <div className="profile-dialog-info-form-group">
@@ -979,7 +1072,8 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                                     type="text"
                                     id="id"
                                     name="id"
-                                    value={student?.ma_so_sinh_vien || ""}
+                                    value={id}
+                                    onChange={handleIdChange}
                                 />
                             </div>
                             <div className="profile-dialog-info-form-group">
@@ -988,7 +1082,8 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                                     type="date"
                                     id="birthday"
                                     name="birthday"
-                                    value={student?.ngay_sinh || ""}
+                                    value={birthday}
+                                    onChange={handleBirthdayChange}
                                 />
                             </div>
                             <div className="profile-dialog-info-form-group">
@@ -997,7 +1092,8 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                                     type="text"
                                     id="gender"
                                     name="gender"
-                                    value={student?.gioi_tinh || ""}
+                                    value={gender}
+                                    onChange={handleGenderChange}
                                 />
                             </div>
                             <div className="profile-dialog-info-form-group">
@@ -1006,7 +1102,8 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                                     <select
                                         name="faculty"
                                         id="faculty"
-                                        value={student?.khoa.toString()}
+                                        value={selectedFaculty}
+                                        onChange={handleFacultyChange}
                                     >
                                         {faculties.map((faculty) => (
                                             <option
@@ -1026,7 +1123,8 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                                     type="text"
                                     id="course"
                                     name="course"
-                                    value={student?.khoa_hoc || ""}
+                                    value={course}
+                                    onChange={handleCourseChange}
                                 />
                             </div>
                             <div className="profile-dialog-info-form-group">
@@ -1034,7 +1132,8 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                                 <select
                                     name="program"
                                     id="program"
-                                    value={student?.chuong_trinh.toString()}
+                                    value={selectedProgram}
+                                    onChange={handleProgramChange}
                                 >
                                     {programs.map((program) => (
                                         <option value={program._id.toString()}>
@@ -1052,7 +1151,8 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                                     onInput={(e) =>
                                         validatePhone(e.currentTarget.value)
                                     }
-                                    value={student?.so_dien_thoai || ""}
+                                    value={phone}
+                                    onChange={handlePhoneChange}
                                 />
                                 <div className="profile-dialog-info-form-error profile-dialog-info-form-error-phone">
                                     <i className="fa-solid fa-circle-exclamation"></i>
@@ -1070,7 +1170,8 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                                     onInput={(e) =>
                                         validateEmail(e.currentTarget.value)
                                     }
-                                    value={student?.email || ""}
+                                    value={email}
+                                    onChange={handleEmailChange}
                                 />
                                 <div className="profile-dialog-info-form-error profile-dialog-info-form-error-email">
                                     <i className="fa-solid fa-circle-exclamation"></i>
@@ -1095,7 +1196,8 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                                     <select
                                         name="status"
                                         id="status"
-                                        value={student?.tinh_trang.toString()}
+                                        value={selectedStatus}
+                                        onChange={handleStatusChange}
                                     >
                                         {studentStatuses.map(
                                             (studentStatus) => (
