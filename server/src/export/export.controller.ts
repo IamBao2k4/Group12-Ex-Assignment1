@@ -4,7 +4,7 @@ import {
     Res,
     Logger,
     HttpStatus,
-    StreamableFile
+    HttpException
 } from '@nestjs/common';
 import { Response } from 'express';
 import { ExportService } from './export.service';
@@ -17,7 +17,7 @@ export class ExportController {
     constructor(private readonly exportService: ExportService) { }
 
     @Get('students/excel')
-    async exportStudentsToExcel(@Res({ passthrough: true }) res: Response): Promise<StreamableFile> {
+    async exportStudentsToExcel(@Res() res: Response): Promise<void> {
         try {
             const { filePath, fileName } = await this.exportService.exportStudentsToExcel();
             
@@ -30,20 +30,22 @@ export class ExportController {
             
             this.logger.log(`Sending Excel file ${fileName} to client`);
             
-            return new StreamableFile(file);
+            file.pipe(res);
         } catch (error) {
             this.logger.error(`Error sending Excel file: ${error.message}`, error.stack);
-            res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-                statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-                message: 'Không thể tạo file Excel',
-                error: 'Internal Server Error'
-            });
-            throw error;
+            
+            if (!res.headersSent) {
+                res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+                    statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+                    message: 'Không thể tạo file Excel',
+                    error: 'Internal Server Error'
+                });
+            }
         }
     }
 
-    @Get('students/csv')
-    async exportStudentsToCSV(@Res({ passthrough: true }) res: Response): Promise<StreamableFile> {
+    @Get('students/csv') 
+    async exportStudentsToCSV(@Res() res: Response): Promise<void> {
         try {
             const { filePath, fileName } = await this.exportService.exportStudentsToCSV();
             
@@ -56,15 +58,17 @@ export class ExportController {
             
             this.logger.log(`Sending CSV file ${fileName} to client`);
             
-            return new StreamableFile(file);
+            file.pipe(res);
         } catch (error) {
             this.logger.error(`Error sending CSV file: ${error.message}`, error.stack);
-            res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-                statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-                message: 'Không thể tạo file CSV',
-                error: 'Internal Server Error'
-            });
-            throw error;
+            
+            if (!res.headersSent) {
+                res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+                    statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+                    message: 'Không thể tạo file CSV',
+                    error: 'Internal Server Error'
+                });
+            }
         }
     }
 } 

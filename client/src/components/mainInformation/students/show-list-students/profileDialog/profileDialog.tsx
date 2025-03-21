@@ -5,10 +5,7 @@ import { Faculty } from "../../../../../model/faculty";
 import { Program } from "../../../../../model/program";
 import { StudentStatus } from "../../../../../model/student_status";
 import "./profileDialog.css";
-import React, { use, useEffect, useState } from "react";
-import StudentItem from "../studentItem/studentItem";
-import Students from "../students";
-import { set } from "mongoose";
+import React, { useEffect, useState } from "react";
 
 interface StudentItemProps {
     type: string;
@@ -54,7 +51,6 @@ const formatDate = (date: Date) => {
 };
 
 const LocationSelect: React.FC<LocationSelectProps> = ({
-    label,
     onAddressChange,
     initialAddress,
 }) => {
@@ -256,18 +252,18 @@ interface AddressFormProps {
 }
 
 const AddressForm: React.FC<AddressFormProps> = ({ student }) => {
-    const [permanentAddress, setPermanentAddress] =
-        useState<StudentAddress | null>(null);
-    const [temporaryAddress, setTemporaryAddress] =
-        useState<StudentAddress | null>(null);
+    const [permanentAddress, setPermanentAddress] = useState<Address | null>(
+        null
+    );
+    const [temporaryAddress, setTemporaryAddress] = useState<Address | null>(
+        null
+    );
 
     return (
         <div>
             <LocationSelect
                 label="Địa chỉ thường trú"
-                onAddressChange={(addr: StudentAddress) =>
-                    setPermanentAddress(addr)
-                }
+                onAddressChange={(addr: Address) => setPermanentAddress(addr)}
                 initialAddress={student?.dia_chi_thuong_tru}
             />
 
@@ -290,9 +286,7 @@ const AddressForm: React.FC<AddressFormProps> = ({ student }) => {
 
             <LocationSelect
                 label="Địa chỉ tạm trú"
-                onAddressChange={(addr: StudentAddress) =>
-                    setTemporaryAddress(addr)
-                }
+                onAddressChange={(addr: Address) => setTemporaryAddress(addr)}
                 initialAddress={student?.dia_chi_tam_tru}
             />
 
@@ -724,46 +718,27 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
             id.value = student.ma_so_sinh_vien;
             birthday.value = student.ngay_sinh;
             gender.value = student.gioi_tinh;
-            // faculty.value = student.khoa;
-            // if (student.khoa === "Khoa Luật") {
-            //     faculty.value = "khoa-luat";
-            // } else if (student.khoa === "Khoa Tiếng Anh thương mại") {
-            //     faculty.value = "khoa-tieng-anh";
-            // } else if (student.khoa === "Khoa Tiếng Nhật") {
-            //     faculty.value = "khoa-tieng-nhat";
-            // } else {
-            //     faculty.value = "khoa-tieng-phap";
-            // }
+            faculty.value = student.khoa.toString();
             course.value = student.khoa_hoc;
-            // program.value = student.chuong_trinh;
-            // cmnd.value = student.giay_to_tuy_than[0].so;
-            // issue_date_cmnd.value = student.giay_to_tuy_than[0].ngay_cap;
-            // issue_place_cmnd.value = student.giay_to_tuy_than[0].noi_cap;
-            // expire_date_cmnd.value = student.giay_to_tuy_than[0].ngay_het_han;
-            // cccd.value = student.giay_to_tuy_than[1].so;
-            // issue_date_cccd.value = student.giay_to_tuy_than[1].ngay_cap;
-            // issue_place_cccd.value = student.giay_to_tuy_than[1].noi_cap;
-            // expire_date_cccd.value = student.giay_to_tuy_than[1].ngay_het_han;
-            // chip.value = student.giay_to_tuy_than[1].co_gan_chip
-            //     ? "true"
-            //     : "false";
+            program.value = student.chuong_trinh.toString();
+            cmnd.value = student.giay_to_tuy_than[0].so;
+            issue_date_cmnd.value = student.giay_to_tuy_than[0].ngay_cap;
+            issue_place_cmnd.value = student.giay_to_tuy_than[0].noi_cap;
+            expire_date_cmnd.value = student.giay_to_tuy_than[0].ngay_het_han;
+            cccd.value = student.giay_to_tuy_than[1].so;
+            issue_date_cccd.value = student.giay_to_tuy_than[1].ngay_cap;
+            issue_place_cccd.value = student.giay_to_tuy_than[1].noi_cap;
+            expire_date_cccd.value = student.giay_to_tuy_than[1].ngay_het_han;
+            chip.value = student.giay_to_tuy_than[1].co_gan_chip ? "true" : "false";
             hc.value = student.giay_to_tuy_than[2].so;
-            // issue_date_hc.value = student.giay_to_tuy_than[2].ngay_cap;
-            // issue_place_hc.value = student.giay_to_tuy_than[2].noi_cap;
-            // expire_date_hc.value = student.giay_to_tuy_than[2].ngay_het_han;
-            // country_hc.value = student.giay_to_tuy_than[2].quoc_gia_cap;
-            // note_hc.value = student.giay_to_tuy_than[2].ghi_chu;
+            issue_date_hc.value = student.giay_to_tuy_than[2].ngay_cap;
+            issue_place_hc.value = student.giay_to_tuy_than[2].noi_cap;
+            expire_date_hc.value = student.giay_to_tuy_than[2].ngay_het_han;
+            country_hc.value = student.giay_to_tuy_than[2].quoc_gia_cap;
+            note_hc.value = student.giay_to_tuy_than[2].ghi_chu;
             email.value = student.email || "";
             phone.value = student.so_dien_thoai || "";
-            // if (student.tinh_trang === "Đang học") {
-            //     status.value = "dang-hoc";
-            // } else if (student.tinh_trang === "Đã tốt nghiệp") {
-            //     status.value = "da-tot-nghiep";
-            // } else if (student.tinh_trang === "Đã thôi học") {
-            //     status.value = "da-thoi-hoc";
-            // } else {
-            //     status.value = "tam-dung-hoc";
-            // }
+            status.value = student.tinh_trang.toString();
         } else {
             // name.value = "";
             id.value = "";
@@ -1183,7 +1158,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
 
                             <div className="profile-dialog-info-form-group">
                                 <div className="profile-dialog-info-form-address">
-                                    <AddressForm student={student} />
+                                    <AddressForm student={student}/>
                                 </div>
                             </div>
                             <div

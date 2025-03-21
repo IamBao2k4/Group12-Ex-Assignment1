@@ -6,6 +6,9 @@ import * as fs from 'fs';
 import csv from 'csv-parser';
 import * as XLSX from 'xlsx';
 import { IDDocument } from '../student/interfaces/id-document.interface';
+import { StudentTransformer } from '../common/utils/student-transformer.util';
+import { FacultyService } from '../faculty/services/faculty.service';
+import { ProgramService } from '../program/services/program.service';
 
 @Injectable()
 export class ImportService {
@@ -13,6 +16,8 @@ export class ImportService {
 
     constructor(
         @InjectModel('Student') private studentModel: Model<Student>,
+        private readonly facultyService: FacultyService,
+        private readonly programService: ProgramService,
     ) { }
 
     async importCSV(file: Express.Multer.File): Promise<{ success: boolean; imported: number; errors: any[] }> {
@@ -34,8 +39,7 @@ export class ImportService {
 
                         for (const record of results) {
                             try {
-                                const studentData = this.transformExcelRowToStudent(record);
-
+                                const studentData = await StudentTransformer.fromExcelRow(record, this.facultyService, this.programService);
                                 await this.createOrUpdateStudent(studentData);
                                 importedCount++;
                             } catch (error) {
@@ -61,7 +65,6 @@ export class ImportService {
                 });
         });
     }
-
 
     async importExcel(file: Express.Multer.File): Promise<{ success: boolean; imported: number; errors: any[] }> {
         if (!file) {
@@ -90,12 +93,11 @@ export class ImportService {
 
             for (const record of results) {
                 try {
-                    if (!record['Mã số sinh viên']) {
+                    if (!record['Mã số sinh viên'] && !record.ma_so_sinh_vien) {
                         throw new BadRequestException('Mã số sinh viên is required');
                     }
 
-                    const studentData = this.transformExcelRowToStudent(record);
-
+                    const studentData = await StudentTransformer.fromExcelRow(record, this.facultyService, this.programService);
                     await this.createOrUpdateStudent(studentData);
                     importedCount++;
                 } catch (error) {
@@ -134,120 +136,6 @@ export class ImportService {
             );
         }
     }
-
-
-    private transformExcelRowToStudent(row: any): Partial<Student> {
-        const studentId = row['Mã số sinh viên'] || row.ma_so_sinh_vien;
-        if (!studentId) {
-            throw new BadRequestException('Mã số sinh viên là bắt buộc');
-        }
-
-        const studentData: Partial<Student> = {
-            ma_so_sinh_vien: studentId,
-            ho_ten: row['Họ tên'] || row.ho_ten || '',
-            ngay_sinh: row['Ngày sinh'] || row.ngay_sinh || '',
-            gioi_tinh: row['Giới tính'] || row.gioi_tinh || '',
-            khoa: row['Khoa'] || row.khoa || '',
-            khoa_hoc: row['Khóa học'] || row.khoa_hoc || '',
-            chuong_trinh: row['Chương trình'] || row.chuong_trinh || '',
-            tinh_trang: row['Tình trạng'] || row.tinh_trang || 'Đang học',
-            email: row['Email'] || row.email || '',
-            so_dien_thoai: row['Số điện thoại'] || row.so_dien_thoai || '',
-        };
-
-        const hasAddress = row['Địa chỉ chi tiết'] || row['Phường/Xã'] || row['Quận/Huyện'] || row['Tỉnh/Thành phố'] ||
-                           row.dia_chi_chi_tiet || row.dia_chi_phuong_xa || row.dia_chi_quan_huyen || row.dia_chi_tinh_thanh_pho;
-        
-        if (hasAddress) {
-            studentData.dia_chi_thuong_tru = {
-                chi_tiet: row['Địa chỉ chi tiết'] || row.dia_chi_chi_tiet || '',
-                phuong_xa: row['Phường/Xã'] || row.dia_chi_phuong_xa || '',
-                quan_huyen: row['Quận/Huyện'] || row.dia_chi_quan_huyen || '',
-                tinh_thanh_pho: row['Tỉnh/Thành phố'] || row.dia_chi_tinh_thanh_pho || '',
-                quoc_gia: row['Quốc gia'] || row.dia_chi_quoc_gia || 'Việt Nam',
-            };
-        }
-
-        const idType = row['Loại giấy tờ'] || row.loai;
-        const idNumber = row['Số giấy tờ'] || row.so_giay_to;
-        
-        if (idType && idNumber) {
-            const idDoc: IDDocument = {
-                type: idType,
-                so: idNumber,
-                ngay_cap: row['Ngày cấp'] || row.ngay_cap || '',
-                noi_cap: row['Nơi cấp'] || row.noi_cap || '',
-                ngay_het_han: row['Ngày hết hạn'] || row.ngay_het_han || '',
-            } as IDDocument;
-
-            if (idDoc.type === 'cccd') {
-                (idDoc as any).co_gan_chip = row['Có gắn chip'] || row.co_gan_chip === 'true' 
-                    || row.co_gan_chip === true 
-                    || row.co_gan_chip === 1 
-                    || false;
-            } else if (idDoc.type === 'passport') {
-                (idDoc as any).quoc_gia_cap = row['Quốc gia cấp'] || row.quoc_gia_cap || row['Quốc gia'] || 'Việt Nam';
-                if (row['Ghi chú'] || row.ghi_chu) {
-                    (idDoc as any).ghi_chu = row['Ghi chú'] || row.ghi_chu;
-                }
-            }
-
-            studentData.giay_to_tuy_than = [idDoc];
-        }
-
-        return studentData;
-    }
-
-    private transformStudentData(rawData: any): Partial<Student> {
-        const studentData: Partial<Student> = {
-            ma_so_sinh_vien: rawData.ma_so_sinh_vien,
-            ho_ten: rawData.ho_ten,
-            ngay_sinh: rawData.ngay_sinh,
-            gioi_tinh: rawData.gioi_tinh,
-            khoa: rawData.khoa,
-            khoa_hoc: rawData.khoa_hoc,
-            chuong_trinh: rawData.chuong_trinh,
-            tinh_trang: rawData.tinh_trang || 'Đang học',
-            email: rawData.email,
-            so_dien_thoai: rawData.so_dien_thoai,
-        };
-
-        if (rawData.dia_chi_chi_tiet) {
-            studentData.dia_chi_thuong_tru = {
-                chi_tiet: rawData.dia_chi_chi_tiet,
-                phuong_xa: rawData.dia_chi_phuong_xa,
-                quan_huyen: rawData.dia_chi_quan_huyen,
-                tinh_thanh_pho: rawData.dia_chi_tinh_thanh_pho,
-                quoc_gia: rawData.dia_chi_quoc_gia || 'Việt Nam',
-            };
-        }
-
-        if (rawData.giay_to_loai && rawData.giay_to_so) {
-            const idDoc: any = {
-                type: rawData.giay_to_loai,
-                so: rawData.giay_to_so,
-                ngay_cap: rawData.giay_to_ngay_cap,
-                noi_cap: rawData.giay_to_noi_cap,
-                ngay_het_han: rawData.giay_to_ngay_het_han,
-            };
-
-            if (idDoc.type === 'cccd') {
-                idDoc.co_gan_chip = rawData.giay_to_co_gan_chip === 'true'
-                    || rawData.giay_to_co_gan_chip === true
-                    || rawData.giay_to_co_gan_chip === 1;
-            } else if (idDoc.type === 'passport') {
-                idDoc.quoc_gia_cap = rawData.giay_to_quoc_gia_cap;
-                if (rawData.giay_to_ghi_chu) {
-                    idDoc.ghi_chu = rawData.giay_to_ghi_chu;
-                }
-            }
-
-            studentData.giay_to_tuy_than = [idDoc];
-        }
-
-        return studentData;
-    }
-
 
     private async createOrUpdateStudent(studentData: Partial<Student>): Promise<Student | null> {
         if (!studentData.ma_so_sinh_vien) {

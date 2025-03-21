@@ -5,7 +5,7 @@ import StudentItem from "./studentItem/studentItem";
 import ProfileDialog from "./profileDialog/profileDialog";
 
 import { Student } from "../../../../model/student";
-import { Faculty } from "../../../../model/faculty";
+import { Faculty } from '../../../../model/faculty';
 import AddIcon from "@mui/icons-material/Add";
 
 import * as XLSX from "xlsx";
@@ -65,18 +65,16 @@ const Students: React.FC<StudentProps> = ({ searchString }) => {
             XLSX.writeFile(wb, "students.csv");
         }
     };
-    const [faculties, setFaculties] = useState<Faculty[]>([]);
-    const [faculty, setFaculty] = useState("");
+    const [faculties, setFaculties] = useState<Faculty[]>([])
+    const [faculty, setFaculty] = useState('')
 
     useEffect(() => {
         async function fetchStudents() {
             try {
-                const response = await fetch(
-                    `http://localhost:3001/api/v1/students?searchString=${searchString}&page=${currentPage}`
-                );
-                const data = await response.json();
-                setStudents(data.data);
-                setTotalPages(data.meta.total);
+                const response = await fetch(`http://localhost:3001/api/v1/students?searchString=${searchString}&faculty=${faculty}&page=${currentPage}`)
+                const data = await response.json()
+                setStudents(data.data)
+                setTotalPages(data.meta.total)
             } catch (error) {
                 console.error("Error fetching students:", error);
             }
@@ -101,6 +99,7 @@ const Students: React.FC<StudentProps> = ({ searchString }) => {
     function Filter(event: React.ChangeEvent<HTMLSelectElement>) {
         setFaculty(event.target.value);
     }
+
 
     function ProfileHandler(type: string) {
         const profileDialog = document.querySelector(
@@ -128,11 +127,8 @@ const Students: React.FC<StudentProps> = ({ searchString }) => {
 
     return (
         <div className="students">
-            <ProfileDialog
-                student={chosenStudent ? chosenStudent : students[0]}
-                type={profileType}
-            />
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <ProfileDialog student={chosenStudent ?? students[0]} type={profileType} />
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <h1>Students</h1>
                 <div className="students-add">
                     <input
