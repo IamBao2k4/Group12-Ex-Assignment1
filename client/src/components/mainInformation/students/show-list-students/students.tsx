@@ -5,7 +5,7 @@ import StudentItem from "./studentItem/studentItem";
 import ProfileDialog from "./profileDialog/profileDialog";
 
 import { Student } from "../../../../model/student";
-import { Faculty } from '../../../../model/faculty';
+import { Faculty } from "../../../../model/faculty";
 import AddIcon from "@mui/icons-material/Add";
 
 import * as XLSX from "xlsx";
@@ -65,8 +65,8 @@ const Students: React.FC<StudentProps> = ({ searchString }) => {
             XLSX.writeFile(wb, "students.csv");
         }
     };
-    const [faculties, setFaculties] = useState<Faculty[]>([])
-    const [faculty, setFaculty] = useState('')
+    const [faculties, setFaculties] = useState<Faculty[]>([]);
+    const [faculty, setFaculty] = useState("");
 
     useEffect(() => {
         async function fetchStudents() {
@@ -84,22 +84,23 @@ const Students: React.FC<StudentProps> = ({ searchString }) => {
 
         async function fetchFaculty() {
             try {
-                const response = await fetch('http://localhost:3001/api/v1/faculties/all')
-                const data = await response.json()
-                setFaculties(data)
+                const response = await fetch(
+                    "http://localhost:3001/api/v1/faculties/all"
+                );
+                const data = await response.json();
+                setFaculties(data);
             } catch (error) {
-                console.error('Error fetching faculty:', error)
+                console.error("Error fetching faculty:", error);
             }
         }
-    
-        fetchFaculty()
-        fetchStudents()
-    }, [faculty, searchString, currentPage])
+
+        fetchFaculty();
+        fetchStudents();
+    }, [faculty, searchString, currentPage]);
 
     function Filter(event: React.ChangeEvent<HTMLSelectElement>) {
-        setFaculty(event.target.value)
+        setFaculty(event.target.value);
     }
-
 
     function ProfileHandler(type: string) {
         const profileDialog = document.querySelector(
@@ -121,8 +122,8 @@ const Students: React.FC<StudentProps> = ({ searchString }) => {
         }
     }
 
-    if(!students) {
-        return <div>Loading...</div>
+    if (!students) {
+        return <div>Loading...</div>;
     }
 
     return (
@@ -158,10 +159,22 @@ const Students: React.FC<StudentProps> = ({ searchString }) => {
                 </div>
             </div>
 
-            <select className="students-faculty" name="faculty" id="faculty" onChange={Filter}>
-                <option value="" defaultChecked>All</option>
+            <select
+                className="students-faculty"
+                name="faculty"
+                id="faculty"
+                onChange={Filter}
+            >
+                <option value="" defaultChecked>
+                    All
+                </option>
                 {faculties.map((faculty) => (
-                    <option key={faculty._id.toString()} value={faculty._id.toString()}>{faculty.ten_khoa}</option>
+                    <option
+                        key={faculty._id.toString()}
+                        value={faculty._id.toString()}
+                    >
+                        {faculty.ten_khoa}
+                    </option>
                 ))}
             </select>
 

@@ -1,16 +1,20 @@
 import { Student } from "../../../../../model/student";
+import { Address } from "../../../../../model/address";
+import { IDDocument } from "../../../../../model/id_document";
 import { Faculty } from "../../../../../model/faculty";
 import { Program } from "../../../../../model/program";
 import { StudentStatus } from "../../../../../model/student_status";
 import "./profileDialog.css";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
+import StudentItem from "../studentItem/studentItem";
+import Students from "../students";
 
 interface StudentItemProps {
     type: string;
     student: Student;
 }
 
-interface Address {
+interface StudentAddress {
     chi_tiet: string;
     phuong_xa: string;
     quan_huyen: string;
@@ -37,9 +41,16 @@ interface Ward {
 
 interface LocationSelectProps {
     label: string;
-    onAddressChange: (address: Address) => void;
+    onAddressChange: (address: StudentAddress) => void;
     initialAddress?: Address | null;
 }
+
+const formatDate = (date: Date) => {
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, "0"); // Month is zero-based
+    const dd = String(date.getDate()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
+};
 
 const LocationSelect: React.FC<LocationSelectProps> = ({
     label,
@@ -102,7 +113,7 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
                     }
                 }
             }
-            setDetail(initialAddress.chi_tiet);
+            setDetail(initialAddress.chi_tiet || "");
         }
     }, [initialAddress, provinces]);
 
@@ -239,20 +250,24 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
     );
 };
 
-const AddressForm: React.FC = () => {
-    const [permanentAddress, setPermanentAddress] = useState<Address | null>(
-        null
-    );
-    const [temporaryAddress, setTemporaryAddress] = useState<Address | null>(
-        null
-    );
+interface AddressFormProps {
+    student: Student;
+}
+
+const AddressForm: React.FC<AddressFormProps> = ({ student }) => {
+    const [permanentAddress, setPermanentAddress] =
+        useState<StudentAddress | null>(null);
+    const [temporaryAddress, setTemporaryAddress] =
+        useState<StudentAddress | null>(null);
 
     return (
         <div>
             <LocationSelect
                 label="Địa chỉ thường trú"
-                onAddressChange={(addr: Address) => setPermanentAddress(addr)}
-                // initialAddress={student?.dia_chi_thuong_tru}
+                onAddressChange={(addr: StudentAddress) =>
+                    setPermanentAddress(addr)
+                }
+                initialAddress={student?.dia_chi_thuong_tru}
             />
 
             <label style={{ marginTop: "20px" }}>Địa chỉ thường trú</label>
@@ -274,8 +289,10 @@ const AddressForm: React.FC = () => {
 
             <LocationSelect
                 label="Địa chỉ tạm trú"
-                onAddressChange={(addr: Address) => setTemporaryAddress(addr)}
-                // initialAddress={student?.dia_chi_tam_tru}
+                onAddressChange={(addr: StudentAddress) =>
+                    setTemporaryAddress(addr)
+                }
+                initialAddress={student?.dia_chi_tam_tru}
             />
 
             <label style={{ marginTop: "20px" }}>Địa chỉ tạm trú</label>
@@ -296,8 +313,20 @@ const AddressForm: React.FC = () => {
     );
 };
 
-const ProfileForm = () => {
+interface ProfileFormProps {
+    student: Student;
+}
+
+const ProfileForm: React.FC<ProfileFormProps> = ({ student }) => {
     const [selected, setSelected] = useState("");
+
+    const getGiayTo = (type: string) => {
+        return student?.giay_to_tuy_than.find(
+            (item) => item.type.toLowerCase() === type.toLowerCase()
+        );
+    };
+
+    const giayToSelected = getGiayTo(selected);
 
     return (
         <div className="profile-dialog-info-form-group">
@@ -329,7 +358,7 @@ const ProfileForm = () => {
                     <input
                         type="radio"
                         name="giayto"
-                        value="HC"
+                        value="passport"
                         onChange={(e) => setSelected(e.target.value)}
                     />
                     Hộ chiếu
@@ -340,7 +369,12 @@ const ProfileForm = () => {
                 <div className="profile-dialog-info-form-cmnd">
                     <div className="profile-dialog-info-form-group">
                         <label htmlFor="cmnd">CMND</label>
-                        <input type="text" name="cmnd" id="cmnd" />
+                        <input
+                            type="text"
+                            name="cmnd"
+                            id="cmnd"
+                            value={giayToSelected?.so || ""}
+                        />
                     </div>
 
                     <div className="profile-dialog-info-form-group">
@@ -349,6 +383,9 @@ const ProfileForm = () => {
                             type="date"
                             name="ngay_cap_cmnd"
                             id="ngay_cap_cmnd"
+                            value={formatDate(
+                                new Date(giayToSelected?.ngay_cap || "")
+                            )}
                         />
                     </div>
 
@@ -358,6 +395,7 @@ const ProfileForm = () => {
                             type="text"
                             name="noi_cap_cmnd"
                             id="noi_cap_cmnd"
+                            value={giayToSelected?.noi_cap || ""}
                         />
                     </div>
 
@@ -367,6 +405,9 @@ const ProfileForm = () => {
                             type="date"
                             name="ngay_het_han_cmnd"
                             id="ngay_het_han_cmnd"
+                            value={formatDate(
+                                new Date(giayToSelected?.ngay_het_han || "")
+                            )}
                         />
                     </div>
                 </div>
@@ -377,7 +418,12 @@ const ProfileForm = () => {
                     <div className="profile-dialog-info-form-cccd-top">
                         <div className="profile-dialog-info-form-group">
                             <label htmlFor="cccd">CCCD</label>
-                            <input type="text" name="cccd" id="cccd" />
+                            <input
+                                type="text"
+                                name="cccd"
+                                id="cccd"
+                                value={giayToSelected?.so || ""}
+                            />
                         </div>
 
                         <div className="profile-dialog-info-form-group">
@@ -386,6 +432,9 @@ const ProfileForm = () => {
                                 type="date"
                                 name="ngay_cap_cccd"
                                 id="ngay_cap_cccd"
+                                value={formatDate(
+                                    new Date(giayToSelected?.ngay_cap || "")
+                                )}
                             />
                         </div>
 
@@ -395,6 +444,7 @@ const ProfileForm = () => {
                                 type="text"
                                 name="noi_cap_cccd"
                                 id="noi_cap_cccd"
+                                value={giayToSelected?.noi_cap || ""}
                             />
                         </div>
 
@@ -406,6 +456,9 @@ const ProfileForm = () => {
                                 type="date"
                                 name="ngay_het_han_cccd"
                                 id="ngay_het_han_cccd"
+                                value={formatDate(
+                                    new Date(giayToSelected?.ngay_het_han || "")
+                                )}
                             />
                         </div>
                     </div>
@@ -419,6 +472,7 @@ const ProfileForm = () => {
                                 type="radio"
                                 name="co_gan_chip"
                                 value="true"
+                                checked={giayToSelected?.co_gan_chip === true}
                             />
                             Có
                         </label>
@@ -427,6 +481,7 @@ const ProfileForm = () => {
                                 type="radio"
                                 name="co_gan_chip"
                                 value="false"
+                                checked={giayToSelected?.co_gan_chip === false}
                             />
                             Không
                         </label>
@@ -434,21 +489,38 @@ const ProfileForm = () => {
                 </div>
             )}
 
-            {selected === "HC" && (
+            {selected === "passport" && (
                 <div className="profile-dialog-info-form-hc">
                     <div className="profile-dialog-info-form-group">
                         <label htmlFor="hc">Hộ chiếu</label>
-                        <input type="text" name="hc" id="hc" />
+                        <input
+                            type="text"
+                            name="hc"
+                            id="hc"
+                            value={giayToSelected?.so || ""}
+                        />
                     </div>
 
                     <div className="profile-dialog-info-form-group">
                         <label htmlFor="ngay_cap_hc">Ngày Cấp</label>
-                        <input type="date" name="gay_cap_hc" id="gay_cap_hc" />
+                        <input
+                            type="date"
+                            name="gay_cap_hc"
+                            id="gay_cap_hc"
+                            value={formatDate(
+                                new Date(giayToSelected?.ngay_cap || "")
+                            )}
+                        />
                     </div>
 
                     <div className="profile-dialog-info-form-group">
                         <label htmlFor="noi_cap_hc">Nơi Cấp</label>
-                        <input type="text" name="noi_cap_hc" id="noi_cap_hc" />
+                        <input
+                            type="text"
+                            name="noi_cap_hc"
+                            id="noi_cap_hc"
+                            value={giayToSelected?.noi_cap}
+                        />
                     </div>
 
                     <div className="profile-dialog-info-form-group">
@@ -457,6 +529,9 @@ const ProfileForm = () => {
                             type="date"
                             name="ngay_het_han_hc"
                             id="ngay_het_han_hc"
+                            value={formatDate(
+                                new Date(giayToSelected?.ngay_het_han || "")
+                            )}
                         />
                     </div>
 
@@ -466,12 +541,18 @@ const ProfileForm = () => {
                             type="text"
                             name="quoc_gia_cap_hc"
                             id="quoc_gia_cap_hc"
+                            value={giayToSelected?.quoc_gia_cap || ""}
                         />
                     </div>
 
                     <div className="profile-dialog-info-form-group">
                         <label htmlFor="ghi_chu_hc">Ghi Chú</label>
-                        <input type="text" name="ghi_chu_hc" id="ghi_chu_hc" />
+                        <input
+                            type="text"
+                            name="ghi_chu_hc"
+                            id="ghi_chu_hc"
+                            value={giayToSelected?.ghi_chu || ""}
+                        />
                     </div>
                 </div>
             )}
@@ -507,16 +588,16 @@ const validatePhone = (phone: string) => {
 };
 
 const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
-    const [faculties, setFaculties] = useState<Faculty[]>([])
-    const [programs, setPrograms] = useState<Program[]>([])
-    const [studentStatuses, setStudentStatuses] = useState<StudentStatus[]>([])
-
     const profileDialog = document.querySelector(
         ".profile-dialog-container"
     ) as HTMLElement;
 
+    const [faculties, setFaculties] = useState<Faculty[]>([]);
+    const [programs, setPrograms] = useState<Program[]>([]);
+    const [studentStatuses, setStudentStatuses] = useState<StudentStatus[]>([]);
+
     function setInnerHTML() {
-        if (!student || !faculties || !programs || !studentStatuses) {
+        if (!student) {
             return <div>Loading...</div>;
         }
         const name = document.getElementById("name") as HTMLInputElement;
@@ -614,9 +695,18 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
             id.value = student.ma_so_sinh_vien;
             birthday.value = student.ngay_sinh;
             gender.value = student.gioi_tinh;
-            faculty.value = student.khoa;
+            // faculty.value = student.khoa;
+            // if (student.khoa === "Khoa Luật") {
+            //     faculty.value = "khoa-luat";
+            // } else if (student.khoa === "Khoa Tiếng Anh thương mại") {
+            //     faculty.value = "khoa-tieng-anh";
+            // } else if (student.khoa === "Khoa Tiếng Nhật") {
+            //     faculty.value = "khoa-tieng-nhat";
+            // } else {
+            //     faculty.value = "khoa-tieng-phap";
+            // }
             course.value = student.khoa_hoc;
-            program.value = student.chuong_trinh;
+            // program.value = student.chuong_trinh;
             // cmnd.value = student.giay_to_tuy_than[0].so;
             // issue_date_cmnd.value = student.giay_to_tuy_than[0].ngay_cap;
             // issue_place_cmnd.value = student.giay_to_tuy_than[0].noi_cap;
@@ -625,8 +715,10 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
             // issue_date_cccd.value = student.giay_to_tuy_than[1].ngay_cap;
             // issue_place_cccd.value = student.giay_to_tuy_than[1].noi_cap;
             // expire_date_cccd.value = student.giay_to_tuy_than[1].ngay_het_han;
-            // chip.value = student.giay_to_tuy_than[1].co_gan_chip ? "true" : "false";
-            // hc.value = student.giay_to_tuy_than[2].so;
+            // chip.value = student.giay_to_tuy_than[1].co_gan_chip
+            //     ? "true"
+            //     : "false";
+            hc.value = student.giay_to_tuy_than[2].so;
             // issue_date_hc.value = student.giay_to_tuy_than[2].ngay_cap;
             // issue_place_hc.value = student.giay_to_tuy_than[2].noi_cap;
             // expire_date_hc.value = student.giay_to_tuy_than[2].ngay_het_han;
@@ -634,7 +726,15 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
             // note_hc.value = student.giay_to_tuy_than[2].ghi_chu;
             email.value = student.email || "";
             phone.value = student.so_dien_thoai || "";
-            status.value = student.tinh_trang;
+            // if (student.tinh_trang === "Đang học") {
+            //     status.value = "dang-hoc";
+            // } else if (student.tinh_trang === "Đã tốt nghiệp") {
+            //     status.value = "da-tot-nghiep";
+            // } else if (student.tinh_trang === "Đã thôi học") {
+            //     status.value = "da-thoi-hoc";
+            // } else {
+            //     status.value = "tam-dung-hoc";
+            // }
         } else {
             name.value = "";
             id.value = "";
@@ -665,42 +765,46 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
     }
 
     useEffect(() => {
-
         async function fetchFaculties() {
             try {
-                const response = await fetch('http://localhost:3001/api/v1/faculties/all')
-                const data = await response.json()
+                const response = await fetch(
+                    "http://localhost:3001/api/v1/faculties/all"
+                );
+                const data = await response.json();
 
-                setFaculties(data)
+                setFaculties(data);
             } catch (error) {
-                console.error('Error fetching faculties:', error)
+                console.error("Error fetching faculties:", error);
             }
         }
 
         async function fetchPrograms() {
             try {
-                const response = await fetch('http://localhost:3001/api/v1/programs/all')
-                const data = await response.json()
-                setPrograms(data)
+                const response = await fetch(
+                    "http://localhost:3001/api/v1/programs/all"
+                );
+                const data = await response.json();
+                setPrograms(data);
             } catch (error) {
-                console.error('Error fetching programs:', error)
+                console.error("Error fetching programs:", error);
             }
         }
 
         async function fetchStudentStatuses() {
             try {
-                const response = await fetch('http://localhost:3001/api/v1/student-statuses/all')
-                const data = await response.json()
-                setStudentStatuses(data)
+                const response = await fetch(
+                    "http://localhost:3001/api/v1/student-statuses/all"
+                );
+                const data = await response.json();
+                setStudentStatuses(data);
             } catch (error) {
-                console.error('Error fetching student statuses:', error)
+                console.error("Error fetching student statuses:", error);
             }
         }
 
-        fetchFaculties()
-        fetchPrograms()
-        fetchStudentStatuses()
-
+        fetchFaculties();
+        fetchPrograms();
+        fetchStudentStatuses();
     }, []);
 
     useEffect(() => {
@@ -725,6 +829,26 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
         if (!isValid) return;
 
         const data = new FormData(form);
+
+        if (data.get("faculty") === "khoa-luat") {
+            data.set("faculty", "Khoa Luật");
+        } else if (data.get("faculty") === "khoa-tieng-anh") {
+            data.set("faculty", "Khoa Tiếng Anh thương mại");
+        } else if (data.get("faculty") === "khoa-tieng-nhat") {
+            data.set("faculty", "Khoa Tiếng Nhật");
+        } else {
+            data.set("faculty", "Khoa Tiếng Pháp");
+        }
+
+        if (data.get("status") === "dang-hoc") {
+            data.set("status", "Đang học");
+        } else if (data.get("status") === "da-tot-nghiep") {
+            data.set("status", "Đã tốt nghiệp");
+        } else if (data.get("status") === "da-thoi-hoc") {
+            data.set("status", "Đã thôi học");
+        } else {
+            data.set("status", "Tạm dừng học");
+        }
 
         const studentData = {
             ho_ten: data.get("name") as string,
@@ -766,8 +890,6 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
             so_dien_thoai: data.get("phone") as string,
             tinh_trang: data.get("status") as string,
         };
-
-        console.log(JSON.stringify(studentData));
 
         if (type === "add") {
             try {
@@ -844,11 +966,21 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                         <div className="profile-dialog-info-form-top">
                             <div className="profile-dialog-info-form-group">
                                 <label htmlFor="name">Họ tên</label>
-                                <input type="text" id="name" name="name" />
+                                <input
+                                    type="text"
+                                    id="name"
+                                    name="name"
+                                    value={student?.ho_ten || ""}
+                                />
                             </div>
                             <div className="profile-dialog-info-form-group">
                                 <label htmlFor="id">Mã số sinh viên</label>
-                                <input type="text" id="id" name="id" />
+                                <input
+                                    type="text"
+                                    id="id"
+                                    name="id"
+                                    value={student?.ma_so_sinh_vien || ""}
+                                />
                             </div>
                             <div className="profile-dialog-info-form-group">
                                 <label htmlFor="birthday">Ngày sinh</label>
@@ -856,18 +988,32 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                                     type="date"
                                     id="birthday"
                                     name="birthday"
+                                    value={student?.ngay_sinh || ""}
                                 />
                             </div>
                             <div className="profile-dialog-info-form-group">
                                 <label htmlFor="gender">Giới tính</label>
-                                <input type="text" id="gender" name="gender" />
+                                <input
+                                    type="text"
+                                    id="gender"
+                                    name="gender"
+                                    value={student?.gioi_tinh || ""}
+                                />
                             </div>
                             <div className="profile-dialog-info-form-group">
                                 <label htmlFor="faculty">Khoa</label>
                                 <div className="profile-dialog-info-form-select">
-                                    <select name="faculty" id="faculty">
-                                        {faculties.map((faculty, index) => (
-                                            <option value={faculty._id.toString()} defaultChecked={index === 0}>{faculty.ten_khoa}</option>
+                                    <select
+                                        name="faculty"
+                                        id="faculty"
+                                        value={student?.khoa.toString()}
+                                    >
+                                        {faculties.map((faculty) => (
+                                            <option
+                                                value={faculty._id.toString()}
+                                            >
+                                                {faculty.ten_khoa}
+                                            </option>
                                         ))}
                                     </select>
 
@@ -876,41 +1022,26 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                             </div>
                             <div className="profile-dialog-info-form-group">
                                 <label htmlFor="course">Khóa</label>
-                                <input type="text" id="course" name="course" />
+                                <input
+                                    type="text"
+                                    id="course"
+                                    name="course"
+                                    value={student?.khoa_hoc || ""}
+                                />
                             </div>
                             <div className="profile-dialog-info-form-group">
                                 <label htmlFor="program">Chương trình</label>
-                                <div className="profile-dialog-info-form-select">
-                                    <select name="program" id="program">
-                                        {programs.map((program) => (
-                                            <option value={program._id.toString()}>{program.name}</option>
-                                        ))}
-                                    </select>
-                                    <i className="fa-solid fa-caret-up"></i>
-                                </div>
-                            </div>
-                            <div className="profile-dialog-info-form-group">
-                                <label htmlFor="address">Địa chỉ</label>
-                                <input
-                                    type="text"
-                                    id="address"
-                                    name="address"
-                                />
-                            </div>
-                            <div className="profile-dialog-info-form-group">
-                                <label htmlFor="email">Email</label>
-                                <input
-                                    type="text"
-                                    id="email"
-                                    name="email"
-                                    onInput={(e) =>
-                                        validateEmail(e.currentTarget.value)
-                                    }
-                                />
-                                <div className="profile-dialog-info-form-error profile-dialog-info-form-error-email">
-                                    <i className="fa-solid fa-circle-exclamation"></i>
-                                    <span>Email không hợp lệ</span>
-                                </div>
+                                <select
+                                    name="program"
+                                    id="program"
+                                    value={student?.chuong_trinh.toString()}
+                                >
+                                    {programs.map((program) => (
+                                        <option value={program._id.toString()}>
+                                            {program.name}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
                             <div className="profile-dialog-info-form-group">
                                 <label htmlFor="phone">Số điện thoại</label>
@@ -921,6 +1052,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                                     onInput={(e) =>
                                         validatePhone(e.currentTarget.value)
                                     }
+                                    value={student?.so_dien_thoai || ""}
                                 />
                                 <div className="profile-dialog-info-form-error profile-dialog-info-form-error-phone">
                                     <i className="fa-solid fa-circle-exclamation"></i>
@@ -938,6 +1070,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                                     onInput={(e) =>
                                         validateEmail(e.currentTarget.value)
                                     }
+                                    value={student?.email || ""}
                                 />
                                 <div className="profile-dialog-info-form-error profile-dialog-info-form-error-email">
                                     <i className="fa-solid fa-circle-exclamation"></i>
@@ -945,11 +1078,11 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                                 </div>
                             </div>
 
-                            <ProfileForm />
+                            <ProfileForm student={student} />
 
                             <div className="profile-dialog-info-form-group">
                                 <div className="profile-dialog-info-form-address">
-                                    <AddressForm />
+                                    <AddressForm student={student} />
                                 </div>
                             </div>
                             <div
@@ -959,10 +1092,20 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                                 <label htmlFor="status">Tình trạng</label>
                                 {/* <input type="text" id="status" name="status" /> */}
                                 <div className="profile-dialog-info-form-select">
-                                    <select name="status" id="status">
-                                        {studentStatuses.map((studentStatus) => (
-                                            <option value={studentStatus._id.toString()}>{studentStatus.tinh_trang}</option>
-                                        ))}
+                                    <select
+                                        name="status"
+                                        id="status"
+                                        value={student?.tinh_trang.toString()}
+                                    >
+                                        {studentStatuses.map(
+                                            (studentStatus) => (
+                                                <option
+                                                    value={studentStatus._id.toString()}
+                                                >
+                                                    {studentStatus.tinh_trang}
+                                                </option>
+                                            )
+                                        )}
                                     </select>
 
                                     <i className="fa-solid fa-caret-up"></i>
