@@ -1,11 +1,480 @@
 import { Student } from "../../../../../model/student";
 import "./profileDialog.css";
-import React, { useEffect } from "react";
+import React, { use, useEffect, useState } from "react";
 
 interface StudentItemProps {
     type: string;
     student: Student;
 }
+
+interface Address {
+    chi_tiet: string;
+    phuong_xa: string;
+    quan_huyen: string;
+    tinh_thanh_pho: string;
+    quoc_gia: string;
+}
+
+interface Province {
+    name: string;
+    code: number;
+    districts: District[];
+}
+
+interface District {
+    name: string;
+    code: number;
+    wards: Ward[];
+}
+
+interface Ward {
+    name: string;
+    code: number;
+}
+
+interface LocationSelectProps {
+    label: string;
+    onAddressChange: (address: Address) => void;
+    initialAddress?: Address | null;
+}
+
+const LocationSelect: React.FC<LocationSelectProps> = ({
+    label,
+    onAddressChange,
+    initialAddress,
+}) => {
+    const [provinces, setProvinces] = React.useState<Province[]>([]);
+    const [selectedProvince, setSelectedProvinceCode] = useState<number | null>(
+        null
+    );
+
+    const [districts, setDistricts] = React.useState<District[]>([]);
+    const [selectedDistrict, setSelectedDistrictCode] = useState<number | null>(
+        null
+    );
+
+    const [wards, setWards] = React.useState<Ward[]>([]);
+    const [selectedWard, setSelectedWardCode] = useState<number | null>(null);
+
+    const [detail, setDetail] = React.useState<string>("");
+
+    useEffect(() => {
+        const fetchProvinces = async () => {
+            try {
+                const response = await fetch(
+                    "https://provinces.open-api.vn/api/?depth=3"
+                );
+
+                const data = await response.json();
+                setProvinces(data);
+            } catch (error) {
+                console.error("Error fetching provinces: ", error);
+            }
+        };
+
+        fetchProvinces();
+    }, []);
+
+    useEffect(() => {
+        if (initialAddress && provinces.length > 0) {
+            const province = provinces.find(
+                (p) => p.name === initialAddress.tinh_thanh_pho
+            );
+            if (province) {
+                setSelectedProvinceCode(province.code);
+                setDistricts(province.districts);
+
+                const district = province.districts.find(
+                    (d) => d.name === initialAddress.quan_huyen
+                );
+                if (district) {
+                    setSelectedDistrictCode(district.code);
+                    setWards(district.wards);
+
+                    const ward = district.wards.find(
+                        (w) => w.name === initialAddress.phuong_xa
+                    );
+                    if (ward) {
+                        setSelectedWardCode(ward.code);
+                    }
+                }
+            }
+            setDetail(initialAddress.chi_tiet);
+        }
+    }, [initialAddress, provinces]);
+
+    const handleProvinceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const code = parseInt(e.target.value);
+        setSelectedProvinceCode(code);
+
+        const selectedProvince = provinces.find((p) => p.code === code);
+        if (selectedProvince) {
+            setDistricts(selectedProvince.districts);
+        } else {
+            setDistricts([]);
+        }
+        setSelectedDistrictCode(null);
+        setSelectedWardCode(null);
+    };
+
+    const handleDistrictChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const code = parseInt(e.target.value);
+        setSelectedDistrictCode(code);
+
+        const selectedDistrict = districts.find((d) => d.code === code);
+        if (selectedDistrict) {
+            setWards(selectedDistrict.wards);
+        } else {
+            setWards([]);
+        }
+        setSelectedWardCode(null);
+    };
+
+    const handleWardChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const code = parseInt(e.target.value);
+        setSelectedWardCode(code);
+    };
+
+    const handleDetailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setDetail(e.target.value);
+    };
+
+    useEffect(() => {
+        const province =
+            provinces.find((p) => p.code === selectedProvince)?.name || "";
+        const district =
+            districts.find((d) => d.code === selectedDistrict)?.name || "";
+        const ward = wards.find((w) => w.code === selectedWard)?.name || "";
+        if (province && district && ward && detail) {
+            onAddressChange({
+                chi_tiet: detail,
+                phuong_xa: ward,
+                quan_huyen: district,
+                tinh_thanh_pho: province,
+                quoc_gia: "Việt Nam",
+            });
+        } else {
+            onAddressChange({
+                chi_tiet: "",
+                phuong_xa: "",
+                quan_huyen: "",
+                tinh_thanh_pho: "",
+                quoc_gia: "Việt Nam",
+            });
+        }
+    }, [
+        selectedProvince,
+        selectedDistrict,
+        selectedWard,
+        detail,
+        provinces,
+        districts,
+        wards,
+        onAddressChange,
+    ]);
+
+    return (
+        <div className="location-select">
+            <label htmlFor="">Tỉnh, huyện</label>
+
+            <div className="location-select-group">
+                <select
+                    name="province"
+                    id="province"
+                    onChange={handleProvinceChange}
+                    value={selectedProvince || ""}
+                >
+                    <option value="">-- Chọn tỉnh --</option>
+                    {provinces.map((province) => (
+                        <option key={province.code} value={province.code}>
+                            {province.name}
+                        </option>
+                    ))}
+                </select>
+                <select
+                    name="district"
+                    id="district"
+                    onChange={handleDistrictChange}
+                    value={selectedDistrict || ""}
+                >
+                    <option value="">-- Chọn quận --</option>
+                    {districts.map((district) => (
+                        <option key={district.code} value={district.code}>
+                            {district.name}
+                        </option>
+                    ))}
+                </select>
+            </div>
+
+            <label htmlFor="">Phường/Xã, Số Nhà, Đường</label>
+
+            <div className="location-select-group">
+                <select
+                    name="ward"
+                    id="ward"
+                    onChange={handleWardChange}
+                    value={selectedWard || ""}
+                >
+                    <option value="">-- Chọn phường --</option>
+                    {wards.map((ward) => (
+                        <option key={ward.code} value={ward.code}>
+                            {ward.name}
+                        </option>
+                    ))}
+                </select>
+
+                <input
+                    type="text"
+                    id="detail"
+                    name="detail"
+                    placeholder="Số nhà, đường..."
+                    onChange={handleDetailChange}
+                    value={detail}
+                />
+            </div>
+        </div>
+    );
+};
+
+const AddressForm: React.FC = () => {
+    const [permanentAddress, setPermanentAddress] = useState<Address | null>(
+        null
+    );
+    const [temporaryAddress, setTemporaryAddress] = useState<Address | null>(
+        null
+    );
+
+    return (
+        <div>
+            <LocationSelect
+                label="Địa chỉ thường trú"
+                onAddressChange={(addr: Address) => setPermanentAddress(addr)}
+                // initialAddress={student?.dia_chi_thuong_tru}
+            />
+
+            <label style={{ marginTop: "20px" }}>Địa chỉ thường trú</label>
+
+            <input
+                type="text"
+                id="permanent-address"
+                readOnly
+                placeholder="Địa chỉ thường trú"
+                value-detail={permanentAddress}
+                value={
+                    permanentAddress
+                        ? `${permanentAddress.chi_tiet}, ${permanentAddress.phuong_xa}, ${permanentAddress.quan_huyen}, ${permanentAddress.tinh_thanh_pho}`
+                        : ""
+                }
+            />
+
+            <div className="location-select-divider"></div>
+
+            <LocationSelect
+                label="Địa chỉ tạm trú"
+                onAddressChange={(addr: Address) => setTemporaryAddress(addr)}
+                // initialAddress={student?.dia_chi_tam_tru}
+            />
+
+            <label style={{ marginTop: "20px" }}>Địa chỉ tạm trú</label>
+
+            <input
+                type="text"
+                id="temporary-address"
+                readOnly
+                placeholder="Địa chỉ tạm trú"
+                value-detail={temporaryAddress}
+                value={
+                    temporaryAddress
+                        ? `${temporaryAddress.chi_tiet}, ${temporaryAddress.phuong_xa}, ${temporaryAddress.quan_huyen}, ${temporaryAddress.tinh_thanh_pho}`
+                        : ""
+                }
+            />
+        </div>
+    );
+};
+
+const ProfileForm = () => {
+    const [selected, setSelected] = useState("");
+
+    return (
+        <div className="profile-dialog-info-form-group">
+            <label style={{ marginTop: "20px" }}>
+                Giấy tờ chứng minh nhân thân của sinh viên
+            </label>
+            <div className="profile-dialog-info-form-radio">
+                <label>
+                    <input
+                        type="radio"
+                        name="giayto"
+                        value="CMND"
+                        onChange={(e) => setSelected(e.target.value)}
+                    />
+                    CMND
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="giayto"
+                        value="CCCD"
+                        onChange={(e) => setSelected(e.target.value)}
+                    />
+                    CCCD
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="giayto"
+                        value="HC"
+                        onChange={(e) => setSelected(e.target.value)}
+                    />
+                    Hộ chiếu
+                </label>
+            </div>
+
+            {selected === "CMND" && (
+                <div className="profile-dialog-info-form-cmnd">
+                    <div className="profile-dialog-info-form-group">
+                        <label htmlFor="cmnd">CMND</label>
+                        <input type="text" name="cmnd" id="cmnd" />
+                    </div>
+
+                    <div className="profile-dialog-info-form-group">
+                        <label htmlFor="ngay_cap_cmnd">Ngày Cấp</label>
+                        <input
+                            type="date"
+                            name="ngay_cap_cmnd"
+                            id="ngay_cap_cmnd"
+                        />
+                    </div>
+
+                    <div className="profile-dialog-info-form-group">
+                        <label htmlFor="noi_cap_cmnd">Nơi Cấp</label>
+                        <input
+                            type="text"
+                            name="noi_cap_cmnd"
+                            id="noi_cap_cmnd"
+                        />
+                    </div>
+
+                    <div className="profile-dialog-info-form-group">
+                        <label htmlFor="ngay_het_han_cmnd">Ngày Hết Hạn</label>
+                        <input
+                            type="date"
+                            name="ngay_het_han_cmnd"
+                            id="ngay_het_han_cmnd"
+                        />
+                    </div>
+                </div>
+            )}
+
+            {selected === "CCCD" && (
+                <div className="profile-dialog-info-form-cccd">
+                    <div className="profile-dialog-info-form-cccd-top">
+                        <div className="profile-dialog-info-form-group">
+                            <label htmlFor="cccd">CCCD</label>
+                            <input type="text" name="cccd" id="cccd" />
+                        </div>
+
+                        <div className="profile-dialog-info-form-group">
+                            <label htmlFor="ngay_cap_cccd">Ngày Cấp</label>
+                            <input
+                                type="date"
+                                name="ngay_cap_cccd"
+                                id="ngay_cap_cccd"
+                            />
+                        </div>
+
+                        <div className="profile-dialog-info-form-group">
+                            <label htmlFor="noi_cap_cccd">Nơi Cấp</label>
+                            <input
+                                type="text"
+                                name="noi_cap_cccd"
+                                id="noi_cap_cccd"
+                            />
+                        </div>
+
+                        <div className="profile-dialog-info-form-group">
+                            <label htmlFor="ngay_het_han_cccd">
+                                Ngày Hết Hạn
+                            </label>
+                            <input
+                                type="date"
+                                name="ngay_het_han_cccd"
+                                id="ngay_het_han_cccd"
+                            />
+                        </div>
+                    </div>
+
+                    <label style={{ marginTop: "20px" }}>
+                        CCCD có gắn chip
+                    </label>
+                    <div className="profile-dialog-info-form-cccd-bottom">
+                        <label>
+                            <input
+                                type="radio"
+                                name="co_gan_chip"
+                                value="true"
+                            />
+                            Có
+                        </label>
+                        <label>
+                            <input
+                                type="radio"
+                                name="co_gan_chip"
+                                value="false"
+                            />
+                            Không
+                        </label>
+                    </div>
+                </div>
+            )}
+
+            {selected === "HC" && (
+                <div className="profile-dialog-info-form-hc">
+                    <div className="profile-dialog-info-form-group">
+                        <label htmlFor="hc">Hộ chiếu</label>
+                        <input type="text" name="hc" id="hc" />
+                    </div>
+
+                    <div className="profile-dialog-info-form-group">
+                        <label htmlFor="ngay_cap_hc">Ngày Cấp</label>
+                        <input type="date" name="gay_cap_hc" id="gay_cap_hc" />
+                    </div>
+
+                    <div className="profile-dialog-info-form-group">
+                        <label htmlFor="noi_cap_hc">Nơi Cấp</label>
+                        <input type="text" name="noi_cap_hc" id="noi_cap_hc" />
+                    </div>
+
+                    <div className="profile-dialog-info-form-group">
+                        <label htmlFor="ngay_het_han_hc">Ngày Hết Hạn</label>
+                        <input
+                            type="date"
+                            name="ngay_het_han_hc"
+                            id="ngay_het_han_hc"
+                        />
+                    </div>
+
+                    <div className="profile-dialog-info-form-group">
+                        <label htmlFor="quoc_gia_cap_hc">Quốc Gia Cấp</label>
+                        <input
+                            type="text"
+                            name="quoc_gia_cap_hc"
+                            id="quoc_gia_cap_hc"
+                        />
+                    </div>
+
+                    <div className="profile-dialog-info-form-group">
+                        <label htmlFor="ghi_chu_hc">Ghi Chú</label>
+                        <input type="text" name="ghi_chu_hc" id="ghi_chu_hc" />
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
 
 const validateEmail = (email: string) => {
     const emailError = document.querySelector(
@@ -52,10 +521,56 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
         const faculty = document.getElementById("faculty") as HTMLSelectElement;
         const course = document.getElementById("course") as HTMLInputElement;
         const program = document.getElementById("program") as HTMLInputElement;
-        const address = document.getElementById("address") as HTMLInputElement;
         const email = document.getElementById("email") as HTMLInputElement;
         const phone = document.getElementById("phone") as HTMLInputElement;
         const status = document.getElementById("status") as HTMLSelectElement;
+        const permanent_address = document.getElementById(
+            "permanent-address"
+        ) as HTMLInputElement;
+        const permanent_address_value =
+            permanent_address.getAttribute("value-detail");
+        const temporary_address = document.getElementById(
+            "temporary-address"
+        ) as HTMLInputElement;
+        const temporary_address_value =
+            temporary_address.getAttribute("value-detail");
+        const cmnd = document.getElementById("cmnd") as HTMLInputElement;
+        const issue_date_cmnd = document.getElementById(
+            "ngay_cap_cmnd"
+        ) as HTMLInputElement;
+        const issue_place_cmnd = document.getElementById(
+            "noi_cap_cmnd"
+        ) as HTMLInputElement;
+        const expire_date_cmnd = document.getElementById(
+            "ngay_het_han_cmnd"
+        ) as HTMLInputElement;
+        const cccd = document.getElementById("cccd") as HTMLInputElement;
+        const issue_date_cccd = document.getElementById(
+            "ngay_cap_cccd"
+        ) as HTMLInputElement;
+        const issue_place_cccd = document.getElementById(
+            "noi_cap_cccd"
+        ) as HTMLInputElement;
+        const expire_date_cccd = document.getElementById(
+            "ngay_het_han_cccd"
+        ) as HTMLInputElement;
+        const chip = document.getElementById("chip") as HTMLInputElement;
+        const hc = document.getElementById("hc") as HTMLInputElement;
+        const issue_date_hc = document.getElementById(
+            "ngay_cap_hc"
+        ) as HTMLInputElement;
+        const issue_place_hc = document.getElementById(
+            "noi_cap_hc"
+        ) as HTMLInputElement;
+        const expire_date_hc = document.getElementById(
+            "ngay_het_han_hc"
+        ) as HTMLInputElement;
+        const country_hc = document.getElementById(
+            "quoc_gia_cap_hc"
+        ) as HTMLInputElement;
+        const note_hc = document.getElementById(
+            "ghi_chu_hc"
+        ) as HTMLInputElement;
 
         if (
             !name ||
@@ -65,10 +580,24 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
             !faculty ||
             !course ||
             !program ||
-            !address ||
             !email ||
             !phone ||
-            !status
+            !status ||
+            !cmnd ||
+            !issue_date_cmnd ||
+            !issue_place_cmnd ||
+            !expire_date_cmnd ||
+            !cccd ||
+            !issue_date_cccd ||
+            !issue_place_cccd ||
+            !expire_date_cccd ||
+            !chip ||
+            !hc ||
+            !issue_date_hc ||
+            !issue_place_hc ||
+            !expire_date_hc ||
+            !country_hc ||
+            !note_hc
         ) {
             return;
         }
@@ -90,7 +619,21 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
             }
             course.value = student.khoa_hoc;
             program.value = student.chuong_trinh;
-            address.value = student.dia_chi || "";
+            // cmnd.value = student.giay_to_tuy_than[0].so;
+            // issue_date_cmnd.value = student.giay_to_tuy_than[0].ngay_cap;
+            // issue_place_cmnd.value = student.giay_to_tuy_than[0].noi_cap;
+            // expire_date_cmnd.value = student.giay_to_tuy_than[0].ngay_het_han;
+            // cccd.value = student.giay_to_tuy_than[1].so;
+            // issue_date_cccd.value = student.giay_to_tuy_than[1].ngay_cap;
+            // issue_place_cccd.value = student.giay_to_tuy_than[1].noi_cap;
+            // expire_date_cccd.value = student.giay_to_tuy_than[1].ngay_het_han;
+            // chip.value = student.giay_to_tuy_than[1].co_gan_chip ? "true" : "false";
+            // hc.value = student.giay_to_tuy_than[2].so;
+            // issue_date_hc.value = student.giay_to_tuy_than[2].ngay_cap;
+            // issue_place_hc.value = student.giay_to_tuy_than[2].noi_cap;
+            // expire_date_hc.value = student.giay_to_tuy_than[2].ngay_het_han;
+            // country_hc.value = student.giay_to_tuy_than[2].quoc_gia_cap;
+            // note_hc.value = student.giay_to_tuy_than[2].ghi_chu;
             email.value = student.email || "";
             phone.value = student.so_dien_thoai || "";
             if (student.tinh_trang === "Đang học") {
@@ -110,10 +653,24 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
             faculty.value = "";
             course.value = "";
             program.value = "";
-            address.value = "";
             email.value = "";
             phone.value = "";
             status.value = "";
+            cmnd.value = "";
+            issue_date_cmnd.value = "";
+            issue_place_cmnd.value = "";
+            expire_date_cmnd.value = "";
+            cccd.value = "";
+            issue_date_cccd.value = "";
+            issue_place_cccd.value = "";
+            expire_date_cccd.value = "";
+            chip.value = "";
+            hc.value = "";
+            issue_date_hc.value = "";
+            issue_place_hc.value = "";
+            expire_date_hc.value = "";
+            country_hc.value = "";
+            note_hc.value = "";
         }
     }
 
@@ -168,7 +725,34 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
             khoa: data.get("faculty") as string,
             khoa_hoc: data.get("course") as string,
             chuong_trinh: data.get("program") as string,
-            dia_chi: data.get("address") as string,
+            dia_chi_thuong_tru: data.get("permanent_address_value") as object,
+            dia_chi_tam_tru: data.get("temporary_address_value") as object,
+            giay_to_tuy_than: [
+                {
+                    type: "cmnd",
+                    so: data.get("cmnd") as string,
+                    ngay_cap: data.get("issue_date_cmnd") as string,
+                    noi_cap: data.get("issue_place_cmnd") as string,
+                    ngay_het_han: data.get("expire_date_cmnd") as string,
+                },
+                {
+                    type: "cccd",
+                    so: data.get("cccd") as string,
+                    ngay_cap: data.get("issue_date_cccd") as string,
+                    noi_cap: data.get("issue_place_cccd") as string,
+                    ngay_het_han: data.get("expire_date_cccd") as string,
+                    co_gan_chip: data.get("co_gan_chip") === "true",
+                },
+                {
+                    type: "passport",
+                    so: data.get("hc") as string,
+                    ngay_cap: data.get("issue_date_hc") as string,
+                    noi_cap: data.get("issue_place_hc") as string,
+                    ngay_het_han: data.get("expire_date_hc") as string,
+                    quoc_gia_cap: data.get("quoc_gia_cap_hc") as string,
+                    ghi_chu: data.get("ghi_chu_hc") as string,
+                },
+            ],
             email: data.get("email") as string,
             so_dien_thoai: data.get("phone") as string,
             tinh_trang: data.get("status") as string,
@@ -301,29 +885,6 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                                 />
                             </div>
                             <div className="profile-dialog-info-form-group">
-                                <label htmlFor="address">Địa chỉ</label>
-                                <input
-                                    type="text"
-                                    id="address"
-                                    name="address"
-                                />
-                            </div>
-                            <div className="profile-dialog-info-form-group">
-                                <label htmlFor="email">Email</label>
-                                <input
-                                    type="text"
-                                    id="email"
-                                    name="email"
-                                    onInput={(e) =>
-                                        validateEmail(e.currentTarget.value)
-                                    }
-                                />
-                                <div className="profile-dialog-info-form-error profile-dialog-info-form-error-email">
-                                    <i className="fa-solid fa-circle-exclamation"></i>
-                                    <span>Email không hợp lệ</span>
-                                </div>
-                            </div>
-                            <div className="profile-dialog-info-form-group">
                                 <label htmlFor="phone">Số điện thoại</label>
                                 <input
                                     type="text"
@@ -341,6 +902,32 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                         </div>
                         <div className="profile-dialog-info-form-bottom">
                             <div className="profile-dialog-info-form-group">
+                                <label htmlFor="email">Email</label>
+                                <input
+                                    type="text"
+                                    id="email"
+                                    name="email"
+                                    onInput={(e) =>
+                                        validateEmail(e.currentTarget.value)
+                                    }
+                                />
+                                <div className="profile-dialog-info-form-error profile-dialog-info-form-error-email">
+                                    <i className="fa-solid fa-circle-exclamation"></i>
+                                    <span>Email không hợp lệ</span>
+                                </div>
+                            </div>
+
+                            <ProfileForm />
+
+                            <div className="profile-dialog-info-form-group">
+                                <div className="profile-dialog-info-form-address">
+                                    <AddressForm />
+                                </div>
+                            </div>
+                            <div
+                                className="profile-dialog-info-form-group"
+                                style={{ marginTop: "20px" }}
+                            >
                                 <label htmlFor="status">Tình trạng</label>
                                 {/* <input type="text" id="status" name="status" /> */}
                                 <div className="profile-dialog-info-form-select">
