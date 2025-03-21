@@ -249,7 +249,7 @@ const AddressForm: React.FC = () => {
             <LocationSelect
                 label="Địa chỉ thường trú"
                 onAddressChange={(addr: Address) => setPermanentAddress(addr)}
-                // initialAddress={student?.dia_chi_thuong_tru}
+                initialAddress={student?.dia_chi_thuong_tru}
             />
 
             <label style={{ marginTop: "20px" }}>Địa chỉ thường trú</label>
@@ -272,7 +272,7 @@ const AddressForm: React.FC = () => {
             <LocationSelect
                 label="Địa chỉ tạm trú"
                 onAddressChange={(addr: Address) => setTemporaryAddress(addr)}
-                // initialAddress={student?.dia_chi_tam_tru}
+                initialAddress={student?.dia_chi_tam_tru}
             />
 
             <label style={{ marginTop: "20px" }}>Địa chỉ tạm trú</label>
@@ -619,21 +619,21 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
             }
             course.value = student.khoa_hoc;
             program.value = student.chuong_trinh;
-            // cmnd.value = student.giay_to_tuy_than[0].so;
-            // issue_date_cmnd.value = student.giay_to_tuy_than[0].ngay_cap;
-            // issue_place_cmnd.value = student.giay_to_tuy_than[0].noi_cap;
-            // expire_date_cmnd.value = student.giay_to_tuy_than[0].ngay_het_han;
-            // cccd.value = student.giay_to_tuy_than[1].so;
-            // issue_date_cccd.value = student.giay_to_tuy_than[1].ngay_cap;
-            // issue_place_cccd.value = student.giay_to_tuy_than[1].noi_cap;
-            // expire_date_cccd.value = student.giay_to_tuy_than[1].ngay_het_han;
-            // chip.value = student.giay_to_tuy_than[1].co_gan_chip ? "true" : "false";
-            // hc.value = student.giay_to_tuy_than[2].so;
-            // issue_date_hc.value = student.giay_to_tuy_than[2].ngay_cap;
-            // issue_place_hc.value = student.giay_to_tuy_than[2].noi_cap;
-            // expire_date_hc.value = student.giay_to_tuy_than[2].ngay_het_han;
-            // country_hc.value = student.giay_to_tuy_than[2].quoc_gia_cap;
-            // note_hc.value = student.giay_to_tuy_than[2].ghi_chu;
+            cmnd.value = student.giay_to_tuy_than[0].so;
+            issue_date_cmnd.value = student.giay_to_tuy_than[0].ngay_cap;
+            issue_place_cmnd.value = student.giay_to_tuy_than[0].noi_cap;
+            expire_date_cmnd.value = student.giay_to_tuy_than[0].ngay_het_han;
+            cccd.value = student.giay_to_tuy_than[1].so;
+            issue_date_cccd.value = student.giay_to_tuy_than[1].ngay_cap;
+            issue_place_cccd.value = student.giay_to_tuy_than[1].noi_cap;
+            expire_date_cccd.value = student.giay_to_tuy_than[1].ngay_het_han;
+            chip.value = student.giay_to_tuy_than[1].co_gan_chip ? "true" : "false";
+            hc.value = student.giay_to_tuy_than[2].so;
+            issue_date_hc.value = student.giay_to_tuy_than[2].ngay_cap;
+            issue_place_hc.value = student.giay_to_tuy_than[2].noi_cap;
+            expire_date_hc.value = student.giay_to_tuy_than[2].ngay_het_han;
+            country_hc.value = student.giay_to_tuy_than[2].quoc_gia_cap;
+            note_hc.value = student.giay_to_tuy_than[2].ghi_chu;
             email.value = student.email || "";
             phone.value = student.so_dien_thoai || "";
             if (student.tinh_trang === "Đang học") {
