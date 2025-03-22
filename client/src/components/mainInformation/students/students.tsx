@@ -4,8 +4,8 @@ import './students.css';
 import StudentItem from './studentItem/studentItem';
 import ProfileDialog from './profileDialog/profileDialog';
 
-import { Student } from '../../../../model/student';
-import { Faculty } from '../../../../model/faculty';
+import { Student } from './models/student';
+import { Faculty } from '../faculties/models/faculty';
 import AddIcon from '@mui/icons-material/Add';
 
 interface StudentProps {

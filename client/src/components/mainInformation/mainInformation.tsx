@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import Header from './header/header';
 import './mainInformation.css';
-import Students from './students/show-list-students/students';
+import Students from './students/students';
 import { createRoot, Root } from 'react-dom/client';
 
 const MainInformation = () => {

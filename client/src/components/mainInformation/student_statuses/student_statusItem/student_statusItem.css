@@ -14,7 +14,7 @@
 
 .student-status-item-info {
     display: grid;
-    grid-template-columns: 1.5fr 1fr 1fr 1fr 0.5fr;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
     gap: 10px;
     width: 100%;
     padding: 10px;

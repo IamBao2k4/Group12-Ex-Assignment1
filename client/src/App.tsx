@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import HorizontalNav from './components/horizontalNav/horizontalNav';
 import MainInformation from './components/mainInformation/mainInformation';
-import Students from './components/mainInformation/students/show-list-students/students';
+import Students from './components/mainInformation/students/students';
 import Faculties from './components/mainInformation/faculties/faculties';
 import Programs from './components/mainInformation/programs/programs';
 import StudentStatuses from './components/mainInformation/student_statuses/student_statuses';

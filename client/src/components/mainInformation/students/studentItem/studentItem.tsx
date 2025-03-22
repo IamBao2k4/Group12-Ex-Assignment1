@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import './studentItem.css'
-import { Student } from '../../../../../model/student'
+import { Student } from '../models/student'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import './detailDialog.css';
 
-import { Program } from '../../../../model/program';
+import { Program } from '../models/program';
 
 interface DetailDialogProps {
     type: string;

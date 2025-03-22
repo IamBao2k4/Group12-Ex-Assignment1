@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import './detailDialog.css';
 
-import { StudentStatus } from '../../../../model/student_status';
+import { StudentStatus } from '../models/student_status';
 
 interface DetailDialogProps {
     type: string;

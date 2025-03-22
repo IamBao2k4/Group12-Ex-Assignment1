@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-import { Faculty } from "../../../model/faculty"
+import { Faculty } from "./models/faculty"
 import Header from "../header/header"
 import './faculties.css'
 

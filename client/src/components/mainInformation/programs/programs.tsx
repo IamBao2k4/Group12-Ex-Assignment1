@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Program } from "../../../model/program";
+import { Program } from "./models/program";
 import Header from "../header/header";
 import './programs.css';
 
@@ -61,7 +61,6 @@ const Programs = () => {
 
                 <div className="programs-list">
                     <div className="programs-list-header row">
-                        <div className="programs-list-header-name">Mã chương trình</div>
                         <div className="programs-list-header-id">Tên chương trình</div>
                         <div className="programs-list-header-birthday">Ngày thêm</div>
                         <div className="programs-list-header-status">Ngày chỉnh sửa</div>

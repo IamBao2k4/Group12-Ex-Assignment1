@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { StudentStatus } from "../../../model/student_status";
+import { StudentStatus } from "./models/student_status";
 import Header from "../header/header";
 import './student_statuses.css';
 

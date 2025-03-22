@@ -2,7 +2,7 @@ import React from 'react';
 
 import './student_statusItem.css';
 
-import { StudentStatus } from '../../../../model/student_status';
+import { StudentStatus } from '../models/student_status';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 

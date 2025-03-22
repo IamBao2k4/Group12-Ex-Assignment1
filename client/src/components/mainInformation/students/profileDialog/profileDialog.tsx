@@ -1,7 +1,8 @@
-import { Student } from "../../../../../model/student";
-import { Faculty } from "../../../../../model/faculty";
-import { Program } from "../../../../../model/program";
-import { StudentStatus } from "../../../../../model/student_status";
+import { Student } from "../models/student";
+import { Faculty } from "../../faculties/models/faculty";
+import { Program } from "../../programs/models/program";
+import { StudentStatus } from "../../student_statuses/models/student_status";
+import { Address } from "../models/address";
 import "./profileDialog.css";
 import React, { useEffect, useState } from "react";
 
@@ -41,7 +42,14 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
     const [faculties, setFaculties] = useState<Faculty[]>([])
     const [programs, setPrograms] = useState<Program[]>([])
     const [studentStatuses, setStudentStatuses] = useState<StudentStatus[]>([])
-
+    const defaultAddress: Address = {
+        chi_tiet: "",
+        phuong_xa: "",
+        quan_huyen: "",
+        tinh_thanh_pho: "",
+        quoc_gia: "",
+    };
+    const [address, setAddress] = useState<Address>(defaultAddress);
     const profileDialog = document.querySelector(
         ".profile-dialog-container"
     ) as HTMLElement;
@@ -59,7 +67,6 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
         const faculty = document.getElementById("faculty") as HTMLSelectElement;
         const course = document.getElementById("course") as HTMLInputElement;
         const program = document.getElementById("program") as HTMLInputElement;
-        const address = document.getElementById("address") as HTMLInputElement;
         const email = document.getElementById("email") as HTMLInputElement;
         const phone = document.getElementById("phone") as HTMLInputElement;
         const status = document.getElementById("status") as HTMLSelectElement;
@@ -85,13 +92,13 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
             id.value = student.ma_so_sinh_vien;
             birthday.value = student.ngay_sinh;
             gender.value = student.gioi_tinh;
-            faculty.value = student.khoa;
+            faculty.value = student.khoa.toString();
             course.value = student.khoa_hoc;
-            program.value = student.chuong_trinh;
-            address.value = student.dia_chi || "";
+            program.value = student.chuong_trinh.toString();
+            //setAddress(student.dia_chi_thuong_tru || defaultAddress);
             email.value = student.email || "";
             phone.value = student.so_dien_thoai || "";
-            status.value = student.tinh_trang;
+            status.value = student.tinh_trang.toString();
         } else {
             name.value = "";
             id.value = "";
@@ -100,7 +107,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
             faculty.value = "";
             course.value = "";
             program.value = "";
-            address.value = "";
+            //setAddress(defaultAddress);
             email.value = "";
             phone.value = "";
             status.value = "";
