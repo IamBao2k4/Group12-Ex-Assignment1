@@ -4,7 +4,7 @@ import { BaseException } from '../../common/exceptions';
 export class ProgramNotFoundException extends BaseException {
   constructor(id: string) {
     super(
-      `Không tìm thấy chương trình với ID ${id}`,
+      `Program with ID ${id} not found`,
       'PROGRAM_NOT_FOUND',
       HttpStatus.BAD_REQUEST 
     );

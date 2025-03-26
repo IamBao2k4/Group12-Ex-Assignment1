@@ -29,11 +29,9 @@ export class StudentRepository implements IStudentRepository {
 
   async findByEmailOrPhone(email: string, so_dien_thoai: string, excludeId?: string): Promise<Student | null> {
     const query: any = {
-      $or: [
-        { email }, 
-        { so_dien_thoai },
-        { deleted_at: { $exists: false } }, 
-        { deleted_at: null }
+      $and: [
+        { $or: [{ email }, { so_dien_thoai }] },
+        { $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] }
       ]
     };
 
@@ -96,6 +94,9 @@ export class StudentRepository implements IStudentRepository {
     try {
       students = await this.studentModel
         .find(query)
+        .populate('tinh_trang', 'tinh_trang')
+        .populate('khoa', 'ten_khoa')
+        .populate('chuong_trinh', 'name')
         .skip(skip)
         .limit(limit)
         .exec();
@@ -125,12 +126,20 @@ export class StudentRepository implements IStudentRepository {
 
   async findById(id: string): Promise<Student | null> {
     try {
+      if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+        this.logger.error(`student.repository.findById: Invalid ObjectId format for ID ${id}`);
+        throw new StudentNotFoundException(id);
+      }
+      
       const student = await this.studentModel.findOne({ 
         _id: id, 
         $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] 
       }).exec();
       return student;
     } catch (error) {
+      if (error instanceof StudentNotFoundException) {
+        throw error;
+      }
       this.logger.error(`student.repository.findById: Error finding student with ID ${id}`, error.stack);
       throw new BaseException(error, 'FIND_STUDENT_BY_ID_ERROR');
     }
@@ -138,6 +147,26 @@ export class StudentRepository implements IStudentRepository {
 
   async update(id: string, studentData: Partial<Student>): Promise<Student | null> {
     try {
+      const filteredData: Partial<Student> = {};
+      
+      for (const key in studentData) {
+        if (
+          studentData[key] !== null && 
+          studentData[key] !== undefined && 
+          studentData[key] !== ''
+        ) {
+          filteredData[key] = studentData[key];
+        }
+      }
+      
+      if (Object.keys(filteredData).length === 0) {
+        const student = await this.findById(id);
+        if (!student) {
+          throw new StudentNotFoundException(id);
+        }
+        return student;
+      }
+      
       const updatedStudent = await this.studentModel
       .findOneAndUpdate(
         {
@@ -146,7 +175,7 @@ export class StudentRepository implements IStudentRepository {
             { $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] }
           ]
         },
-        studentData,
+        filteredData,
         { new: true }
       )
       .exec();
@@ -182,6 +211,25 @@ export class StudentRepository implements IStudentRepository {
       }
       this.logger.error(`student.repository.softDelete: Error deleting student with ID ${id}`, error.stack);
       throw new BaseException(error, 'DELETE_STUDENT_ERROR');
+    }
+  }
+
+  async findByMSSV(mssv: string, excludeId?: string): Promise<Student | null> {
+    try {
+      const query: any = { 
+        ma_so_sinh_vien: mssv,
+        $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] 
+      };
+      
+      if (excludeId) {
+        query._id = { $ne: excludeId };
+      }
+
+      const student = await this.studentModel.findOne(query).exec();
+      return student;
+    } catch (error) {
+      this.logger.error(`student.repository.findByMSSV: Error finding student with MSSV ${mssv}`, error.stack);
+      throw new BaseException(error, 'FIND_STUDENT_BY_MSSV_ERROR');
     }
   }
 }

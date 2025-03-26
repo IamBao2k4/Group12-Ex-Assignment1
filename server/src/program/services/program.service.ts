@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Inject } from '@nestjs/common';
 import { Program } from '../interfaces/program.interface';
 import { IProgramRepository, PROGRAM_REPOSITORY } from '../repositories/program.repository.interface';
@@ -88,6 +88,19 @@ export class ProgramService {
       return await this.programModel.findOne({ ma }).exec();
     } catch (error) {
       this.logger.error(`program.service.findByCode: ${error.message}`, error.stack);
+      throw error;
+    }
+  }
+
+  async detail(id: string): Promise<Program> {
+    try {
+      const program = await this.programModel.findById(id).exec();
+      if (!program) {
+        throw new NotFoundException(`Program with ID ${id} not found`);
+      }
+      return program;
+    } catch (error) {
+      this.logger.error(`program.service.detail: ${error.message}`, error.stack);
       throw error;
     }
   }

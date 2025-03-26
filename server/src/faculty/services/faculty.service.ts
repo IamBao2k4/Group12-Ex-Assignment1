@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Inject } from '@nestjs/common';
 import { Faculty } from '../interfaces/faculty.interface';
 import { IFacultyRepository, FACULTY_REPOSITORY } from '../repositories/faculty.repository.interface';
@@ -88,6 +88,19 @@ export class FacultyService {
       return await this.facultyModel.findOne({ ma }).exec();
     } catch (error) {
       this.logger.error(`faculty.service.findByCode: ${error.message}`, error.stack);
+      throw error;
+    }
+  }
+
+  async detail(id: string): Promise<Faculty> {
+    try {
+      const faculty = await this.facultyModel.findById(id).exec();
+      if (!faculty) {
+        throw new NotFoundException(`Faculty with ID ${id} not found`);
+      }
+      return faculty;
+    } catch (error) {
+      this.logger.error(`faculty.service.detail: ${error.message}`, error.stack);
       throw error;
     }
   }

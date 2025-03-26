@@ -1,0 +1,21 @@
+// Email domains
+export const DEFAULT_STUDENT_EMAIL_DOMAIN = '@student.university.edu.vn';
+
+// Phone number
+export const VIETNAM_PHONE_REGEX = '^(\\+84|0[3|5|7|8|9])([0-9]{8})$';
+export const DEFAULT_COUNTRY = 'Vietnam';
+
+// Student statuses
+export const STUDENT_STATUS = {
+  STUDYING: 'Đang học',
+  RESERVED: 'Bảo lưu',
+  SUSPENDED: 'Đình chỉ',
+  GRADUATED: 'Tốt nghiệp'
+};
+
+export const STATUS_TRANSITIONS = {
+  [STUDENT_STATUS.STUDYING]: [STUDENT_STATUS.RESERVED, STUDENT_STATUS.GRADUATED, STUDENT_STATUS.SUSPENDED],
+  [STUDENT_STATUS.RESERVED]: [STUDENT_STATUS.STUDYING, STUDENT_STATUS.SUSPENDED],
+  [STUDENT_STATUS.SUSPENDED]: [STUDENT_STATUS.STUDYING, STUDENT_STATUS.RESERVED],
+  [STUDENT_STATUS.GRADUATED]: []
+}; 

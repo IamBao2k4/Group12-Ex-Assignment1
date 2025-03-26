@@ -74,7 +74,7 @@ import {
     }
 
     @Get(':id')
-    async getOne(@Param('id') id: string) {
-      return this.studentStatusService.getOne(id);
+    async detail(@Param('id') id: string) {
+      return this.studentStatusService.detail(id);
     }
   }

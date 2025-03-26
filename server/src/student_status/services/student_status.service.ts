@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Inject } from '@nestjs/common';
 import { StudentStatus } from '../interfaces/student_status.interface';
 import { IStudentStatusRepository, STUDENT_STATUS_REPOSITORY } from '../repositories/student_status.repository.interface';
@@ -83,7 +83,16 @@ export class StudentStatusService {
     }
   }
 
-  async getOne(id: string): Promise<StudentStatus> {
-    return this.studentStatusRepository.getOne(id);
+  async detail(id: string): Promise<StudentStatus> {
+    try {
+      const studentStatus = await this.studentStatusModel.findById(id).exec();
+      if (!studentStatus) {
+        throw new NotFoundException(`Student status with ID ${id} not found`);
+      }
+      return studentStatus;
+    } catch (error) {
+      this.logger.error(`student_status.service.detail: ${error.message}`, error.stack);
+      throw error;
+    }
   }
 }

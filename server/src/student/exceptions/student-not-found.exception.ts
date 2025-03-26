@@ -4,7 +4,7 @@ import { BaseException } from '../../common/exceptions';
 export class StudentNotFoundException extends BaseException {
   constructor(id: string) {
     super(
-      `Không tìm thấy sinh viên với ID ${id}`,
+      `Student with ID ${id} not found`,
       'STUDENT_NOT_FOUND',
       HttpStatus.BAD_REQUEST
     );
