@@ -69,6 +69,12 @@
     font-weight: bold;
 }
 
+.students-list .list-students{
+    width: 100%;
+    overflow: auto;
+    height: 400px;
+}
+
 .students-pagination {
     display: flex;
     justify-content: center;

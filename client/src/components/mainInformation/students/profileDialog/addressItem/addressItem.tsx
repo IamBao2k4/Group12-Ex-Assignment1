@@ -1,25 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Address } from "../../models/address";
 import { Student } from "../../models/student";
 import LocationSelect from "./locationSelect/locationSelect";
 
 interface AddressItemProps {
     student: Student;
+    setAddresses: (addresses: Address[]) => void;
 }
 
-const AddressItem: React.FC<AddressItemProps> = ({student}) => {
+const defaultAddress: Address = {
+    chi_tiet: "",
+    phuong_xa: "",
+    quan_huyen: "",
+    tinh_thanh_pho: "",
+    quoc_gia: "",
+};
 
-    const [permanentAddress, setPermanentAddress] = useState<Address | null>(
-        null
-    );
-    const [temporaryAddress, setTemporaryAddress] = useState<Address | null>(
-        null
-    );
+const AddressItem: React.FC<AddressItemProps> = ({ student, setAddresses }) => {
+    const [permanentAddress, setPermanentAddress] = useState<Address>(defaultAddress);
+    const [temporaryAddress, setTemporaryAddress] = useState<Address>(defaultAddress);
+
+    useEffect(() => {
+        setAddresses([permanentAddress, temporaryAddress]);
+    }, [permanentAddress, temporaryAddress, setAddresses]); 
+
     return (
         <div>
             <LocationSelect
                 label="Địa chỉ thường trú"
-                onAddressChange={(addr: Address) => setPermanentAddress(addr)}
+                onAddressChange={(addr: Address) => {setPermanentAddress(addr)}}
                 initialAddress={student?.dia_chi_thuong_tru}
             />
 
@@ -30,7 +39,6 @@ const AddressItem: React.FC<AddressItemProps> = ({student}) => {
                 id="permanent-address"
                 readOnly
                 placeholder="Địa chỉ thường trú"
-                value-detail={permanentAddress}
                 value={
                     permanentAddress
                         ? `${permanentAddress.chi_tiet}, ${permanentAddress.phuong_xa}, ${permanentAddress.quan_huyen}, ${permanentAddress.tinh_thanh_pho}`
@@ -53,7 +61,6 @@ const AddressItem: React.FC<AddressItemProps> = ({student}) => {
                 id="temporary-address"
                 readOnly
                 placeholder="Địa chỉ tạm trú"
-                value-detail={temporaryAddress}
                 value={
                     temporaryAddress
                         ? `${temporaryAddress.chi_tiet}, ${temporaryAddress.phuong_xa}, ${temporaryAddress.quan_huyen}, ${temporaryAddress.tinh_thanh_pho}`
@@ -62,6 +69,6 @@ const AddressItem: React.FC<AddressItemProps> = ({student}) => {
             />
         </div>
     );
-}
+};
 
-export default AddressItem
+export default AddressItem;

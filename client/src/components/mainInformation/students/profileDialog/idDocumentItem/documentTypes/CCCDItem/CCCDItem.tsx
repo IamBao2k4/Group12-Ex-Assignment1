@@ -26,7 +26,7 @@ const CCCDItem: React.FC<CCCDItemProps> = ({ document, setDocument }) => {
                     type="date"
                     name="ngay_cap_cccd"
                     id="ngay_cap_cccd"
-                    value={document.ngay_cap.toISOString().split('T')[0]}
+                    value={document.ngay_cap.toString().split('T')[0]}
                     onChange={(e) => setDocument({ ...document, ngay_cap: new Date(e.target.value) })}
                 />
             </div>
@@ -48,7 +48,7 @@ const CCCDItem: React.FC<CCCDItemProps> = ({ document, setDocument }) => {
                     type="date"
                     name="ngay_het_han_cccd"
                     id="ngay_het_han_cccd"
-                    value={document.ngay_het_han.toISOString().split('T')[0]}
+                    value={document.ngay_het_han.toString().split('T')[0]}
                     onChange={(e) => setDocument({ ...document, ngay_het_han: new Date(e.target.value) })}
                 />
             </div>

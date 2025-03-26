@@ -14,7 +14,7 @@ interface StudentProps {
 
 const Students: React.FC<StudentProps> = ({ searchString }) => {
     const [students, setStudents] = useState<Student[]>([])
-    const [profileType, setProfileType] = useState('')
+    const [profileType, setProfileType] = useState('add')
     const [currentPage, setCurrentPage] = useState(1)
     const [totalPages, setTotalPages] = useState(1)
     const [chosenStudent, setChosenStudent] = useState<Student | null>(null)
@@ -51,11 +51,10 @@ const Students: React.FC<StudentProps> = ({ searchString }) => {
         setFaculty(event.target.value)
     }
 
-
     function ProfileHandler(type: string) {
+        setProfileType(type);
         const profileDialog = document.querySelector('.profile-dialog-container') as HTMLElement
         profileDialog.classList.toggle('hidden')
-        setProfileType(type)
     }
 
     function handlePreviousPage() {
@@ -97,9 +96,12 @@ const Students: React.FC<StudentProps> = ({ searchString }) => {
                     <div className="students-list-header-status">Tình trạng</div>
                     <div className="students-list-header-action"></div>
                 </div>
-                {students.map((student) => (
-                    <StudentItem key={student._id.toString()} id={student._id.toString()} student={student} ProfileHandler={ProfileHandler} setChosenStudent={setChosenStudent} />
-                ))}
+
+                <div className="list-students">
+                    {students.map((student) => (
+                        <StudentItem key={student._id.toString()} id={student._id.toString()} student={student} ProfileHandler={ProfileHandler} setChosenStudent={setChosenStudent} />
+                    ))}
+                </div>
             </div>
 
             <div className="students-pagination">

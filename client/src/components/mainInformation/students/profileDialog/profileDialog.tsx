@@ -3,8 +3,11 @@ import { Faculty } from "../../faculties/models/faculty";
 import { Program } from "../../programs/models/program";
 import { StudentStatus } from "../../student_statuses/models/student_status";
 import { Address } from "../models/address";
+import { IDDocument, CCCDDocument, CMNDDocument, PassportDocument } from "../models/id-document";
 import "./profileDialog.css";
 import React, { useEffect, useState } from "react";
+import AddressItem from "./addressItem/addressItem";
+import IdDocumentItem from "./idDocumentItem/idDocumentItem";
 
 interface StudentItemProps {
     type: string;
@@ -49,7 +52,15 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
         tinh_thanh_pho: "",
         quoc_gia: "",
     };
-    const [address, setAddress] = useState<Address>(defaultAddress);
+    const [addresses, setAddresses] = useState<Address[]>([defaultAddress, defaultAddress]);
+
+    const defaultDocuments: IDDocument[] = [
+        { type: "cccd", so: "", ngay_cap: new Date(), noi_cap: "", ngay_het_han: new Date(), co_gan_chip: false } as CCCDDocument,
+        { type: "cmnd", so: "", ngay_cap: new Date(), noi_cap: "", ngay_het_han: new Date() } as CMNDDocument,
+        { type: "passport", so: "", ngay_cap: new Date(), noi_cap: "", ngay_het_han: new Date(), quoc_gia_cap: "", ghi_chu: "" } as PassportDocument
+    ];
+    const [documents, setDocuments] = useState<IDDocument[]>(defaultDocuments);
+
     const profileDialog = document.querySelector(
         ".profile-dialog-container"
     ) as HTMLElement;
@@ -79,7 +90,6 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
             !faculty ||
             !course ||
             !program ||
-            !address ||
             !email ||
             !phone ||
             !status
@@ -115,7 +125,6 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
     }
 
     useEffect(() => {
-
         async function fetchFaculties() {
             try {
                 const response = await fetch('http://localhost:3001/api/v1/faculties/all')
@@ -151,11 +160,11 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
         fetchPrograms()
         fetchStudentStatuses()
 
-    }, []);
+    }, [student]);
 
     useEffect(() => {
         setInnerHTML();
-    });
+    }, [type, student, faculties, programs, studentStatuses]);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -189,8 +198,6 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
             so_dien_thoai: data.get("phone") as string,
             tinh_trang: data.get("status") as string,
         };
-
-        console.log(JSON.stringify(studentData));
 
         if (type === "add") {
             try {
@@ -365,6 +372,11 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                                     <i className="fa-solid fa-caret-up"></i>
                                 </div>
                             </div>
+
+                            <AddressItem student={student} setAddresses={setAddresses} />
+
+                            <IdDocumentItem student={student} setDocuments={setDocuments}/>
+
                             <div className="profile-dialog-action">
                                 <button
                                     className="profile-dialog-action-save"

@@ -19,13 +19,10 @@ function App() {
       >
         <HorizontalNav />
         <Routes>
-          <Route path="/" element={<MainInformation />}>
-            <Route index element={<Students searchString="" />} />
-            <Route path="students" element={<Students searchString="" />} />
-          </Route>
-          <Route path="faculties" element={<Faculties />} />
-          <Route path="programs" element={<Programs />} />
-          <Route path="student-statuses" element={<StudentStatuses />} />
+          <Route path="/students" element={<MainInformation />} />
+          <Route path="/faculties" element={<Faculties />} />
+          <Route path="/programs" element={<Programs />} />
+          <Route path="/student-statuses" element={<StudentStatuses />} />
         </Routes>
       </div>
     </Router>

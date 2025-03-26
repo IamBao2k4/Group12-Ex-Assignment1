@@ -17,7 +17,9 @@
     border: 1px solid var(--border);
     border-radius: 5px;
     width: 70%;
+    height: 90%;
     margin: 0 auto;
+    overflow: auto;
 }
 
 .profile-dialog h1 {

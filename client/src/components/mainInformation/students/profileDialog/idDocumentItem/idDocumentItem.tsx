@@ -7,9 +7,10 @@ import PassportItem from './documentTypes/passportItem/passportItem';
 
 interface IdDocumentItemProps {
     student: Student;
+    setDocuments: (documents: IDDocument[]) => void;
 }
 
-const IdDocumentItem: React.FC<IdDocumentItemProps> = ({ student }) => {
+const IdDocumentItem: React.FC<IdDocumentItemProps> = ({ student, setDocuments }) => {
     const [selected, setSelected] = useState("");
 
     const getGiayTo = (type: string): IDDocument | undefined => {

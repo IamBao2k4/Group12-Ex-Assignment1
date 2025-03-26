@@ -140,10 +140,6 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
         selectedDistrict,
         selectedWard,
         detail,
-        provinces,
-        districts,
-        wards,
-        onAddressChange,
     ]);
 
     return (

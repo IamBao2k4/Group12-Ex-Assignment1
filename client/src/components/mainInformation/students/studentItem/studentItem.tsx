@@ -1,23 +1,23 @@
-import React, { useState, useEffect } from 'react'
-import './studentItem.css'
-import { Student } from '../models/student'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/Delete'
+import React, { useState, useEffect } from 'react';
+import './studentItem.css';
+import { Student } from '../models/student';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 interface StudentItemProps {
-    id: string
-    student: Student
-    ProfileHandler: (type: string) => void
-    setChosenStudent: (student: Student) => void
+    id: string;
+    student: Student;
+    ProfileHandler: (type: string) => void;
+    setChosenStudent: (student: Student) => void;
 }
 
 const StudentItem: React.FC<StudentItemProps> = ({ id, student, ProfileHandler, setChosenStudent }) => {
-    const [status, setStatus] = useState('')
-
+    const [status, setStatus] = useState('');
 
     function EditBtnHandler() {
-        ProfileHandler('edit')
-        setChosenStudent(student)
+        console.log("Edit button clicked");
+        setChosenStudent(student);
+        ProfileHandler('edit');
     }
 
     useEffect(() => {
@@ -29,9 +29,9 @@ const StudentItem: React.FC<StudentItemProps> = ({ id, student, ProfileHandler, 
         })
         .then(res => res.json())
         .then(data => {
-            setStatus(data.tinh_trang)
-        })
-    }, [status])
+            setStatus(data.tinh_trang);
+        });
+    }, [student.tinh_trang]);
 
     async function DeleteStudentHandler() {
         await fetch(`http://localhost:3001/api/v1/students/${student._id}`, {
@@ -42,8 +42,8 @@ const StudentItem: React.FC<StudentItemProps> = ({ id, student, ProfileHandler, 
         })
         .then(res => res.json())
         .then(() => {
-            window.location.reload()
-        })
+            window.location.reload();
+        });
     }
 
     return (
@@ -59,7 +59,7 @@ const StudentItem: React.FC<StudentItemProps> = ({ id, student, ProfileHandler, 
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default StudentItem
+export default StudentItem;
