@@ -39,58 +39,22 @@ export class StudentService {
     try {
       const { email, so_dien_thoai, ma_so_sinh_vien, khoa, chuong_trinh, tinh_trang } = studentData;
 
-      const existingStudentWithMSSV = await this.studentRepository.findByMSSV(ma_so_sinh_vien);
-      
-      if (existingStudentWithMSSV) {
-        this.logger.error(`student.service.create: Student ID '${ma_so_sinh_vien}' already exists`);
-        throw new BadRequestException(`Student ID '${ma_so_sinh_vien}' already exists`);
-      }
+      await this.validateMSSVUnique(ma_so_sinh_vien);
 
       if (email && so_dien_thoai) {
-        const existingStudent = await this.studentRepository.findByEmailOrPhone(email, so_dien_thoai);
-        if (existingStudent) {
-          this.logger.error(`student.service.create: Student with email '${email}' or phone number '${so_dien_thoai}' already exists`); 
-          throw new StudentExistsException();
-        }
+        await this.validateEmailAndPhoneUnique(email, so_dien_thoai);
       }
 
       if (khoa) {
-        try {
-          const faculty = await this.facultyService.detail(khoa.toString());
-          if (!faculty) {
-            this.logger.error(`student.service.create: Faculty with ID '${khoa}' does not exist`);
-            throw new BadRequestException(`Faculty with ID '${khoa}' does not exist`);
-          }
-        } catch (error) {
-          this.logger.error(`student.service.create: Faculty validation error: ${error.message}`);
-          throw new BadRequestException(`Faculty validation error: ${error.message}`);
-        }
+        await this.validateFacultyExists(khoa.toString());
       }
 
       if (chuong_trinh) {
-        try {
-          const program = await this.programService.detail(chuong_trinh.toString());
-          if (!program) {
-            this.logger.error(`student.service.create: Program with ID '${chuong_trinh}' does not exist`);
-            throw new BadRequestException(`Program with ID '${chuong_trinh}' does not exist`);
-          }
-        } catch (error) {
-          this.logger.error(`student.service.create: Program validation error: ${error.message}`);
-          throw new BadRequestException(`Program validation error: ${error.message}`);
-        }
+        await this.validateProgramExists(chuong_trinh.toString());
       }
 
       if (tinh_trang) {
-        try {
-          const studentStatus = await this.studentStatusService.detail(tinh_trang);
-          if (!studentStatus) {
-            this.logger.error(`student.service.create: Student status with ID '${tinh_trang}' does not exist`);
-            throw new BadRequestException(`Student status with ID '${tinh_trang}' does not exist`);
-          }
-        } catch (error) {
-          this.logger.error(`student.service.create: Student status validation error: ${error.message}`);
-          throw new BadRequestException(`Student status validation error: ${error.message}`);
-        }
+        await this.validateStudentStatusExists(tinh_trang);
       }
       
       const createdStudent = await this.studentRepository.create(studentData as any);
@@ -139,51 +103,19 @@ export class StudentService {
       }
 
       if (ma_so_sinh_vien) {
-        const existingStudentWithMSSV = await this.studentRepository.findByMSSV(ma_so_sinh_vien, id);
-        
-        if (existingStudentWithMSSV) {
-          throw new BadRequestException(`Student ID '${ma_so_sinh_vien}' already exists`);
-        }
+        await this.validateMSSVUnique(ma_so_sinh_vien, id);
       }
 
       if (khoa) {
-        try {
-          const faculty = await this.facultyService.detail(khoa.toString());
-          if (!faculty) {
-            throw new BadRequestException(`Faculty with ID '${khoa}' does not exist`);
-          }
-        } catch (error) {
-          throw new BadRequestException(`Faculty validation error: ${error.message}`);
-        }
+        await this.validateFacultyExists(khoa.toString());
       }
 
       if (chuong_trinh) {
-        try {
-          const program = await this.programService.detail(chuong_trinh.toString());
-          if (!program) {
-            throw new BadRequestException(`Program with ID '${chuong_trinh}' does not exist`);
-          }
-        } catch (error) {
-          throw new BadRequestException(`Program validation error: ${error.message}`);
-        }
+        await this.validateProgramExists(chuong_trinh.toString());
       }
 
       if (tinh_trang) {
-        try {
-          const statusBefore = currentStudent.tinh_trang ? currentStudent.tinh_trang.toString() : null;
-          const statusCurrent = tinh_trang.toString();
-          
-          const studentStatus = await this.studentStatusService.detail(statusCurrent);
-          if (!studentStatus) {
-            throw new BadRequestException(`Student status with ID '${tinh_trang}' does not exist`);
-          }
-          
-          if (statusBefore && !(await this.isValidStatusTransition(statusBefore, statusCurrent))) {
-            throw new BadRequestException(`Invalid status transition from '${currentStudent.tinh_trang}' to '${tinh_trang}'`);
-          }
-        } catch (error) {
-          throw new BadRequestException(`Student status validation error: ${error.message}`);
-        }
+        await this.validateStudentStatusChange(currentStudent, tinh_trang.toString());
       }
 
       const updatedStudent = await this.studentRepository.update(id, studentData as any);
@@ -295,5 +227,84 @@ export class StudentService {
     }
 
     return { general: [error.message || 'Unknown validation error'] };
+  }
+
+
+  private async validateMSSVUnique(mssv: string, excludeId?: string): Promise<void> {
+    const existingStudentWithMSSV = await this.studentRepository.findByMSSV(mssv, excludeId);
+    
+    if (existingStudentWithMSSV) {
+      this.logger.error(`student.service.validateMSSVUnique: Student ID '${mssv}' already exists`);
+      throw new BadRequestException(`Student ID '${mssv}' already exists`);
+    }
+  }
+
+
+  private async validateEmailAndPhoneUnique(email: string, phoneNumber: string): Promise<void> {
+    const existingStudent = await this.studentRepository.findByEmailOrPhone(email, phoneNumber);
+    if (existingStudent) {
+      this.logger.error(`student.service.validateEmailAndPhoneUnique: Student with email '${email}' or phone number '${phoneNumber}' already exists`); 
+      throw new StudentExistsException();
+    }
+  }
+
+
+  private async validateFacultyExists(facultyId: string): Promise<void> {
+    try {
+      const faculty = await this.facultyService.detail(facultyId);
+      if (!faculty) {
+        this.logger.error(`student.service.validateFacultyExists: Faculty with ID '${facultyId}' does not exist`);
+        throw new BadRequestException(`Faculty with ID '${facultyId}' does not exist`);
+      }
+    } catch (error) {
+      this.logger.error(`student.service.validateFacultyExists: Faculty validation error: ${error.message}`);
+      throw new BadRequestException(`Faculty validation error: ${error.message}`);
+    }
+  }
+
+
+  private async validateProgramExists(programId: string): Promise<void> {
+    try {
+      const program = await this.programService.detail(programId);
+      if (!program) {
+        this.logger.error(`student.service.validateProgramExists: Program with ID '${programId}' does not exist`);
+        throw new BadRequestException(`Program with ID '${programId}' does not exist`);
+      }
+    } catch (error) {
+      this.logger.error(`student.service.validateProgramExists: Program validation error: ${error.message}`);
+      throw new BadRequestException(`Program validation error: ${error.message}`);
+    }
+  }
+
+
+  private async validateStudentStatusExists(statusId: string): Promise<void> {
+    try {
+      const studentStatus = await this.studentStatusService.detail(statusId);
+      if (!studentStatus) {
+        this.logger.error(`student.service.validateStudentStatusExists: Student status with ID '${statusId}' does not exist`);
+        throw new BadRequestException(`Student status with ID '${statusId}' does not exist`);
+      }
+    } catch (error) {
+      this.logger.error(`student.service.validateStudentStatusExists: Student status validation error: ${error.message}`);
+      throw new BadRequestException(`Student status validation error: ${error.message}`);
+    }
+  }
+
+
+  private async validateStudentStatusChange(currentStudent: Student, newStatusId: string): Promise<void> {
+    try {
+      await this.validateStudentStatusExists(newStatusId);
+      
+      const statusBefore = currentStudent.tinh_trang ? currentStudent.tinh_trang.toString() : null;
+      
+      if (statusBefore && !(await this.isValidStatusTransition(statusBefore, newStatusId))) {
+        throw new BadRequestException(`Invalid status transition from '${currentStudent.tinh_trang}' to '${newStatusId}'`);
+      }
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new BadRequestException(`Student status validation error: ${error.message}`);
+    }
   }
 }
