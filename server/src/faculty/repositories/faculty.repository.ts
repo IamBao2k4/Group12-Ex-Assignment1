@@ -20,9 +20,8 @@ export class FacultyRepository implements IFacultyRepository {
     let createdFaculty: Faculty | null = null;
     try {
       createdFaculty = await faculty.save();
-      this.logger.log(`Created faculty with ID: ${createdFaculty._id}`);
     } catch (error) {
-      this.logger.error('Error creating faculty', error.stack);
+      this.logger.error('faculty.repository.create: Error creating faculty', error.stack);
       throw new BaseException(error, 'CREATE_FACULTY_ERROR');
     }
     return createdFaculty;
@@ -31,24 +30,26 @@ export class FacultyRepository implements IFacultyRepository {
   async update(id: string, facultyData: Partial<Faculty>): Promise<Faculty | null> {
     try {
       const updatedFaculty = await this.facultyModel
-        .findOneAndUpdate({
-          _id: id,
-          $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }]
-        }, facultyData, { new: true })
+        .findOneAndUpdate(
+          {
+            _id: id,
+            $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }]
+          },
+          facultyData,
+          { new: true }
+        )
         .exec();
       
       if (!updatedFaculty) {
-        this.logger.warn(`Faculty not found for update with ID: ${id}`);
         throw new FacultyNotFoundException(id);
       }
       
-      this.logger.log(`Updated faculty with ID: ${updatedFaculty._id}`);
       return updatedFaculty;
     } catch (error) {
       if (error instanceof FacultyNotFoundException) {
         throw error;
       }
-      this.logger.error(`Error updating faculty with ID: ${id}`, error.stack);
+      this.logger.error(`faculty.repository.update: Error updating faculty with ID ${id}`, error.stack);
       throw new BaseException(error, 'UPDATE_FACULTY_ERROR');
     }
   }
@@ -91,18 +92,16 @@ export class FacultyRepository implements IFacultyRepository {
         .skip(skip)
         .limit(limit)
         .exec();
-      this.logger.log(`Found ${faculties.length} faculties`);
     } catch (error) {
-      this.logger.error('Error finding all faculties', error.stack);
+      this.logger.error('faculty.repository.findAll: Error finding faculties', error.stack);
       throw new BaseException(error, 'FIND_ALL_FACULTY_ERROR');
     }
 
     let total = 0;
     try {
       total = await this.facultyModel.countDocuments({ $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] });
-      this.logger.log(`Total faculties count: ${total}`);
     } catch (error) {
-      this.logger.error('Error counting faculties', error.stack);
+      this.logger.error('faculty.repository.findAll: Error counting faculties', error.stack);
       throw new BaseException(error, 'COUNT_FACULTIES_ERROR');
     }
     
@@ -124,17 +123,15 @@ export class FacultyRepository implements IFacultyRepository {
         .exec();
       
       if (!deletedFaculty) {
-        this.logger.warn(`Faculty not found for soft delete with ID: ${id}`);
         throw new FacultyNotFoundException(id);
       }
       
-      this.logger.log(`Soft deleted faculty with ID: ${deletedFaculty._id}`);
       return deletedFaculty;
     } catch (error) {
       if (error instanceof FacultyNotFoundException) {
         throw error;
       }
-      this.logger.error(`Error soft deleting faculty with ID: ${id}`, error.stack);
+      this.logger.error(`faculty.repository.softDelete: Error deleting faculty with ID ${id}`, error.stack);
       throw new BaseException(error, 'DELETE_FACULTY_ERROR');
     }
   }
@@ -143,10 +140,9 @@ export class FacultyRepository implements IFacultyRepository {
     let faculties: Faculty[] = [];
     try {
       faculties = await this.facultyModel.find({ $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] }).exec();
-      this.logger.log(`Found ${faculties.length} faculties`);
     } catch (error) {
-      this.logger.error('Error getting all faculties', error.stack);
-      throw new BaseException(error, 'FIND_ALL_FACULTY_ERROR');
+      this.logger.error('faculty.repository.getAll: Error getting all faculties', error.stack);
+      throw new BaseException(error, 'GET_ALL_FACULTIES_ERROR');
     }
     return faculties;
   }

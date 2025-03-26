@@ -1,10 +1,11 @@
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus, Logger } from '@nestjs/common';
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { BaseException } from "./base.exception";
+import { ApiLoggerService } from '../logger/api-logger.service';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
-  private readonly logger = new Logger(GlobalExceptionFilter.name);
+  private readonly logger = new ApiLoggerService(GlobalExceptionFilter.name);
 
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
@@ -18,7 +19,6 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     let details = undefined;
 
     if (exception instanceof BaseException) {
-      // Xử lý exception tùy chỉnh của ứng dụng
       status = exception.getStatus();
       const responseBody = exception.getResponse() as any;
       message = responseBody.message || exception.message;
@@ -26,7 +26,6 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       errorCode = responseBody.errorCode || 'UNKNOWN_ERROR';
       details = responseBody.details;
     } else if (exception instanceof HttpException) {
-      // Xử lý các HTTP exceptions tiêu chuẩn của NestJS
       status = exception.getStatus();
       const responseBody = exception.getResponse();
       message = typeof responseBody === 'object' && 'message' in responseBody
@@ -36,18 +35,19 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         : exception.message;
       error = exception.name;
     } else if (exception instanceof Error) {
-      // Xử lý các lỗi JavaScript/TypeScript cơ bản
       message = exception.message;
       error = exception.name;
     }
 
-    // Log lỗi
-    this.logger.error(
-      `${request.method} ${request.url} - ${status} - ${message}`,
-      exception instanceof Error ? exception.stack : undefined,
-    );
+    this.logger.logApiError(request, {
+      status,
+      message,
+      name: error,
+      errorCode,
+      details,
+      stack: exception instanceof Error ? exception.stack : undefined,
+    });
 
-    // Trả về response chuẩn hóa
     response.status(status).json({
       statusCode: status,
       message,

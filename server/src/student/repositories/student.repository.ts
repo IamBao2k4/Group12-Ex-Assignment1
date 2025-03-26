@@ -20,9 +20,8 @@ export class StudentRepository implements IStudentRepository {
     let createdStudent: Student | null = null;
     try {
       createdStudent = await student.save();
-      this.logger.log(`Created student with ID: ${createdStudent._id}`);
     } catch (error) {
-      this.logger.error('Error creating student', error.stack);
+      this.logger.error('student.repository.create: Error creating student', error.stack);
       throw new BaseException(error, 'CREATE_STUDENT_ERROR');
     }
     return createdStudent;
@@ -44,9 +43,8 @@ export class StudentRepository implements IStudentRepository {
     let student: Student | null = null;
     try {
       student = await this.studentModel.findOne(query).exec();
-      this.logger.log(`Found student by email or phone: ${student?._id}`);
     } catch (error) {
-      this.logger.error('Error finding student by email or phone', error.stack);
+      this.logger.error('student.repository.findByEmailOrPhone: Error finding student', error.stack);
       throw new BaseException(error, 'FIND_STUDENT_BY_EMAIL_OR_PHONE_ERROR');
     }
     return student;
@@ -61,8 +59,6 @@ export class StudentRepository implements IStudentRepository {
     const pagination = new Pagination(paginationOpts);
     const skip = pagination.Skip();
     const limit = pagination.Limit();
-
-    console.log("faculty", faculty);
 
     let query = {};
 
@@ -103,18 +99,16 @@ export class StudentRepository implements IStudentRepository {
         .skip(skip)
         .limit(limit)
         .exec();
-      this.logger.log(`Found ${students.length} students`);
     } catch (error) {
-      this.logger.error('Error finding all students', error.stack);
+      this.logger.error('student.repository.findAll: Error finding students', error.stack);
       throw new BaseException(error, 'FIND_ALL_STUDENT_ERROR');
     }
 
     let total = 0;
     try {
       total = await this.studentModel.countDocuments({$or: [{ deleted_at: { $exists: false } }, { deleted_at: null }]}).exec();
-      this.logger.log(`Total students count: ${total}`);
     } catch (error) {
-      this.logger.error('Error counting students', error.stack);
+      this.logger.error('student.repository.findAll: Error counting students', error.stack);
       throw new BaseException(error, 'COUNT_STUDENTS_ERROR');
     }
 
@@ -135,10 +129,9 @@ export class StudentRepository implements IStudentRepository {
         _id: id, 
         $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] 
       }).exec();
-      this.logger.log(`Found student by ID: ${student?._id}`);
       return student;
     } catch (error) {
-      this.logger.error(`Error finding student by ID: ${id}`, error.stack);
+      this.logger.error(`student.repository.findById: Error finding student with ID ${id}`, error.stack);
       throw new BaseException(error, 'FIND_STUDENT_BY_ID_ERROR');
     }
   }
@@ -159,17 +152,15 @@ export class StudentRepository implements IStudentRepository {
       .exec();
       
       if (!updatedStudent) {
-        this.logger.warn(`Student not found for update with ID: ${id}`);
         throw new StudentNotFoundException(id);
       }
       
-      this.logger.log(`Updated student with ID: ${updatedStudent._id}`);
       return updatedStudent;
     } catch (error) {
       if (error instanceof StudentNotFoundException) {
         throw error;
       }
-      this.logger.error(`Error updating student with ID: ${id}`, error.stack);
+      this.logger.error(`student.repository.update: Error updating student with ID ${id}`, error.stack);
       throw new BaseException(error, 'UPDATE_STUDENT_ERROR');
     }
   }
@@ -181,17 +172,15 @@ export class StudentRepository implements IStudentRepository {
         .exec();
 
       if (!deletedStudent) {
-        this.logger.warn(`Student not found for soft delete with ID: ${id}`);
         throw new StudentNotFoundException(id);
       }
       
-      this.logger.log(`Soft deleted student with ID: ${deletedStudent._id}`);
       return deletedStudent;
     } catch (error) {
       if (error instanceof StudentNotFoundException) {
         throw error;
       }
-      this.logger.error(`Error soft deleting student with ID: ${id}`, error.stack);
+      this.logger.error(`student.repository.softDelete: Error deleting student with ID ${id}`, error.stack);
       throw new BaseException(error, 'DELETE_STUDENT_ERROR');
     }
   }
