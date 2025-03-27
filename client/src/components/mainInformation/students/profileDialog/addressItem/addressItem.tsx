@@ -7,6 +7,7 @@ import "./addressItem.css"
 interface AddressItemProps {
     student: Student;
     setAddresses: (addresses: Address[]) => void;
+    type: string;
 }
 
 const defaultAddress: Address = {
@@ -17,7 +18,7 @@ const defaultAddress: Address = {
     quoc_gia: "",
 };
 
-const AddressItem: React.FC<AddressItemProps> = ({ student, setAddresses }) => {
+const AddressItem: React.FC<AddressItemProps> = ({ student, setAddresses, type }) => {
     const [permanentAddress, setPermanentAddress] = useState<Address>(defaultAddress);
     const [temporaryAddress, setTemporaryAddress] = useState<Address>(defaultAddress);
 
@@ -31,6 +32,7 @@ const AddressItem: React.FC<AddressItemProps> = ({ student, setAddresses }) => {
                 label="Địa chỉ thường trú"
                 onAddressChange={(addr: Address) => {setPermanentAddress(addr)}}
                 initialAddress={student?.dia_chi_thuong_tru}
+                type={type}
             />
 
             <label style={{ marginTop: "20px" }}>Địa chỉ thường trú</label>
@@ -41,9 +43,10 @@ const AddressItem: React.FC<AddressItemProps> = ({ student, setAddresses }) => {
                 readOnly
                 placeholder="Địa chỉ thường trú"
                 className="address-item-input"
-                value={
-                    permanentAddress
+                value={ type === "edit"?
+                    (permanentAddress
                         ? `${permanentAddress.chi_tiet}, ${permanentAddress.phuong_xa}, ${permanentAddress.quan_huyen}, ${permanentAddress.tinh_thanh_pho}`
+                        : "")
                         : ""
                 }
             />
@@ -54,6 +57,7 @@ const AddressItem: React.FC<AddressItemProps> = ({ student, setAddresses }) => {
                 label="Địa chỉ tạm trú"
                 onAddressChange={(addr: Address) => setTemporaryAddress(addr)}
                 initialAddress={student?.dia_chi_tam_tru}
+                type={type}
             />
 
             <label style={{ marginTop: "20px" }}>Địa chỉ tạm trú</label>
@@ -64,9 +68,10 @@ const AddressItem: React.FC<AddressItemProps> = ({ student, setAddresses }) => {
                 readOnly
                 placeholder="Địa chỉ tạm trú"
                 className="address-item-input"
-                value={
-                    temporaryAddress
+                value={ type === "edit"?
+                    (temporaryAddress
                         ? `${temporaryAddress.chi_tiet}, ${temporaryAddress.phuong_xa}, ${temporaryAddress.quan_huyen}, ${temporaryAddress.tinh_thanh_pho}`
+                        : "")
                         : ""
                 }
             />

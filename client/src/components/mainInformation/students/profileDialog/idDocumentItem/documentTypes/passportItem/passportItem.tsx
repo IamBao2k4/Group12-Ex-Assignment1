@@ -3,11 +3,22 @@ import { PassportDocument } from '../../../../models/id-document';
 import "./passportItem.css"
 
 interface PassportItemProps {
-    document: PassportDocument;
+    document: PassportDocument | null;
     setDocument: (document: PassportDocument) => void;
 }
 
+const defaultPassport: PassportDocument = {
+    type: 'passport',
+    so: "",
+    ngay_cap: new Date(),
+    noi_cap: "",
+    ngay_het_han: new Date(),
+    quoc_gia_cap: "",
+    ghi_chu: "",
+};
+
 const PassportItem: React.FC<PassportItemProps> = ({ document, setDocument }) => {
+    if (!document) document = defaultPassport;
     return (
         <div className="profile-dialog-info-form-hc">
             <div className="profile-dialog-info-form-group">

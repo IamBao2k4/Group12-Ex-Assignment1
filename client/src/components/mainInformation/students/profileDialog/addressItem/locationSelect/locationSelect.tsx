@@ -9,12 +9,14 @@ interface LocationSelectProps {
     label: string;
     onAddressChange: (address: Address) => void;
     initialAddress?: Address | null;
+    type: string;
 }
 
 const LocationSelect: React.FC<LocationSelectProps> = ({
     label,
     onAddressChange,
     initialAddress,
+    type
 }) => {
 
     const [provinces, setProvinces] = React.useState<Province[]>([]);
@@ -51,10 +53,15 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
 
     useEffect(() => {
         if (initialAddress && provinces.length > 0) {
-            const province = provinces.find(
-                (p) => p.name === initialAddress.tinh_thanh_pho
-            );
-            if (province) {
+            let province : Province | undefined;
+
+            provinces.forEach((p) => {
+                if (p.name === initialAddress.tinh_thanh_pho) {
+                    province = p;
+                }
+            });
+
+            if (province) { 
                 setSelectedProvinceCode(province.code);
                 setDistricts(province.districts);
 
@@ -145,6 +152,7 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
 
     return (
         <div className="location-select">
+            <h2>{label}</h2>
             <label htmlFor="">Tỉnh, huyện</label>
 
             <div className="location-select-group">
@@ -152,7 +160,7 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
                     name="province"
                     id="province"
                     onChange={handleProvinceChange}
-                    value={selectedProvince || ""}
+                    value={type === "edit"? (selectedProvince || "") : ""}
                 >
                     <option value="">-- Chọn tỉnh --</option>
                     {provinces.map((province) => (
@@ -165,7 +173,7 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
                     name="district"
                     id="district"
                     onChange={handleDistrictChange}
-                    value={selectedDistrict || ""}
+                    value={type === "edit"? (selectedDistrict || "") : ""}
                 >
                     <option value="">-- Chọn quận --</option>
                     {districts.map((district) => (
@@ -183,7 +191,7 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
                     name="ward"
                     id="ward"
                     onChange={handleWardChange}
-                    value={selectedWard || ""}
+                    value={type === "edit"? (selectedWard || "") : ""}
                 >
                     <option value="">-- Chọn phường --</option>
                     {wards.map((ward) => (
@@ -199,7 +207,7 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
                     name="detail"
                     placeholder="Số nhà, đường..."
                     onChange={handleDetailChange}
-                    value={detail}
+                    value={type === "edit"? (detail || "") : ""}
                 />
             </div>
         </div>

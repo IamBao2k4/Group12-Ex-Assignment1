@@ -3,11 +3,21 @@ import { CCCDDocument } from '../../../../models/id-document';
 import "./CCCDItem.css"
 
 interface CCCDItemProps {
-    document: CCCDDocument;
+    document: CCCDDocument | null;
     setDocument: (document: CCCDDocument) => void;
 }
 
+const defaultCCCD: CCCDDocument = {
+    type: 'cccd',
+    so: "",
+    ngay_cap: new Date(),
+    noi_cap: "",
+    ngay_het_han: new Date(),
+    co_gan_chip: false,
+};
+
 const CCCDItem: React.FC<CCCDItemProps> = ({ document, setDocument }) => {
+    if(!document) document = defaultCCCD;
     return (
         <div className="profile-dialog-info-form-cccd">
             <div className="profile-dialog-info-form-group">

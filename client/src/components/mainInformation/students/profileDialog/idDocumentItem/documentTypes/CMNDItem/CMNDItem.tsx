@@ -3,11 +3,20 @@ import { CMNDDocument } from '../../../../models/id-document';
 import "./CMNDItem.css"
 
 interface CMNDItemProps {
-    document: CMNDDocument;
+    document: CMNDDocument | null;
     setDocument: (document: CMNDDocument) => void;
 }
 
+const defaultCMND: CMNDDocument = {
+    type: 'cmnd',
+    so: "",
+    ngay_cap: new Date(),
+    noi_cap: "",
+    ngay_het_han: new Date(),
+};
+
 const CMNDItem: React.FC<CMNDItemProps> = ({ document, setDocument }) => {
+    if (!document) document = defaultCMND;
     return (
         <div className="profile-dialog-info-form-cmnd">
             <div className="profile-dialog-info-form-group">

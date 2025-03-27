@@ -375,9 +375,9 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                                 </div>
                             </div>
 
-                            <AddressItem student={student} setAddresses={setAddresses} />
+                            <AddressItem student={student} setAddresses={setAddresses} type={type}/>
 
-                            <IdDocumentItem student={student} setDocuments={setDocuments}/>
+                            <IdDocumentItem student={student} setDocuments={setDocuments} type={type}/>
 
                             <div className="profile-dialog-action">
                                 <button

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Student } from '../../models/student';
-import { IDDocument } from '../../models/id-document';
+import { IDDocument, CMNDDocument, CCCDDocument, PassportDocument } from '../../models/id-document';
 import CMNDItem from './documentTypes/CMNDItem/CMNDItem';
 import CCCDItem from './documentTypes/CCCDItem/CCCDItem';
 import PassportItem from './documentTypes/passportItem/passportItem';
@@ -9,9 +9,10 @@ import "./idDocumentItem.css"
 interface IdDocumentItemProps {
     student: Student;
     setDocuments: (documents: IDDocument[]) => void;
+    type: string;
 }
 
-const IdDocumentItem: React.FC<IdDocumentItemProps> = ({ student, setDocuments }) => {
+const IdDocumentItem: React.FC<IdDocumentItemProps> = ({ student, setDocuments, type }) => {
     const [selected, setSelected] = useState("");
 
     const getGiayTo = (type: string): IDDocument | undefined => {
@@ -65,16 +66,16 @@ const IdDocumentItem: React.FC<IdDocumentItemProps> = ({ student, setDocuments }
                 </label>
             </div>
 
-            {selected === "CMND" && document?.type === "cmnd" && (
-                <CMNDItem document={document} setDocument={setDocument} />
+            {selected === "CMND" && (
+                <CMNDItem document={type === "edit" ? (document as CMNDDocument | null) : null} setDocument={setDocument} />
             )}
 
-            {selected === "CCCD" && document?.type === "cccd" && (
-                <CCCDItem document={document} setDocument={setDocument} />
+            {selected === "CCCD" && (
+                <CCCDItem document={type === "edit"? (document as CCCDDocument | null): null} setDocument={setDocument} />
             )}
 
-            {selected === "passport" && document?.type === "passport" && (
-                <PassportItem document={document} setDocument={setDocument} />
+            {selected === "passport" && (
+                <PassportItem document={type === "edit"? (document as PassportDocument | null): null} setDocument={setDocument} />
             )}
         </div>
     );
