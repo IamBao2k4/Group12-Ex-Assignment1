@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import './detailDialog.css';
 
+import { SERVER_URL } from '../../../../../global';
+
 import { Program } from '../models/program';
 
 interface DetailDialogProps {
@@ -45,7 +47,7 @@ const DetailDialog: React.FC<DetailDialogProps> = ({ type, program }) => {
 
         if (type === 'add') {
             try {
-                const response = await fetch('http://localhost:3001/api/v1/programs', {
+                const response = await fetch(SERVER_URL + `/api/v1/programs`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(programData),
@@ -70,7 +72,7 @@ const DetailDialog: React.FC<DetailDialogProps> = ({ type, program }) => {
             }
         } else {
             try {
-                const response = await fetch(`http://localhost:3001/api/v1/programs/${program._id}`, {
+                const response = await fetch(SERVER_URL + `/api/v1/programs/${program._id}`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(programData),

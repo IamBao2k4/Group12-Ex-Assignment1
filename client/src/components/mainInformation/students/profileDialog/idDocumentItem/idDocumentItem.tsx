@@ -4,6 +4,7 @@ import { IDDocument } from '../../models/id-document';
 import CMNDItem from './documentTypes/CMNDItem/CMNDItem';
 import CCCDItem from './documentTypes/CCCDItem/CCCDItem';
 import PassportItem from './documentTypes/passportItem/passportItem';
+import "./idDocumentItem.css"
 
 interface IdDocumentItemProps {
     student: Student;

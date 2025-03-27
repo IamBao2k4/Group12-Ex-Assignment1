@@ -3,6 +3,8 @@ import './detailDialog.css';
 
 import { Faculty } from '../models/faculty';
 
+import { SERVER_URL } from '../../../../../global';
+
 interface DetailDialogProps {
     type: string;
     faculty: Faculty;
@@ -49,7 +51,7 @@ const DetailDialog: React.FC<DetailDialogProps> = ({ type, faculty }) => {
 
         if (type === 'add') {
             try {
-                const response = await fetch('http://localhost:3001/api/v1/faculties', {
+                const response = await fetch(SERVER_URL + `/api/v1/faculties`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(facultyData),
@@ -74,7 +76,7 @@ const DetailDialog: React.FC<DetailDialogProps> = ({ type, faculty }) => {
             }
         } else {
             try {
-                const response = await fetch(`http://localhost:3001/api/v1/faculties/${faculty._id}`, {
+                const response = await fetch(SERVER_URL + `/api/v1/faculties/${faculty._id}`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(facultyData),

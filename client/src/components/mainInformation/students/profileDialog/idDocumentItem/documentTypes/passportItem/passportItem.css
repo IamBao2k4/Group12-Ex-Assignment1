@@ -1,0 +1,9 @@
+.profile-dialog-info-form-hc {
+    margin-top: 20px;
+}
+
+.profile-dialog-info-form-hc {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px 30px;
+}

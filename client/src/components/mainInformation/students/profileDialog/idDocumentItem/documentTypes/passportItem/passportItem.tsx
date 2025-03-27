@@ -1,5 +1,6 @@
 import React from 'react';
 import { PassportDocument } from '../../../../models/id-document';
+import "./passportItem.css"
 
 interface PassportItemProps {
     document: PassportDocument;

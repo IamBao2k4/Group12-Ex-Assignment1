@@ -6,6 +6,8 @@ import { StudentStatus } from '../models/student_status';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
+import { SERVER_URL } from '../../../../../global';
+
 interface StudentStatusItemProps {
     studentStatus: StudentStatus;
     DetailHandler: (type: string) => void;
@@ -16,7 +18,7 @@ const StudentStatusItem: React.FC<StudentStatusItemProps> = ({ studentStatus, De
 
     async function DeleteHandler() {
         console.log("Deleting ...");
-        await fetch(`http://localhost:3001/api/v1/student-statuses/${studentStatus._id}`, {
+        await fetch(SERVER_URL + `/api/v1/student-statuses/${studentStatus._id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'

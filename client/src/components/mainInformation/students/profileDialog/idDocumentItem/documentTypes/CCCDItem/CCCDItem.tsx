@@ -1,5 +1,6 @@
 import React from 'react';
 import { CCCDDocument } from '../../../../models/id-document';
+import "./CCCDItem.css"
 
 interface CCCDItemProps {
     document: CCCDDocument;

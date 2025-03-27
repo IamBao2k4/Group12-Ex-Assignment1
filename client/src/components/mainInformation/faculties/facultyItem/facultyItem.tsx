@@ -6,6 +6,8 @@ import { Faculty } from '../models/faculty'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 
+import { SERVER_URL } from '../../../../../global'
+
 interface FacultyItemProps {
     faculty: Faculty
     DetailHandler: (type: string) => void
@@ -16,7 +18,7 @@ const FacultyItem: React.FC<FacultyItemProps> = ({ faculty, DetailHandler, setCh
 
     async function DeleteHandler() {
         console.log("Deleting ...")
-        await fetch(`http://localhost:3001/api/v1/faculties/${faculty._id}`, {
+        await fetch(SERVER_URL + `/api/v1/faculties/${faculty._id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'

@@ -1,0 +1,32 @@
+.address-item-container {
+    margin-top: 20px;
+}
+
+.location-select-divider {
+    margin-top: 20px;
+    border: 1px solid var(--border);
+    border-radius: 99px;
+}
+
+.address-item-input {
+    width: 100%;
+    height: 40px;
+    margin-top: 15px;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    outline: none;
+    background-color: var(--primary);
+    color: var(--text);
+    transition: border-color 0.3s ease-in-out;
+}
+
+.address-item-input:focus {
+    border-color: var(--secondary);
+}
+
+.address-item-input[readonly] {
+    background-color: var(--light-gray);
+    color: var(--dark-gray);
+    cursor: not-allowed;
+}

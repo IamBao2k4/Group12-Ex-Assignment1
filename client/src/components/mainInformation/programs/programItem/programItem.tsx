@@ -6,6 +6,8 @@ import { Program } from '../models/program';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
+import { SERVER_URL } from '../../../../../global';
+
 interface ProgramItemProps {
     program: Program;
     DetailHandler: (type: string) => void;
@@ -16,7 +18,7 @@ const ProgramItem: React.FC<ProgramItemProps> = ({ program, DetailHandler, setCh
 
     async function DeleteHandler() {
         console.log("Deleting ...");
-        await fetch(`http://localhost:3001/api/v1/programs/${program._id}`, {
+        await fetch(SERVER_URL + `/api/v1/programs/${program._id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'

@@ -1,0 +1,22 @@
+.id-document-item-container {
+    margin-top: 20px;
+}
+
+.profile-dialog-info-form-radio {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.profile-dialog-info-form-radio label {
+    display: flex;
+    align-items: center;
+    column-gap: 15px;
+}
+
+.profile-dialog-info-form-radio input {
+    width: 20px;
+    height: 20px;
+    margin-top: 0;
+}

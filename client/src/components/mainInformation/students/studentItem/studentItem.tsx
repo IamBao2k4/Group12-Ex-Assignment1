@@ -4,6 +4,8 @@ import { Student } from '../models/student';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
+import { SERVER_URL } from '../../../../../global';
+
 interface StudentItemProps {
     id: string;
     student: Student;
@@ -21,7 +23,7 @@ const StudentItem: React.FC<StudentItemProps> = ({ id, student, ProfileHandler, 
     }
 
     useEffect(() => {
-        fetch(`http://localhost:3001/api/v1/student-statuses/${student.tinh_trang}`, {
+        fetch(`${SERVER_URL}/api/v1/student-statuses/${student.tinh_trang}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -34,7 +36,7 @@ const StudentItem: React.FC<StudentItemProps> = ({ id, student, ProfileHandler, 
     }, [student.tinh_trang]);
 
     async function DeleteStudentHandler() {
-        await fetch(`http://localhost:3001/api/v1/students/${student._id}`, {
+        await fetch(process.env.SERVER_URI + `/api/v1/students/${student._id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'

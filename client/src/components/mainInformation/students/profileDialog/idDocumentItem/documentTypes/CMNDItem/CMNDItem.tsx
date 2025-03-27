@@ -1,5 +1,6 @@
 import React from 'react';
 import { CMNDDocument } from '../../../../models/id-document';
+import "./CMNDItem.css"
 
 interface CMNDItemProps {
     document: CMNDDocument;

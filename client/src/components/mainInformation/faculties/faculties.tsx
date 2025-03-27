@@ -8,6 +8,7 @@ import FacultyItem from "./facultyItem/facultyItem"
 import DetailDialog from "./detailDialog/detailDialog"
 import AddIcon from '@mui/icons-material/Add'
 
+import { SERVER_URL } from '../../../../global'
 
 const Faculties = () => {
     const [faculties, setFaculties] = useState<Faculty[]>([])
@@ -20,7 +21,7 @@ const Faculties = () => {
     useEffect(() => {
         async function fetchFaculties() {
             try {
-                const response = await fetch(`http://localhost:3001/api/v1/faculties?page=${currentPage}&searchString=${search}`,)
+                const response = await fetch(SERVER_URL + `/api/v1/faculties?page=${currentPage}&searchString=${search}`,)
                 const data = await response.json()
                 setFaculties(data.data)
                 setTotalPages(data.meta.total)

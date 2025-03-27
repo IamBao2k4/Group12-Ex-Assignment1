@@ -3,6 +3,7 @@ import { Address } from '../../../models/address';
 import { District } from '../../../models/district';
 import { Province } from '../../../models/province';
 import { Ward } from '../../../models/ward';
+import "./locationSelect.css"
 
 interface LocationSelectProps {
     label: string;

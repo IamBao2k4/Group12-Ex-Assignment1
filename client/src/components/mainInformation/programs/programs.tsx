@@ -8,6 +8,8 @@ import ProgramItem from "./programItem/programItem";
 import DetailDialog from "./detailDialog/detailDialog";
 import AddIcon from '@mui/icons-material/Add';
 
+import { SERVER_URL } from '../../../../global';
+
 const Programs = () => {
     const [programs, setPrograms] = useState<Program[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -19,7 +21,7 @@ const Programs = () => {
     useEffect(() => {
         async function fetchPrograms() {
             try {
-                const response = await fetch(`http://localhost:3001/api/v1/programs?page=${currentPage}&searchString=${search}`,);
+                const response = await fetch(SERVER_URL + `/api/v1/programs?page=${currentPage}&searchString=${search}`,);
                 const data = await response.json();
                 setPrograms(data.data);
                 setTotalPages(data.meta.total);

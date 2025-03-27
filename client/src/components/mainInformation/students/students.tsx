@@ -8,6 +8,8 @@ import { Student } from './models/student';
 import { Faculty } from '../faculties/models/faculty';
 import AddIcon from '@mui/icons-material/Add';
 
+import { SERVER_URL } from '../../../../global';
+
 interface StudentProps {
     searchString: string
 }
@@ -24,7 +26,7 @@ const Students: React.FC<StudentProps> = ({ searchString }) => {
     useEffect(() => {
         async function fetchStudents() {
             try {
-                const response = await fetch(`http://localhost:3001/api/v1/students?searchString=${searchString}&faculty=${faculty}&page=${currentPage}`)
+                const response = await fetch(`${SERVER_URL}/api/v1/students?searchString=${searchString}&faculty=${faculty}&page=${currentPage}`)
                 const data = await response.json()
                 setStudents(data.data)
                 setTotalPages(data.meta.total)
@@ -35,7 +37,7 @@ const Students: React.FC<StudentProps> = ({ searchString }) => {
 
         async function fetchFaculty() {
             try {
-                const response = await fetch('http://localhost:3001/api/v1/faculties/all')
+                const response = await fetch(`${SERVER_URL}/api/v1/faculties/all`)
                 const data = await response.json()
                 setFaculties(data)
             } catch (error) {
@@ -112,4 +114,4 @@ const Students: React.FC<StudentProps> = ({ searchString }) => {
     )
 }
 
-export default Students
+export default Students;

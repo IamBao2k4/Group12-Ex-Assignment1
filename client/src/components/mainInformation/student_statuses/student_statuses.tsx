@@ -8,6 +8,8 @@ import StudentStatusItem from "./student_statusItem/student_statusItem";
 import DetailDialog from "./detailDialog/detailDialog";
 import AddIcon from '@mui/icons-material/Add';
 
+import { SERVER_URL } from '../../../../global';
+
 const StudentStatuses = () => {
     const [studentStatuses, setStudentStatuses] = useState<StudentStatus[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -19,7 +21,7 @@ const StudentStatuses = () => {
     useEffect(() => {
         async function fetchStudentStatuses() {
             try {
-                const response = await fetch(`http://localhost:3001/api/v1/student-statuses?page=${currentPage}&searchString=${search}`,);
+                const response = await fetch(SERVER_URL + `/api/v1/student-statuses?page=${currentPage}&searchString=${search}`,);
                 const data = await response.json();
                 setStudentStatuses(data.data);
                 setTotalPages(data.meta.total);

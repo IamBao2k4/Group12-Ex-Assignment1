@@ -9,6 +9,8 @@ import React, { useEffect, useState } from "react";
 import AddressItem from "./addressItem/addressItem";
 import IdDocumentItem from "./idDocumentItem/idDocumentItem";
 
+import { SERVER_URL } from "../../../../../global";
+
 interface StudentItemProps {
     type: string;
     student: Student;
@@ -127,7 +129,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
     useEffect(() => {
         async function fetchFaculties() {
             try {
-                const response = await fetch('http://localhost:3001/api/v1/faculties/all')
+                const response = await fetch(SERVER_URL + `/api/v1/faculties/all`)
                 const data = await response.json()
 
                 setFaculties(data)
@@ -138,7 +140,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
 
         async function fetchPrograms() {
             try {
-                const response = await fetch('http://localhost:3001/api/v1/programs/all')
+                const response = await fetch(SERVER_URL + `/api/v1/programs/all`)
                 const data = await response.json()
                 setPrograms(data)
             } catch (error) {
@@ -148,7 +150,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
 
         async function fetchStudentStatuses() {
             try {
-                const response = await fetch('http://localhost:3001/api/v1/student-statuses/all')
+                const response = await fetch(SERVER_URL + `/api/v1/student-statuses/all`)
                 const data = await response.json()
                 setStudentStatuses(data)
             } catch (error) {
@@ -202,7 +204,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
         if (type === "add") {
             try {
                 const response = await fetch(
-                    "http://localhost:3001/api/v1/students",
+                    `${SERVER_URL}/api/v1/students`,
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -230,7 +232,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
         } else {
             try {
                 const response = await fetch(
-                    `http://localhost:3001/api/v1/students/${student._id}`,
+                    SERVER_URL + `/api/v1/students/${student._id}`,
                     {
                         method: "PATCH",
                         headers: { "Content-Type": "application/json" },

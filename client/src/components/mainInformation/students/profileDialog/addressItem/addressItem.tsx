@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Address } from "../../models/address";
 import { Student } from "../../models/student";
 import LocationSelect from "./locationSelect/locationSelect";
+import "./addressItem.css"
 
 interface AddressItemProps {
     student: Student;
@@ -39,6 +40,7 @@ const AddressItem: React.FC<AddressItemProps> = ({ student, setAddresses }) => {
                 id="permanent-address"
                 readOnly
                 placeholder="Địa chỉ thường trú"
+                className="address-item-input"
                 value={
                     permanentAddress
                         ? `${permanentAddress.chi_tiet}, ${permanentAddress.phuong_xa}, ${permanentAddress.quan_huyen}, ${permanentAddress.tinh_thanh_pho}`
@@ -61,6 +63,7 @@ const AddressItem: React.FC<AddressItemProps> = ({ student, setAddresses }) => {
                 id="temporary-address"
                 readOnly
                 placeholder="Địa chỉ tạm trú"
+                className="address-item-input"
                 value={
                     temporaryAddress
                         ? `${temporaryAddress.chi_tiet}, ${temporaryAddress.phuong_xa}, ${temporaryAddress.quan_huyen}, ${temporaryAddress.tinh_thanh_pho}`

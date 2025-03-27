@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import { useState } from 'react';
 import Header from './header/header';
 import './mainInformation.css';
 import Students from './students/students';
