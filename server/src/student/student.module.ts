@@ -1,23 +1,24 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { StudentService } from './services/student.service';
 import { StudentController } from './controllers/student.controller';
-import { StudentSchema } from './schemas/student.schema';
+import { StudentService } from './services/student.service';
 import { StudentRepository } from './repositories/student.repository';
+import { StudentSchema } from './schemas/student.schema';
+import { FacultyModule } from '../faculty/faculty.module';
+import { ProgramModule } from '../program/program.module';
+import { StudentStatusModule } from '../student_status/student_status.module';
+import { EmailDomainValidator } from './validators/is-valid-email-domain.validator';
+import { PhoneNumberValidator } from './validators/is-valid-phone-number.validator';
+import { ConfigModule } from '@nestjs/config';
 import { STUDENT_REPOSITORY } from './repositories/student.repository.interface';
-import { IsFacultyExistsConstraint } from './validators/is-faculty-exists.validator';
-import { IsProgramExistsConstraint } from './validators/is-program-exists.validator';
-import { IsStudentStatusExistsConstraint } from './validators/is-student-status-exists.validator';
-import { FacultyModule } from '../faculty/faculty.module'; 
-import { ProgramModule } from '../program/program.module'; 
-import { StudentStatusModule } from '../student_status/student_status.module'; 
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: 'Student', schema: StudentSchema }]),
-    FacultyModule, 
-    ProgramModule, 
-    StudentStatusModule, 
+    forwardRef(() => FacultyModule),
+    forwardRef(() => ProgramModule),
+    forwardRef(() => StudentStatusModule),
+    ConfigModule,
   ],
   controllers: [StudentController],
   providers: [
@@ -26,13 +27,16 @@ import { StudentStatusModule } from '../student_status/student_status.module';
       provide: STUDENT_REPOSITORY,
       useClass: StudentRepository,
     },
-    IsFacultyExistsConstraint,
-    IsProgramExistsConstraint,
-    IsStudentStatusExistsConstraint,
+    EmailDomainValidator,
+    PhoneNumberValidator,
   ],
   exports: [
     StudentService,
+    {
+      provide: STUDENT_REPOSITORY,
+      useClass: StudentRepository,
+    },
     MongooseModule.forFeature([{ name: 'Student', schema: StudentSchema }])
   ],
 })
-export class StudentModule { }
+export class StudentModule {}

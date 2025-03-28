@@ -1,15 +1,20 @@
 import React, { useEffect } from 'react';
 import './detailDialog.css';
 
-import { Program } from '../../../../model/program';
+import { SERVER_URL } from '../../../../../global';
+import { useNotification } from '../../../../components/common/NotificationContext';
+
+import { Program } from '../models/program';
 
 interface DetailDialogProps {
     type: string;
     program: Program;
+    onSuccess: () => void;
 }
 
-const DetailDialog: React.FC<DetailDialogProps> = ({ type, program }) => {
+const DetailDialog: React.FC<DetailDialogProps> = ({ type, program, onSuccess }) => {
     const detailDialog = document.querySelector('.dialog-container') as HTMLElement;
+    const { showNotification } = useNotification();
 
     function setInnerHTML() {
         if (!program) {
@@ -45,7 +50,7 @@ const DetailDialog: React.FC<DetailDialogProps> = ({ type, program }) => {
 
         if (type === 'add') {
             try {
-                const response = await fetch('http://localhost:3001/api/v1/programs', {
+                const response = await fetch(SERVER_URL + `/api/v1/programs`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(programData),
@@ -57,20 +62,20 @@ const DetailDialog: React.FC<DetailDialogProps> = ({ type, program }) => {
                     throw new Error(responseData.message || 'Có lỗi xảy ra');
                 }
 
-                alert('Tạo chương trình thành công!');
+                showNotification('success', 'Program created successfully!');
                 detailDialog.classList.toggle('hidden');
-                window.location.reload();
+                onSuccess();
                 return responseData;
             } catch (error) {
                 if (error instanceof Error) {
-                    alert(error.message);
+                    showNotification('error', error.message);
                 } else {
-                    alert('Lỗi không xác định!');
+                    showNotification('error', 'Unknown error occurred!');
                 }
             }
         } else {
             try {
-                const response = await fetch(`http://localhost:3001/api/v1/programs/${program._id}`, {
+                const response = await fetch(SERVER_URL + `/api/v1/programs/${program._id}`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(programData),
@@ -82,15 +87,15 @@ const DetailDialog: React.FC<DetailDialogProps> = ({ type, program }) => {
                     throw new Error(responseData.message || 'Có lỗi xảy ra');
                 }
 
-                alert('Cập nhật chương trình thành công!');
+                showNotification('success', 'Program updated successfully!');
                 detailDialog.classList.toggle('hidden');
-                window.location.reload();
+                onSuccess();
                 return responseData;
             } catch (error) {
                 if (error instanceof Error) {
-                    alert(error.message);
+                    showNotification('error', error.message);
                 } else {
-                    alert('Lỗi không xác định!');
+                    showNotification('error', 'Unknown error occurred!');
                 }
             }
         }

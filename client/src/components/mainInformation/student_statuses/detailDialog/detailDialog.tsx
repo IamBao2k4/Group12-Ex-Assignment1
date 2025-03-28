@@ -1,15 +1,20 @@
 import React, { useEffect } from 'react';
 import './detailDialog.css';
 
-import { StudentStatus } from '../../../../model/student_status';
+import { SERVER_URL } from '../../../../../global';
+import { useNotification } from '../../../../components/common/NotificationContext';
+
+import { StudentStatus } from '../models/student_status';
 
 interface DetailDialogProps {
     type: string;
     studentStatus: StudentStatus;
+    onSuccess: () => void;
 }
 
-const DetailDialog: React.FC<DetailDialogProps> = ({ type, studentStatus }) => {
+const DetailDialog: React.FC<DetailDialogProps> = ({ type, studentStatus, onSuccess }) => {
     const detailDialog = document.querySelector('.dialog-container') as HTMLElement;
+    const { showNotification } = useNotification();
 
     function setInnerHTML() {
         if (!studentStatus) {
@@ -45,7 +50,7 @@ const DetailDialog: React.FC<DetailDialogProps> = ({ type, studentStatus }) => {
 
         if (type === 'add') {
             try {
-                const response = await fetch('http://localhost:3001/api/v1/student-statuses', {
+                const response = await fetch(SERVER_URL + `/api/v1/student-statuses`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(studentStatusData),
@@ -57,20 +62,20 @@ const DetailDialog: React.FC<DetailDialogProps> = ({ type, studentStatus }) => {
                     throw new Error(responseData.message || 'Có lỗi xảy ra');
                 }
 
-                alert('Tạo trạng thái sinh viên thành công!');
+                showNotification('success', 'Student status created successfully!');
                 detailDialog.classList.toggle('hidden');
-                window.location.reload();
+                onSuccess();
                 return responseData;
             } catch (error) {
                 if (error instanceof Error) {
-                    alert(error.message);
+                    showNotification('error', error.message);
                 } else {
-                    alert('Lỗi không xác định!');
+                    showNotification('error', 'Unknown error occurred!');
                 }
             }
         } else {
             try {
-                const response = await fetch(`http://localhost:3001/api/v1/student-statuses/${studentStatus._id}`, {
+                const response = await fetch(SERVER_URL + `/api/v1/student-statuses/${studentStatus._id}`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(studentStatusData),
@@ -82,15 +87,15 @@ const DetailDialog: React.FC<DetailDialogProps> = ({ type, studentStatus }) => {
                     throw new Error(responseData.message || 'Có lỗi xảy ra');
                 }
 
-                alert('Cập nhật trạng thái sinh viên thành công!');
+                showNotification('success', 'Student status updated successfully!');
                 detailDialog.classList.toggle('hidden');
-                window.location.reload();
+                onSuccess();
                 return responseData;
             } catch (error) {
                 if (error instanceof Error) {
-                    alert(error.message);
+                    showNotification('error', error.message);
                 } else {
-                    alert('Lỗi không xác định!');
+                    showNotification('error', 'Unknown error occurred!');
                 }
             }
         }

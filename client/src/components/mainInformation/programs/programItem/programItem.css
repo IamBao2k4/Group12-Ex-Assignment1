@@ -1,22 +1,17 @@
 .program-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     padding: 10px;
     margin: 10px 0;
     border: 1px solid var(--border);
     border-radius: 5px;
     background-color: var(--primary);
-    width: 100%;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s;
 }
 
 .program-item-info {
     display: grid;
-    grid-template-columns: 1.5fr 1fr 1fr 1fr 0.5fr;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
     gap: 10px;
-    width: 100%;
     padding: 10px;
     align-items: center;
 }

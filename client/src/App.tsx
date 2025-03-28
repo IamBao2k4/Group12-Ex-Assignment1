@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import HorizontalNav from './components/horizontalNav/horizontalNav';
 import MainInformation from './components/mainInformation/mainInformation';
-import Students from './components/mainInformation/students/show-list-students/students';
 import Faculties from './components/mainInformation/faculties/faculties';
 import Programs from './components/mainInformation/programs/programs';
 import StudentStatuses from './components/mainInformation/student_statuses/student_statuses';
@@ -19,13 +18,11 @@ function App() {
       >
         <HorizontalNav />
         <Routes>
-          <Route path="/" element={<MainInformation />}>
-            <Route index element={<Students searchString="" />} />
-            <Route path="students" element={<Students searchString="" />} />
-          </Route>
-          <Route path="faculties" element={<Faculties />} />
-          <Route path="programs" element={<Programs />} />
-          <Route path="student-statuses" element={<StudentStatuses />} />
+          <Route path='/' element={<MainInformation/>}/>
+          <Route path="/students" element={<MainInformation />} />
+          <Route path="/faculties" element={<Faculties />} />
+          <Route path="/programs" element={<Programs />} />
+          <Route path="/student-statuses" element={<StudentStatuses />} />
         </Routes>
       </div>
     </Router>

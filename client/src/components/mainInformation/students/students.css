@@ -83,11 +83,10 @@ button {
     font-weight: bold;
 }
 
-.students-export {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    column-gap: 10px;
+.students-list .list-students{
+    width: 100%;
+    overflow: auto;
+    height: 400px;
 }
 
 .students-pagination {

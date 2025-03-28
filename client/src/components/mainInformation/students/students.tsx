@@ -1,112 +1,62 @@
-import React, { useEffect, useState } from "react";
-import "./students.css";
+import React, { useEffect, useState, useCallback } from 'react';
+import './students.css';
 
 import StudentItem from "./studentItem/studentItem";
 import ProfileDialog from "./profileDialog/profileDialog";
 
-import { Student } from "../../../../model/student";
-import { Faculty } from '../../../../model/faculty';
-import AddIcon from "@mui/icons-material/Add";
+import { Student } from './models/student';
+import { Faculty } from '../faculties/models/faculty';
+import AddIcon from '@mui/icons-material/Add';
 
-import * as XLSX from "xlsx";
-import { saveAs } from "file-saver";
+import { SERVER_URL } from '../../../../global';
 
 interface StudentProps {
     searchString: string;
 }
 
 const Students: React.FC<StudentProps> = ({ searchString }) => {
-    const [students, setStudents] = useState<Student[]>([]);
-    const [profileType, setProfileType] = useState("");
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const [chosenStudent, setChosenStudent] = useState<Student | null>(null);
-
-    const handleImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const data = e.target?.result;
-            const workbook = XLSX.read(data, { type: "array" });
-
-            const sheetName = workbook.SheetNames[0];
-            const sheet = workbook.Sheets[sheetName];
-
-            const jsonData: Student[] = XLSX.utils.sheet_to_json(sheet);
-            setStudents(jsonData);
-        };
-
-        reader.readAsArrayBuffer(file);
-    };
-
-    const handleExport = (fileType: "csv" | "xlsx") => {
-        if (students.length === 0) {
-            alert("Không có dữ liệu để xuất!");
-            return;
-        }
-
-        const ws = XLSX.utils.json_to_sheet(students);
-
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Students");
-
-        if (fileType === "xlsx") {
-            const excelBuffer = XLSX.write(wb, {
-                bookType: "xlsx",
-                type: "array",
-            });
-            const data = new Blob([excelBuffer], {
-                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            });
-            saveAs(data, "students.xlsx");
-        } else {
-            XLSX.writeFile(wb, "students.csv");
-        }
-    };
+    const [students, setStudents] = useState<Student[]>([])
+    const [profileType, setProfileType] = useState('add')
+    const [currentPage, setCurrentPage] = useState(1)
+    const [totalPages, setTotalPages] = useState(1)
+    const [chosenStudent, setChosenStudent] = useState<Student | null>(null)
     const [faculties, setFaculties] = useState<Faculty[]>([])
     const [faculty, setFaculty] = useState('')
 
+    const fetchStudents = useCallback(async () => {
+        try {
+            const response = await fetch(`${SERVER_URL}/api/v1/students?searchString=${searchString}&faculty=${faculty}&page=${currentPage}`)
+            const data = await response.json()
+            setStudents(data.data)
+            setTotalPages(data.meta.total)
+        } catch (error) {
+            console.error('Error fetching students:', error)
+        }
+    }, [searchString, faculty, currentPage]);
+
+    const fetchFaculty = useCallback(async () => {
+        try {
+            const response = await fetch(`${SERVER_URL}/api/v1/faculties/all`)
+            const data = await response.json()
+            setFaculties(data)
+        } catch (error) {
+            console.error('Error fetching faculty:', error)
+        }
+    }, []);
+
     useEffect(() => {
-        async function fetchStudents() {
-            try {
-                const response = await fetch(`http://localhost:3001/api/v1/students?searchString=${searchString}&faculty=${faculty}&page=${currentPage}`)
-                const data = await response.json()
-                setStudents(data.data)
-                setTotalPages(data.meta.total)
-            } catch (error) {
-                console.error("Error fetching students:", error);
-            }
-        }
-
-        async function fetchFaculty() {
-            try {
-                const response = await fetch(
-                    "http://localhost:3001/api/v1/faculties/all"
-                );
-                const data = await response.json();
-                setFaculties(data);
-            } catch (error) {
-                console.error("Error fetching faculty:", error);
-            }
-        }
-
-        fetchFaculty();
-        fetchStudents();
-    }, [faculty, searchString, currentPage]);
+        fetchFaculty()
+        fetchStudents()
+    }, [fetchFaculty, fetchStudents])
 
     function Filter(event: React.ChangeEvent<HTMLSelectElement>) {
         setFaculty(event.target.value);
     }
 
-
     function ProfileHandler(type: string) {
-        const profileDialog = document.querySelector(
-            ".profile-dialog-container"
-        ) as HTMLElement;
-        profileDialog.classList.toggle("hidden");
         setProfileType(type);
+        const profileDialog = document.querySelector('.profile-dialog-container') as HTMLElement
+        profileDialog.classList.toggle('hidden')
     }
 
     function handlePreviousPage() {
@@ -127,7 +77,11 @@ const Students: React.FC<StudentProps> = ({ searchString }) => {
 
     return (
         <div className="students">
-            <ProfileDialog student={chosenStudent ?? students[0]} type={profileType} />
+            <ProfileDialog 
+                student={chosenStudent ?? students[0]} 
+                type={profileType} 
+                onSuccess={fetchStudents}
+            />
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <h1>Students</h1>
                 <div className="students-add">
@@ -188,15 +142,19 @@ const Students: React.FC<StudentProps> = ({ searchString }) => {
                     </div>
                     <div className="students-list-header-action"></div>
                 </div>
-                {students.map((student) => (
-                    <StudentItem
-                        key={student._id.toString()}
-                        id={student._id.toString()}
-                        student={student}
-                        ProfileHandler={ProfileHandler}
-                        setChosenStudent={setChosenStudent}
-                    />
-                ))}
+
+                <div className="list-students">
+                    {students.map((student) => (
+                        <StudentItem 
+                            key={student._id.toString()} 
+                            id={student._id.toString()} 
+                            student={student} 
+                            ProfileHandler={ProfileHandler} 
+                            setChosenStudent={setChosenStudent}
+                            onDeleteSuccess={fetchStudents}
+                        />
+                    ))}
+                </div>
             </div>
 
             <div className="students-export">

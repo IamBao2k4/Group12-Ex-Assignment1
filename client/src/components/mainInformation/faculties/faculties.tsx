@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 
-import { Faculty } from "../../../model/faculty"
+import { Faculty } from "./models/faculty"
 import Header from "../header/header"
 import './faculties.css'
 
@@ -8,6 +8,7 @@ import FacultyItem from "./facultyItem/facultyItem"
 import DetailDialog from "./detailDialog/detailDialog"
 import AddIcon from '@mui/icons-material/Add'
 
+import { SERVER_URL } from '../../../../global'
 
 const Faculties = () => {
     const [faculties, setFaculties] = useState<Faculty[]>([])
@@ -17,20 +18,20 @@ const Faculties = () => {
     const [chosenFaculty, setChosenFaculty] = useState<Faculty | null>(null)
     const [search, setSearch] = useState('')
 
-    useEffect(() => {
-        async function fetchFaculties() {
-            try {
-                const response = await fetch(`http://localhost:3001/api/v1/faculties?page=${currentPage}&searchString=${search}`,)
-                const data = await response.json()
-                setFaculties(data.data)
-                setTotalPages(data.meta.total)
-            } catch (error) {
-                console.error('Error fetching faculties:', error)
-            }
+    const fetchFaculties = useCallback(async () => {
+        try {
+            const response = await fetch(SERVER_URL + `/api/v1/faculties?page=${currentPage}&searchString=${search}`,)
+            const data = await response.json()
+            setFaculties(data.data)
+            setTotalPages(data.meta.total)
+        } catch (error) {
+            console.error('Error fetching faculties:', error)
         }
-
-        fetchFaculties()
     }, [search, currentPage])
+
+    useEffect(() => {
+        fetchFaculties()
+    }, [fetchFaculties])
 
     function DetailHandler(type: string) {
         const detailDialog = document.querySelector('.dialog-container') as HTMLElement
@@ -52,7 +53,11 @@ const Faculties = () => {
 
     return (
         <div className="faculties">
-            <DetailDialog type={type} faculty={chosenFaculty??faculties[0]}/>
+            <DetailDialog 
+                type={type} 
+                faculty={chosenFaculty??faculties[0]} 
+                onSuccess={fetchFaculties}
+            />
             <Header searchHandler={setSearch} />
             <div className="faculties-content">
                 <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
@@ -69,7 +74,13 @@ const Faculties = () => {
                         <div className="faculties-list-header-action"></div>
                     </div>
                     {faculties.map((faculty) => (
-                        <FacultyItem key={faculty._id.toString()} faculty={faculty} setChosenFaculty={setChosenFaculty} DetailHandler={DetailHandler}/>
+                        <FacultyItem 
+                            key={faculty._id.toString()} 
+                            faculty={faculty} 
+                            setChosenFaculty={setChosenFaculty} 
+                            DetailHandler={DetailHandler}
+                            onDeleteSuccess={fetchFaculties}
+                        />
                     ))}
                 </div>
 

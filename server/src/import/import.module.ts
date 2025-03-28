@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { ImportController } from './import.controller.js';
-import { ImportService } from './import.service.js';
+import { ImportController } from './import.controller';
+import { ImportService } from './import.service';
 import { StudentModule } from '../student/student.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { FacultyModule } from '../faculty/faculty.module';
