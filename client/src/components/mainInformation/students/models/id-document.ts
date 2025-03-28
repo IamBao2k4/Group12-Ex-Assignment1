@@ -1,5 +1,6 @@
 export interface BaseIDDocument {
-    type: 'cmnd' | 'cccd' | 'passport';
+    _id?: string;
+    type: "cmnd" | "cccd" | "passport";
     so: string;
     ngay_cap: Date;
     noi_cap: string;
@@ -7,18 +8,18 @@ export interface BaseIDDocument {
 }
 
 export interface CMNDDocument extends BaseIDDocument {
-    type: 'cmnd';
+    type: "cmnd";
 }
 
 export interface CCCDDocument extends BaseIDDocument {
-    type: 'cccd';
+    type: "cccd";
     co_gan_chip: boolean;
 }
 
 export interface PassportDocument extends BaseIDDocument {
-    type: 'passport';
+    type: "passport";
     quoc_gia_cap: string;
     ghi_chu?: string;
 }
 
-export type IDDocument = CMNDDocument | CCCDDocument | PassportDocument; 
+export type IDDocument = CMNDDocument | CCCDDocument | PassportDocument;

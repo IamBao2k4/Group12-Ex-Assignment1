@@ -376,7 +376,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
         tinh_trang: "",
         // permanentAddress: addresses[0],
         // temporaryAddress: addresses[1],
-        // identificationDocuments: documents,
+        giay_to_tuy_than: documents,
     });
 
     const profileDialog = document.querySelector(
@@ -437,7 +437,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                 tinh_trang: student.tinh_trang?.toString() || "",
                 // permanentAddress: student.dia_chi_thuong_tru || addresses[0],
                 // temporaryAddress: student.dia_chi_tam_tru || addresses[1],
-                // identificationDocuments: student.giay_to_tuy_than || documents,
+                giay_to_tuy_than: student.giay_to_tuy_than || documents,
             });
         } else {
             setFormData({
@@ -453,7 +453,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                 tinh_trang: "",
                 // permanentAddress: addresses[0],
                 // temporaryAddress: addresses[1],
-                // identificationDocuments: documents,
+                giay_to_tuy_than: documents,
             });
         }
     }, [type, student]);
@@ -512,10 +512,19 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                 type === "add"
                     ? "/api/v1/students"
                     : `/api/v1/students/${student?._id}`;
+
+            const cleanedData = {
+                ...formData,
+                giay_to_tuy_than: formData.giay_to_tuy_than.map(
+                    ({ _id, ...rest }) => rest
+                ),
+            };
+
+            console.log(cleanedData);
             const response = await fetch(`${SERVER_URL}${url}`, {
                 method,
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData),
+                body: JSON.stringify(cleanedData),
             });
 
             const responseData = await response.json();
