@@ -13,12 +13,14 @@ import "./profileDialog.css";
 import React, { use, useEffect, useRef, useState } from "react";
 import AddressItem from "./addressItem/addressItem";
 import IdDocumentItem from "./idDocumentItem/idDocumentItem";
+import { useNotification } from "../../../../components/common/NotificationContext";
 
 import { SERVER_URL } from "../../../../../global";
 
 interface StudentItemProps {
     type: string;
     student: Student;
+    onSuccess: () => void;
 }
 
 const validateEmail = (email: string) => {
@@ -51,10 +53,11 @@ const validatePhone = (phone: string) => {
     return true;
 };
 
-const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
+const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess }) => {
     const [faculties, setFaculties] = useState<Faculty[]>([]);
     const [programs, setPrograms] = useState<Program[]>([]);
     const [studentStatuses, setStudentStatuses] = useState<StudentStatus[]>([]);
+    const { showNotification } = useNotification();
 
     const defaultAddress: Address = {
         chi_tiet: "",
@@ -183,7 +186,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
             );
 
             if (!currentStatusObj || !newStatusObj) {
-                alert("Status not found!");
+                showNotification('error', "Status not found!");
                 return;
             }
         }
@@ -240,17 +243,19 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
             if (!response.ok)
                 throw new Error(responseData.message || "Có lỗi xảy ra");
 
-            alert(
+            showNotification('success', 
                 type === "add"
-                    ? "Create successful students!"
-                    : "Student update successful!"
+                    ? "Student created successfully!"
+                    : "Student updated successfully!"
             );
             profileDialog.classList.toggle("hidden");
-            window.location.reload();
+            onSuccess();
         } catch (error) {
-            alert(
-                error instanceof Error ? error.message : "Unknown error!"
-            );
+            if (error instanceof Error) {
+                showNotification('error', error.message);
+            } else {
+                showNotification('error', 'Unknown error occurred!');
+            }
         }
     };
 

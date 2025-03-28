@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 import { Program } from "./models/program";
 import Header from "../header/header";
@@ -18,20 +18,20 @@ const Programs = () => {
     const [chosenProgram, setChosenProgram] = useState<Program | null>(null);
     const [search, setSearch] = useState('');
 
-    useEffect(() => {
-        async function fetchPrograms() {
-            try {
-                const response = await fetch(SERVER_URL + `/api/v1/programs?page=${currentPage}&searchString=${search}`,);
-                const data = await response.json();
-                setPrograms(data.data);
-                setTotalPages(data.meta.total);
-            } catch (error) {
-                console.error('Error fetching programs:', error);
-            }
+    const fetchPrograms = useCallback(async () => {
+        try {
+            const response = await fetch(SERVER_URL + `/api/v1/programs?page=${currentPage}&searchString=${search}`,);
+            const data = await response.json();
+            setPrograms(data.data);
+            setTotalPages(data.meta.total);
+        } catch (error) {
+            console.error('Error fetching programs:', error);
         }
-
-        fetchPrograms();
     }, [search, currentPage]);
+
+    useEffect(() => {
+        fetchPrograms();
+    }, [fetchPrograms]);
 
     function DetailHandler(type: string) {
         const detailDialog = document.querySelector('.dialog-container') as HTMLElement;
@@ -53,7 +53,11 @@ const Programs = () => {
 
     return (
         <div className="programs">
-            <DetailDialog type={type} program={chosenProgram ?? programs[0]} />
+            <DetailDialog 
+                type={type} 
+                program={chosenProgram ?? programs[0]} 
+                onSuccess={fetchPrograms}
+            />
             <Header searchHandler={setSearch} />
             <div className="programs-content">
                 <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
@@ -69,7 +73,13 @@ const Programs = () => {
                         <div className="programs-list-header-action"></div>
                     </div>
                     {programs.map((program) => (
-                        <ProgramItem key={program._id.toString()} program={program} setChosenProgram={setChosenProgram} DetailHandler={DetailHandler} />
+                        <ProgramItem 
+                            key={program._id.toString()} 
+                            program={program} 
+                            setChosenProgram={setChosenProgram} 
+                            DetailHandler={DetailHandler}
+                            onDeleteSuccess={fetchPrograms}
+                        />
                     ))}
                 </div>
 

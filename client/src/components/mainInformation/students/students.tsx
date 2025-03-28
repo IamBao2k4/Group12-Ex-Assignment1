@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import './students.css';
 
 import StudentItem from './studentItem/studentItem';
@@ -23,31 +23,31 @@ const Students: React.FC<StudentProps> = ({ searchString }) => {
     const [faculties, setFaculties] = useState<Faculty[]>([])
     const [faculty, setFaculty] = useState('')
 
-    useEffect(() => {
-        async function fetchStudents() {
-            try {
-                const response = await fetch(`${SERVER_URL}/api/v1/students?searchString=${searchString}&faculty=${faculty}&page=${currentPage}`)
-                const data = await response.json()
-                setStudents(data.data)
-                setTotalPages(data.meta.total)
-            } catch (error) {
-                console.error('Error fetching students:', error)
-            }
+    const fetchStudents = useCallback(async () => {
+        try {
+            const response = await fetch(`${SERVER_URL}/api/v1/students?searchString=${searchString}&faculty=${faculty}&page=${currentPage}`)
+            const data = await response.json()
+            setStudents(data.data)
+            setTotalPages(data.meta.total)
+        } catch (error) {
+            console.error('Error fetching students:', error)
         }
+    }, [searchString, faculty, currentPage]);
 
-        async function fetchFaculty() {
-            try {
-                const response = await fetch(`${SERVER_URL}/api/v1/faculties/all`)
-                const data = await response.json()
-                setFaculties(data)
-            } catch (error) {
-                console.error('Error fetching faculty:', error)
-            }
+    const fetchFaculty = useCallback(async () => {
+        try {
+            const response = await fetch(`${SERVER_URL}/api/v1/faculties/all`)
+            const data = await response.json()
+            setFaculties(data)
+        } catch (error) {
+            console.error('Error fetching faculty:', error)
         }
-    
+    }, []);
+
+    useEffect(() => {
         fetchFaculty()
         fetchStudents()
-    }, [faculty, searchString, currentPage])
+    }, [fetchFaculty, fetchStudents])
 
     function Filter(event: React.ChangeEvent<HTMLSelectElement>) {
         setFaculty(event.target.value)
@@ -77,7 +77,11 @@ const Students: React.FC<StudentProps> = ({ searchString }) => {
 
     return (
         <div className="students">
-            <ProfileDialog student={chosenStudent ?? students[0]} type={profileType} />
+            <ProfileDialog 
+                student={chosenStudent ?? students[0]} 
+                type={profileType} 
+                onSuccess={fetchStudents}
+            />
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <h1>Students</h1>
                 <button className="add-student" onClick={() => ProfileHandler('add')}><AddIcon /></button>
@@ -101,7 +105,14 @@ const Students: React.FC<StudentProps> = ({ searchString }) => {
 
                 <div className="list-students">
                     {students.map((student) => (
-                        <StudentItem key={student._id.toString()} id={student._id.toString()} student={student} ProfileHandler={ProfileHandler} setChosenStudent={setChosenStudent} />
+                        <StudentItem 
+                            key={student._id.toString()} 
+                            id={student._id.toString()} 
+                            student={student} 
+                            ProfileHandler={ProfileHandler} 
+                            setChosenStudent={setChosenStudent}
+                            onDeleteSuccess={fetchStudents}
+                        />
                     ))}
                 </div>
             </div>

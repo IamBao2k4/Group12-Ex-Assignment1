@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 import { StudentStatus } from "./models/student_status";
 import Header from "../header/header";
@@ -18,20 +18,20 @@ const StudentStatuses = () => {
     const [chosenStudentStatus, setChosenStudentStatus] = useState<StudentStatus | null>(null);
     const [search, setSearch] = useState('');
 
-    useEffect(() => {
-        async function fetchStudentStatuses() {
-            try {
-                const response = await fetch(SERVER_URL + `/api/v1/student-statuses?page=${currentPage}&searchString=${search}`,);
-                const data = await response.json();
-                setStudentStatuses(data.data);
-                setTotalPages(data.meta.total);
-            } catch (error) {
-                console.error('Error fetching student statuses:', error);
-            }
+    const fetchStudentStatuses = useCallback(async () => {
+        try {
+            const response = await fetch(SERVER_URL + `/api/v1/student-statuses?page=${currentPage}&searchString=${search}`,);
+            const data = await response.json();
+            setStudentStatuses(data.data);
+            setTotalPages(data.meta.total);
+        } catch (error) {
+            console.error('Error fetching student statuses:', error);
         }
-
-        fetchStudentStatuses();
     }, [search, currentPage]);
+
+    useEffect(() => {
+        fetchStudentStatuses();
+    }, [fetchStudentStatuses]);
 
     function DetailHandler(type: string) {
         const detailDialog = document.querySelector('.dialog-container') as HTMLElement;
@@ -53,7 +53,11 @@ const StudentStatuses = () => {
 
     return (
         <div className="student-statuses">
-            <DetailDialog type={type} studentStatus={chosenStudentStatus ?? studentStatuses[0]} />
+            <DetailDialog 
+                type={type} 
+                studentStatus={chosenStudentStatus ?? studentStatuses[0]} 
+                onSuccess={fetchStudentStatuses}
+            />
             <Header searchHandler={setSearch} />
             <div className="student-statuses-content">
                 <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
@@ -69,7 +73,13 @@ const StudentStatuses = () => {
                         <div className="student-statuses-list-header-action"></div>
                     </div>
                     {studentStatuses.map((studentStatus) => (
-                        <StudentStatusItem key={studentStatus._id.toString()} studentStatus={studentStatus} setChosenStudentStatus={setChosenStudentStatus} DetailHandler={DetailHandler} />
+                        <StudentStatusItem 
+                            key={studentStatus._id.toString()} 
+                            studentStatus={studentStatus} 
+                            setChosenStudentStatus={setChosenStudentStatus} 
+                            DetailHandler={DetailHandler} 
+                            onDeleteSuccess={fetchStudentStatuses}
+                        />
                     ))}
                 </div>
 
