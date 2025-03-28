@@ -669,31 +669,6 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                                 </div>
                             </div>
                             <div className="profile-dialog-info-form-group">
-                                <label htmlFor="address">Địa chỉ</label>
-                                <input
-                                    type="text"
-                                    id="address"
-                                    name="address"
-                                />
-                            </div>
-                            <div className="profile-dialog-info-form-group">
-                                <label htmlFor="email">Email</label>
-                                <input
-                                    type="text"
-                                    id="email"
-                                    name="email"
-                                    onInput={(e) =>
-                                        validateEmail(e.currentTarget.value)
-                                    }
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                />
-                                <div className="profile-dialog-info-form-error profile-dialog-info-form-error-email">
-                                    <i className="fa-solid fa-circle-exclamation"></i>
-                                    <span>Email không hợp lệ</span>
-                                </div>
-                            </div>
-                            <div className="profile-dialog-info-form-group">
                                 <label htmlFor="so_dien_thoai">
                                     Số điện thoại
                                 </label>
@@ -715,6 +690,26 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                         </div>
                         <div className="profile-dialog-info-form-bottom">
                             <div className="profile-dialog-info-form-group">
+                                <label htmlFor="email">Email</label>
+                                <input
+                                    type="text"
+                                    id="email"
+                                    name="email"
+                                    onInput={(e) =>
+                                        validateEmail(e.currentTarget.value)
+                                    }
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                />
+                                <div className="profile-dialog-info-form-error profile-dialog-info-form-error-email">
+                                    <i className="fa-solid fa-circle-exclamation"></i>
+                                    <span>Email không hợp lệ</span>
+                                </div>
+                            </div>
+                            <div
+                                className="profile-dialog-info-form-group"
+                                style={{ marginTop: "20px" }}
+                            >
                                 <label htmlFor="status">Tình trạng</label>
                                 {/* <input type="text" id="status" name="status" /> */}
                                 <div className="profile-dialog-info-form-select">
