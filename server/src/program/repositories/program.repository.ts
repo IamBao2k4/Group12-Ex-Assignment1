@@ -157,7 +157,7 @@ export class ProgramRepository implements IProgramRepository {
 
   async detail(id: string): Promise<Program | null> {
     try {
-      return this.programModel.findById(id, { $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] }).exec();
+      return this.programModel.findOne({ _id: id, $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] }).exec();
     } catch (error) {
       this.logger.error(`program.repository.detail: Error finding program by id ${id}`, error.stack);
       throw new BaseException(error, 'FIND_PROGRAM_BY_ID_ERROR');
