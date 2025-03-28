@@ -710,12 +710,12 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                                 className="profile-dialog-info-form-group"
                                 style={{ marginTop: "20px" }}
                             >
-                                <label htmlFor="status">Tình trạng</label>
+                                <label htmlFor="tinh_trang">Tình trạng</label>
                                 {/* <input type="text" id="status" name="status" /> */}
                                 <div className="profile-dialog-info-form-select">
                                     <select
-                                        name="status"
-                                        id="status"
+                                        name="tinh_trang"
+                                        id="tinh_trang"
                                         value={formData.tinh_trang}
                                         onChange={handleChange}
                                     >

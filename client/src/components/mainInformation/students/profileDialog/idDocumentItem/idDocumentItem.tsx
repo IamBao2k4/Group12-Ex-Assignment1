@@ -27,6 +27,7 @@ const IdDocumentItem: React.FC<IdDocumentItemProps> = ({ student, setDocuments, 
 
     useEffect(() => {
         setDocument(giayToSelected);
+        setDocuments([giayToSelected as IDDocument]);
     }, [giayToSelected]);
 
     return (

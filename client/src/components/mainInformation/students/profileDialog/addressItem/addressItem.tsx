@@ -35,7 +35,7 @@ const AddressItem: React.FC<AddressItemProps> = ({ student, setAddresses, type }
                 type={type}
             />
 
-            <label style={{ marginTop: "20px" }}>Địa chỉ thường trú</label>
+            <label style={{ marginBottom: "10px", fontWeight: "700" }}>Địa chỉ thường trú</label>
 
             <input
                 type="text"
@@ -60,7 +60,7 @@ const AddressItem: React.FC<AddressItemProps> = ({ student, setAddresses, type }
                 type={type}
             />
 
-            <label style={{ marginTop: "20px" }}>Địa chỉ tạm trú</label>
+            <label style={{ marginBottom: "10px", fontWeight: "700" }}>Địa chỉ tạm trú</label>
 
             <input
                 type="text"
