@@ -183,7 +183,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
             );
 
             if (!currentStatusObj || !newStatusObj) {
-                alert("Không tìm thấy trạng thái!");
+                alert("Status not found!");
                 return;
             }
         }
@@ -242,14 +242,14 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
 
             alert(
                 type === "add"
-                    ? "Tạo sinh viên thành công!"
-                    : "Cập nhật sinh viên thành công!"
+                    ? "Create successful students!"
+                    : "Student update successful!"
             );
             profileDialog.classList.toggle("hidden");
             window.location.reload();
         } catch (error) {
             alert(
-                error instanceof Error ? error.message : "Lỗi không xác định!"
+                error instanceof Error ? error.message : "Unknown error!"
             );
         }
     };
