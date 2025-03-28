@@ -43,7 +43,9 @@
     ],
     "email": "nguyenvana1@example.com",
     "so_dien_thoai": "0328146401",
-    "tinh_trang": "67da9f0e7ecfb41b077c5f1f",
+    "tinh_trang": {
+      "$oid": "67da9f0e7ecfb41b077c5f1f"
+    },
     "created_at": {
       "$date": "2025-03-28T11:38:46.189Z"
     },
@@ -96,7 +98,9 @@
     ],
     "email": "dothif6@example.com",
     "so_dien_thoai": "0328146406",
-    "tinh_trang": "67da9f0e7ecfb41b077c5f1f",
+    "tinh_trang": {
+      "$oid": "67da9f0e7ecfb41b077c5f1f"
+    },
     "created_at": {
       "$date": "2025-03-28T11:38:46.211Z"
     },
@@ -149,7 +153,9 @@
     ],
     "email": "lythih8@example.com",
     "so_dien_thoai": "0328146408",
-    "tinh_trang": "67da9f0e7ecfb41b077c5f1f",
+    "tinh_trang": {
+      "$oid": "67da9f0e7ecfb41b077c5f1f"
+    },
     "created_at": {
       "$date": "2025-03-28T11:38:46.229Z"
     },
@@ -201,7 +207,9 @@
     ],
     "email": "maivani9@example.com",
     "so_dien_thoai": "0328146409",
-    "tinh_trang": "67da9f0e7ecfb41b077c5f1f",
+    "tinh_trang": {
+      "$oid": "67da9f0e7ecfb41b077c5f1f"
+    },
     "created_at": {
       "$date": "2025-03-28T11:38:46.248Z"
     },
@@ -254,7 +262,9 @@
     ],
     "email": "truongthik10@example.com",
     "so_dien_thoai": "0328146410",
-    "tinh_trang": "67da9f0e7ecfb41b077c5f1f",
+    "tinh_trang": {
+      "$oid": "67da9f0e7ecfb41b077c5f1f"
+    },
     "created_at": {
       "$date": "2025-03-28T11:38:46.268Z"
     },
@@ -307,7 +317,9 @@
     ],
     "email": "vuvang7@example.com",
     "so_dien_thoai": "0328146407",
-    "tinh_trang": "67da9f0e7ecfb41b077c5f1f",
+    "tinh_trang": {
+      "$oid": "67da9f0e7ecfb41b077c5f1f"
+    },
     "created_at": {
       "$date": "2025-03-28T11:38:46.284Z"
     },
