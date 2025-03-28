@@ -33,3 +33,44 @@ Student Manager
     - cd client
     - npm install
     - npm run dev
+
+## Minh chứng chức năng
+### KhoaKhoa
+- Quản lý khoa
+  - ![alt text](image/faculty_dashboard.jpg)
+- Thêm khoa
+  - ![alt text](image/faculty_add.jpg)
+- Sửa khoa
+  - ![alt text](image/faculty_edit.jpg)
+
+### Chương trình
+- Quản lý chương trình
+  - ![alt text](image/program_dashboard.jpg)
+- Thêm chương trình
+  - ![alt text](image/program_add.jpg)
+- Sửa chương trình
+  - ![alt text](image/program_edit.jpg)
+
+### Tình trạng
+- Quản lý tình trạng
+  - ![alt text](image/status_dashboard.jpg)
+- Thêm tình trạng
+  - ![alt text](image/status_add.jpg)
+- Sửa tình trạng
+  - ![alt text](image/status_edit.jpg)
+
+### Tìm kiếm theo khoa + tên
+  - ![alt text](image/find_by_faculty_name.jpg)
+
+### Xác thực số điện thoại
+  - ![alt text](image/phone_validate.jpg)
+
+### Xác thực email
+  - ![alt text](image/email_validate_1.jpg)
+  - ![alt text](image/email_validate_2.jpg)
+
+### Xác thực mã số sinh viên
+  - ![alt text](image/student_id_validate.jpg)
+
+### Xác thực tình trạng
+  - ![alt text](image/status_validate.jpg)
