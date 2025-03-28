@@ -146,4 +146,22 @@ export class FacultyRepository implements IFacultyRepository {
     }
     return faculties;
   }
+
+  async findByCode(code: string): Promise<Faculty | null> {
+    try {
+      return this.facultyModel.findOne({ ma_khoa: code, $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] }).exec();
+    } catch (error) {
+      this.logger.error(`faculty.repository.findByCode: Error finding faculty by code ${code}`, error.stack);
+      throw new BaseException(error, 'FIND_FACULTY_BY_CODE_ERROR');
+    }
+  }
+
+  async detail(id: string): Promise<Faculty | null> {
+    try {
+      return this.facultyModel.findById(id, { $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] }).exec();
+    } catch (error) {
+      this.logger.error(`faculty.repository.detail: Error finding faculty by id ${id}`, error.stack);
+      throw new BaseException(error, 'FIND_FACULTY_BY_ID_ERROR');
+    }
+  }
 }

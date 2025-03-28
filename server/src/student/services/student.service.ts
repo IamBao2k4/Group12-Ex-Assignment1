@@ -20,6 +20,7 @@ import { FacultyService } from '../../faculty/services/faculty.service';
 import { ProgramService } from '../../program/services/program.service';
 import { StudentStatusService } from '../../student_status/services/student_status.service';
 import { STATUS_TRANSITIONS, STUDENT_STATUS } from '../../config/constants';
+import { isValidObjectId } from '../../common/utils/validation.util';
 @Injectable()
 export class StudentService {
   private readonly logger = new Logger(StudentService.name);
@@ -83,6 +84,10 @@ export class StudentService {
 
   async detail(id: string): Promise<Student> {
     try {
+      if (!isValidObjectId(id)) {
+        this.logger.error(`student.service.detail: Invalid ObjectId format for ID ${id}`);
+        throw new StudentNotFoundException(id, true);
+      }
       const student = await this.studentRepository.findById(id);
       if (!student) {
         throw new StudentNotFoundException(id);
@@ -95,6 +100,10 @@ export class StudentService {
 
   async update(id: string, studentData: Partial<Student>): Promise<Student> {
     try {
+      if (!isValidObjectId(id)) {
+        this.logger.error(`student.service.update: Invalid ObjectId format for ID ${id}`);
+        throw new StudentNotFoundException(id, true);
+      }
       const { ma_so_sinh_vien, khoa, chuong_trinh, tinh_trang } = studentData;
       
       const currentStudent = await this.studentRepository.findById(id);
@@ -130,6 +139,10 @@ export class StudentService {
 
   async delete(id: string): Promise<Student> {
     try {
+      if (!isValidObjectId(id)) {
+        this.logger.error(`student.service.delete: Invalid ObjectId format for ID ${id}`);
+        throw new StudentNotFoundException(id, true);
+      }
       const deletedStudent = await this.studentRepository.softDelete(id);
       if (!deletedStudent) {
         throw new StudentNotFoundException(id);

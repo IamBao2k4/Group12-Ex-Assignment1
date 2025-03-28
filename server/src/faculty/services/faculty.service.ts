@@ -5,8 +5,7 @@ import { IFacultyRepository, FACULTY_REPOSITORY } from '../repositories/faculty.
 import { CreateFacultyDto, UpdateFacultyDto } from '../dtos/faculty.dto';
 import { PaginationOptions } from '../../common/paginator/pagination.interface';
 import { PaginatedResponse } from '../../common/paginator/pagination-response.dto';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { isValidObjectId } from 'mongoose';
 import { FacultyNotFoundException } from '../exceptions/faculty-not-found.exception';
 
 @Injectable()
@@ -15,7 +14,6 @@ export class FacultyService {
 
   constructor(
     @Inject(FACULTY_REPOSITORY) private readonly facultyRepository: IFacultyRepository,
-    @InjectModel('Faculty') private facultyModel: Model<Faculty>
   ) {}
 
   async create(createReq: CreateFacultyDto): Promise<Faculty> {
@@ -42,6 +40,10 @@ export class FacultyService {
 
   async update(id: string, updateReq: UpdateFacultyDto): Promise<Faculty | null> {
     try {
+      if (!isValidObjectId(id)) {
+        this.logger.error(`faculty.service.update: Invalid ObjectId format for ID ${id}`);
+        throw new FacultyNotFoundException(id, true);
+      }
       const result = await this.facultyRepository.update(id, updateReq);
       if (!result) {
         throw new FacultyNotFoundException(id);
@@ -59,6 +61,10 @@ export class FacultyService {
 
   async delete(id: string): Promise<Faculty | null> {
     try {
+      if (!isValidObjectId(id)) {
+        this.logger.error(`faculty.service.delete: Invalid ObjectId format for ID ${id}`);
+        throw new FacultyNotFoundException(id, true);
+      }
       const result = await this.facultyRepository.softDelete(id);
       if (!result) {
         throw new FacultyNotFoundException(id);
@@ -76,7 +82,7 @@ export class FacultyService {
 
   async getAll(): Promise<Faculty[]> {
     try {
-      return await this.facultyModel.find().exec();
+      return await this.facultyRepository.getAll();
     } catch (error) {
       this.logger.error(`faculty.service.getAll: ${error.message}`, error.stack);
       throw error;
@@ -85,7 +91,7 @@ export class FacultyService {
 
   async findByCode(ma: string): Promise<Faculty | null> {
     try {
-      return await this.facultyModel.findOne({ ma }).exec();
+      return await this.facultyRepository.findByCode(ma);
     } catch (error) {
       this.logger.error(`faculty.service.findByCode: ${error.message}`, error.stack);
       throw error;
@@ -94,7 +100,11 @@ export class FacultyService {
 
   async detail(id: string): Promise<Faculty> {
     try {
-      const faculty = await this.facultyModel.findById(id).exec();
+      if (!isValidObjectId(id)) {
+        this.logger.error(`faculty.service.detail: Invalid ObjectId format for ID ${id}`);
+        throw new FacultyNotFoundException(id, true);
+      } 
+      const faculty = await this.facultyRepository.detail(id);
       if (!faculty) {
         throw new NotFoundException(`Faculty with ID ${id} not found`);
       }

@@ -8,6 +8,7 @@ import { PaginationOptions } from '../../common/paginator/pagination.interface';
 import { PaginatedResponse } from '../../common/paginator/pagination-response.dto';
 import { BaseException } from 'src/common/exceptions/base.exception';
 import { StudentStatusNotFoundException } from '../exceptions/student_status-not-found.exception';
+import { isValidObjectId } from '../../common/utils/validation.util';
 
 @Injectable()
 export class StudentStatusRepository implements IStudentStatusRepository {
@@ -147,12 +148,15 @@ export class StudentStatusRepository implements IStudentStatusRepository {
     return studentStatuses;
   }
 
-  async getOne(id: string): Promise<StudentStatus> {
+  async detail(id: string): Promise<StudentStatus> {
     let studentStatus: StudentStatus | null = null;
     try {
       studentStatus = await this.studentStatusModel.findOne({ _id: id, $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] }).exec();
       this.logger.log(`Found student status by ID: ${studentStatus?._id}`);
     } catch (error) {
+      if (error instanceof StudentStatusNotFoundException) {
+        throw error;
+      }
       this.logger.error(`Error getting student status by ID: ${id}`, error.stack);
       throw new BaseException(error, 'GET_ONE_STUDENT_STATUS_ERROR');
     }

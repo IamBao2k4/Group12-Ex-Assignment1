@@ -2,9 +2,13 @@ import { HttpStatus } from '@nestjs/common';
 import { BaseException } from '../../common/exceptions';
 
 export class FacultyNotFoundException extends BaseException {
-  constructor(id: string) {
+  constructor(id: string, isInvalidId: boolean = false) {
+    const message = isInvalidId
+      ? `ID is invalid: ${id}. ID must be a valid ObjectId.`
+      : `Faculty with ID ${id} not found`;
+      
     super(
-      `Không tìm thấy khoa với ID ${id}`,
+      message,
       'FACULTY_NOT_FOUND',
       HttpStatus.BAD_REQUEST 
     );
