@@ -35,7 +35,7 @@ Student Manager
     - npm run dev
 
 ## Minh chứng chức năng
-### KhoaKhoa
+### Khoa
 - Quản lý khoa
   - ![alt text](image/faculty_dashboard.jpg)
 - Thêm khoa
