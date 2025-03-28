@@ -13,11 +13,13 @@ Student Manager
 
 - Tạo file .env trong folder migration
   - Nội dung file .env :
-    - MONGO_URI=mongodb://localhost:27017/University
-- Tạo file .env trong folder server
-  - Nội dung file .env :
-    - PORT=3001
-    - MONGO_URI=mongodb://localhost:27017/University
+    - MONGO_URI=
+  - Tạo file .env trong folder server
+    - Nội dùng file .env :
+      - NODE_ENV=development
+      - MONGO_URI_DEV= 
+      - MONGO_URI_PROD=
+      - PORT=3001
 - Mở 2 terminal
   - terminal 1:
     - cd migration
