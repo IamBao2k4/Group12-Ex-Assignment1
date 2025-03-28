@@ -374,8 +374,8 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
         email: "",
         so_dien_thoai: "",
         tinh_trang: "",
-        // permanentAddress: addresses[0],
-        // temporaryAddress: addresses[1],
+        dia_chi_thuong_tru: addresses[0],
+        dia_chi_tam_tru: addresses[1],
         giay_to_tuy_than: documents,
     });
 
@@ -435,8 +435,8 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                 email: student.email || "",
                 so_dien_thoai: student.so_dien_thoai || "",
                 tinh_trang: student.tinh_trang?.toString() || "",
-                // permanentAddress: student.dia_chi_thuong_tru || addresses[0],
-                // temporaryAddress: student.dia_chi_tam_tru || addresses[1],
+                dia_chi_thuong_tru: student.dia_chi_thuong_tru || addresses[0],
+                dia_chi_tam_tru: student.dia_chi_tam_tru || addresses[1],
                 giay_to_tuy_than: student.giay_to_tuy_than || documents,
             });
         } else {
@@ -451,8 +451,8 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                 email: "",
                 so_dien_thoai: "",
                 tinh_trang: "",
-                // permanentAddress: addresses[0],
-                // temporaryAddress: addresses[1],
+                dia_chi_thuong_tru: addresses[0],
+                dia_chi_tam_tru: addresses[1],
                 giay_to_tuy_than: documents,
             });
         }
@@ -512,12 +512,25 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                 type === "add"
                     ? "/api/v1/students"
                     : `/api/v1/students/${student?._id}`;
-
             const cleanedData = {
                 ...formData,
                 giay_to_tuy_than: formData.giay_to_tuy_than.map(
                     ({ _id, ...rest }) => rest
                 ),
+                dia_chi_thuong_tru: Array.isArray(formData.dia_chi_thuong_tru)
+                    ? formData.dia_chi_thuong_tru.map(
+                          ({ _id, ...rest }) => rest
+                      )
+                    : formData.dia_chi_thuong_tru &&
+                      typeof formData.dia_chi_thuong_tru === "object"
+                    ? (({ _id, ...rest }) => rest)(formData.dia_chi_thuong_tru)
+                    : null,
+                dia_chi_tam_tru: Array.isArray(formData.dia_chi_tam_tru)
+                    ? formData.dia_chi_tam_tru.map(({ _id, ...rest }) => rest)
+                    : formData.dia_chi_tam_tru &&
+                      typeof formData.dia_chi_tam_tru === "object"
+                    ? (({ _id, ...rest }) => rest)(formData.dia_chi_tam_tru)
+                    : null,
             };
 
             console.log(cleanedData);
