@@ -24,13 +24,16 @@ interface StudentItemProps {
 const validateEmail = (email: string) => {
     const emailError = document.querySelector(
         ".profile-dialog-info-form-error-email"
-    ) as HTMLElement;
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    ) as HTMLElement | null;
+
+    const allowedDomain = "student.university.edu.vn";
+    const emailRegex = new RegExp(`^[a-zA-Z0-9._%+-]+@${allowedDomain}$`);
+
     if (!emailRegex.test(email)) {
-        emailError.style.display = "flex";
+        if (emailError) emailError.style.display = "flex";
         return false;
     } else {
-        emailError.style.display = "none";
+        if (emailError) emailError.style.display = "none";
         return true;
     }
 };
@@ -308,6 +311,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
     //     profileDialog.classList.toggle("hidden");
     // }
 
+    const [studentIds, setStudentIds] = useState<string[]>([]);
     const [faculties, setFaculties] = useState<Faculty[]>([]);
     const [programs, setPrograms] = useState<Program[]>([]);
     const [studentStatuses, setStudentStatuses] = useState<StudentStatus[]>([]);
@@ -352,6 +356,13 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
     ];
     const [documents, setDocuments] = useState<IDDocument[]>(defaultDocuments);
 
+    const validTransitions: Record<string, string[]> = {
+        "Đang học": ["Bảo lưu", "Tốt nghiệp", "Đình chỉ"],
+        "Bảo lưu": ["Đang học", "Đình chỉ"],
+        "Đình chỉ": ["Đang học"],
+        "Tốt nghiệp": [],
+    };
+
     const [formData, setFormData] = useState({
         ho_ten: "",
         ma_so_sinh_vien: "",
@@ -371,6 +382,28 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
     const profileDialog = document.querySelector(
         ".profile-dialog-container"
     ) as HTMLElement;
+
+    useEffect(() => {
+        const fetchStudentIds = async () => {
+            try {
+                const response = await fetch(
+                    `${SERVER_URL}/api/v1/students/all`
+                );
+                if (!response.ok)
+                    throw new Error("Lỗi khi lấy danh sách sinh viên");
+                const data = await response.json();
+                const ids = data.map(
+                    (student: { ma_so_sinh_vien: string }) =>
+                        student.ma_so_sinh_vien
+                );
+                setStudentIds(ids);
+            } catch (error) {
+                console.error("Lỗi khi lấy danh sách sinh viên:", error);
+            }
+        };
+
+        fetchStudentIds();
+    }, []);
 
     useEffect(() => {
         const fetchData = async (url: string, setState: Function) => {
@@ -429,6 +462,36 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
     ) => {
         const { name, value } = e.target;
+        if (name === "ma_so_sinh_vien") {
+            if (studentIds.includes(value)) {
+                alert("Mã số sinh viên đã tồn tại, vui lòng nhập mã khác!");
+                return;
+            }
+        } else if (name === "tinh_trang") {
+            const currentStatusObj = studentStatuses.find(
+                (status) => status._id.toString() === formData.tinh_trang
+            );
+
+            const newStatusObj = studentStatuses.find(
+                (status) => status._id.toString() === value
+            );
+
+            if (!currentStatusObj || !newStatusObj) {
+                alert("Không tìm thấy trạng thái!");
+                return;
+            }
+
+            const currentStatus = currentStatusObj.tinh_trang;
+            const newStatus = newStatusObj.tinh_trang;
+
+            if (!validTransitions[currentStatus]?.includes(newStatus)) {
+                alert(
+                    `Không thể chuyển từ "${currentStatus}" sang "${newStatus}"!`
+                );
+                return;
+            }
+        }
+
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
