@@ -8,7 +8,7 @@ import { PaginatedResponse } from '../../common/paginator/pagination-response.dt
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { StudentStatusNotFoundException } from '../exceptions/student_status-not-found.exception';
-
+import { isValidObjectId } from '../../common/utils/validation.util';
 @Injectable()
 export class StudentStatusService {
   private readonly logger = new Logger(StudentStatusService.name);
@@ -42,6 +42,10 @@ export class StudentStatusService {
 
   async update(id: string, updateReq: UpdateStudentStatusDto): Promise<StudentStatus | null> {
     try {
+      if (!isValidObjectId(id)) {
+        this.logger.error(`student_status.service.update: Invalid ObjectId format for ID ${id}`);
+        throw new StudentStatusNotFoundException(id, true);
+      }
       const result = await this.studentStatusRepository.update(id, updateReq);
       if (!result) {
         throw new StudentStatusNotFoundException(id);
@@ -59,6 +63,10 @@ export class StudentStatusService {
 
   async delete(id: string): Promise<StudentStatus | null> {
     try {
+      if (!isValidObjectId(id)) {
+        this.logger.error(`student_status.service.delete: Invalid ObjectId format for ID ${id}`);
+        throw new StudentStatusNotFoundException(id, true);
+      }
       const result = await this.studentStatusRepository.softDelete(id);
       if (!result) {
         throw new StudentStatusNotFoundException(id);
@@ -85,6 +93,10 @@ export class StudentStatusService {
 
   async detail(id: string): Promise<StudentStatus> {
     try {
+      if (!isValidObjectId(id)) {
+        this.logger.error(`student_status.service.detail: Invalid ObjectId format for ID ${id}`);
+        throw new StudentStatusNotFoundException(id, true);
+      }
       const studentStatus = await this.studentStatusRepository.getOne(id);
       if (!studentStatus) {
         throw new NotFoundException(`Student status with ID ${id} not found`);

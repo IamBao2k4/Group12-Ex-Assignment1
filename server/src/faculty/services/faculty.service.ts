@@ -6,7 +6,7 @@ import { CreateFacultyDto, UpdateFacultyDto } from '../dtos/faculty.dto';
 import { PaginationOptions } from '../../common/paginator/pagination.interface';
 import { PaginatedResponse } from '../../common/paginator/pagination-response.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { isValidObjectId, Model } from 'mongoose';
 import { FacultyNotFoundException } from '../exceptions/faculty-not-found.exception';
 
 @Injectable()
@@ -42,6 +42,10 @@ export class FacultyService {
 
   async update(id: string, updateReq: UpdateFacultyDto): Promise<Faculty | null> {
     try {
+      if (!isValidObjectId(id)) {
+        this.logger.error(`faculty.service.update: Invalid ObjectId format for ID ${id}`);
+        throw new FacultyNotFoundException(id, true);
+      }
       const result = await this.facultyRepository.update(id, updateReq);
       if (!result) {
         throw new FacultyNotFoundException(id);
@@ -59,6 +63,10 @@ export class FacultyService {
 
   async delete(id: string): Promise<Faculty | null> {
     try {
+      if (!isValidObjectId(id)) {
+        this.logger.error(`faculty.service.delete: Invalid ObjectId format for ID ${id}`);
+        throw new FacultyNotFoundException(id, true);
+      }
       const result = await this.facultyRepository.softDelete(id);
       if (!result) {
         throw new FacultyNotFoundException(id);
@@ -94,6 +102,10 @@ export class FacultyService {
 
   async detail(id: string): Promise<Faculty> {
     try {
+      if (!isValidObjectId(id)) {
+        this.logger.error(`faculty.service.detail: Invalid ObjectId format for ID ${id}`);
+        throw new FacultyNotFoundException(id, true);
+      } 
       const faculty = await this.facultyModel.findById(id).exec();
       if (!faculty) {
         throw new NotFoundException(`Faculty with ID ${id} not found`);

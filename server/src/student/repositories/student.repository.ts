@@ -8,6 +8,7 @@ import { PaginationOptions } from '../../common/paginator/pagination.interface';
 import { PaginatedResponse } from '../../common/paginator/pagination-response.dto';
 import { BaseException } from 'src/common/exceptions/base.exception';
 import { StudentNotFoundException } from '../exceptions/student-not-found.exception';
+import { isValidObjectId } from '../../common/utils/validation.util';
 
 @Injectable()
 export class StudentRepository implements IStudentRepository {
@@ -123,11 +124,6 @@ export class StudentRepository implements IStudentRepository {
 
   async findById(id: string): Promise<Student | null> {
     try {
-      if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-        this.logger.error(`student.repository.findById: Invalid ObjectId format for ID ${id}`);
-        throw new StudentNotFoundException(id);
-      }
-      
       const student = await this.studentModel.findOne({ 
         _id: id, 
         $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] 
