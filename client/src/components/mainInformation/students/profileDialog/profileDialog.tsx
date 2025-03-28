@@ -10,7 +10,7 @@ import {
     PassportDocument,
 } from "../models/id-document";
 import "./profileDialog.css";
-import React, { use, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import AddressItem from "./addressItem/addressItem";
 import IdDocumentItem from "./idDocumentItem/idDocumentItem";
 import { useNotification } from "../../../../components/common/NotificationContext";

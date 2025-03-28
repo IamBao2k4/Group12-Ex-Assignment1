@@ -10,6 +10,9 @@ import AddIcon from '@mui/icons-material/Add';
 
 import { SERVER_URL } from '../../../../global';
 
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+
 interface StudentProps {
     searchString: string;
 }
@@ -70,6 +73,50 @@ const Students: React.FC<StudentProps> = ({ searchString }) => {
             setCurrentPage(currentPage + 1);
         }
     }
+
+    const handleImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const data = e.target?.result;
+            const workbook = XLSX.read(data, { type: "array" });
+
+            const sheetName = workbook.SheetNames[0];
+            const sheet = workbook.Sheets[sheetName];
+
+            const jsonData: Student[] = XLSX.utils.sheet_to_json(sheet);
+            setStudents(jsonData);
+        };
+
+        reader.readAsArrayBuffer(file);
+    };
+
+    const handleExport = (fileType: "csv" | "xlsx") => {
+        if (students.length === 0) {
+            alert("Không có dữ liệu để xuất!");
+            return;
+        }
+
+        const ws = XLSX.utils.json_to_sheet(students);
+
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Students");
+
+        if (fileType === "xlsx") {
+            const excelBuffer = XLSX.write(wb, {
+                bookType: "xlsx",
+                type: "array",
+            });
+            const data = new Blob([excelBuffer], {
+                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            });
+            saveAs(data, "students.xlsx");
+        } else {
+            XLSX.writeFile(wb, "students.csv");
+        }
+    };
 
     if (!students) {
         return <div>Loading...</div>;
