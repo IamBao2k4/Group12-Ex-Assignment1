@@ -1,311 +1,319 @@
-[{
-  "_id": {
-    "$oid": "67e68a465560ccddcd4ed8fe"
-  },
-  "ma_so_sinh_vien": "M_001",
-  "ho_ten": "Nguyễn Văn A",
-  "ngay_sinh": "2004-10-19",
-  "gioi_tinh": "Nam",
-  "khoa": {
-    "$oid": "67da70117ecfb41b077c5f07"
-  },
-  "khoa_hoc": "2018",
-  "chuong_trinh": {
-    "$oid": "67da96f77ecfb41b077c5f10"
-  },
-  "dia_chi_thuong_tru": {
-    "chi_tiet": "123 Nguyễn Văn Cừ",
-    "phuong_xa": "Phường 4",
-    "quan_huyen": "Quận 5",
-    "tinh_thanh_pho": "Thành phố Hồ Chí Minh",
-    "quoc_gia": "Việt Nam",
+[
+  {
     "_id": {
-      "$oid": "67e68a465560ccddcd4ed8ff"
-    }
-  },
-  "giay_to_tuy_than": [
-    {
-      "type": "cccd",
-      "so": "079204001234",
-      "ngay_cap": {
-        "$date": "2020-05-15T00:00:00.000Z"
-      },
-      "noi_cap": "Cục Cảnh sát ĐKQL cư trú và DLQG về dân cư",
-      "ngay_het_han": {
-        "$date": "2035-05-15T00:00:00.000Z"
-      },
-      "co_gan_chip": true,
+      "$oid": "67e68a465560ccddcd4ed8fe"
+    },
+    "ma_so_sinh_vien": "M_001",
+    "ho_ten": "Nguyễn Văn A",
+    "ngay_sinh": "2004-10-19",
+    "gioi_tinh": "Nam",
+    "khoa": {
+      "$oid": "67da70117ecfb41b077c5f07"
+    },
+    "khoa_hoc": "2018",
+    "chuong_trinh": {
+      "$oid": "67da96f77ecfb41b077c5f10"
+    },
+    "dia_chi_thuong_tru": {
+      "chi_tiet": "123 Nguyễn Văn Cừ",
+      "phuong_xa": "Phường 4",
+      "quan_huyen": "Quận 5",
+      "tinh_thanh_pho": "Thành phố Hồ Chí Minh",
+      "quoc_gia": "Việt Nam",
       "_id": {
-        "$oid": "67e68a465560ccddcd4ed900"
+        "$oid": "67e68a465560ccddcd4ed8ff"
       }
-    }
-  ],
-  "email": "nguyenvana1@example.com",
-  "so_dien_thoai": "0328146401",
-  "created_at": {
-    "$date": "2025-03-28T11:38:46.189Z"
+    },
+    "giay_to_tuy_than": [
+      {
+        "type": "cccd",
+        "so": "079204001234",
+        "ngay_cap": {
+          "$date": "2020-05-15T00:00:00.000Z"
+        },
+        "noi_cap": "Cục Cảnh sát ĐKQL cư trú và DLQG về dân cư",
+        "ngay_het_han": {
+          "$date": "2035-05-15T00:00:00.000Z"
+        },
+        "co_gan_chip": true,
+        "_id": {
+          "$oid": "67e68a465560ccddcd4ed900"
+        }
+      }
+    ],
+    "email": "nguyenvana1@example.com",
+    "so_dien_thoai": "0328146401",
+    "tinh_trang": "67da9f0e7ecfb41b077c5f1f",
+    "created_at": {
+      "$date": "2025-03-28T11:38:46.189Z"
+    },
+    "updated_at": {
+      "$date": "2025-03-28T11:38:46.189Z"
+    },
+    "__v": 0
   },
-  "updated_at": {
-    "$date": "2025-03-28T11:38:46.189Z"
-  },
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "67e68a465560ccddcd4ed905"
-  },
-  "ma_so_sinh_vien": "M_006",
-  "ho_ten": "Đỗ Thị F",
-  "ngay_sinh": "2001-03-15",
-  "gioi_tinh": "Nữ",
-  "khoa": {
-    "$oid": "67da70117ecfb41b077c5f07"
-  },
-  "khoa_hoc": "2019",
-  "chuong_trinh": {
-    "$oid": "67da96f77ecfb41b077c5f10"
-  },
-  "dia_chi_thuong_tru": {
-    "chi_tiet": "78 Nguyễn Huệ",
-    "phuong_xa": "Phường Bến Nghé",
-    "quan_huyen": "Quận 1",
-    "tinh_thanh_pho": "Thành phố Hồ Chí Minh",
-    "quoc_gia": "Việt Nam",
+  {
     "_id": {
-      "$oid": "67e68a465560ccddcd4ed906"
-    }
-  },
-  "giay_to_tuy_than": [
-    {
-      "type": "cccd",
-      "so": "079201000567",
-      "ngay_cap": {
-        "$date": "2021-04-10T00:00:00.000Z"
-      },
-      "noi_cap": "Cục Cảnh sát ĐKQL cư trú và DLQG về dân cư",
-      "ngay_het_han": {
-        "$date": "2036-04-10T00:00:00.000Z"
-      },
-      "co_gan_chip": true,
+      "$oid": "67e68a465560ccddcd4ed905"
+    },
+    "ma_so_sinh_vien": "M_006",
+    "ho_ten": "Đỗ Thị F",
+    "ngay_sinh": "2001-03-15",
+    "gioi_tinh": "Nữ",
+    "khoa": {
+      "$oid": "67da70117ecfb41b077c5f07"
+    },
+    "khoa_hoc": "2019",
+    "chuong_trinh": {
+      "$oid": "67da96f77ecfb41b077c5f10"
+    },
+    "dia_chi_thuong_tru": {
+      "chi_tiet": "78 Nguyễn Huệ",
+      "phuong_xa": "Phường Bến Nghé",
+      "quan_huyen": "Quận 1",
+      "tinh_thanh_pho": "Thành phố Hồ Chí Minh",
+      "quoc_gia": "Việt Nam",
       "_id": {
-        "$oid": "67e68a465560ccddcd4ed907"
+        "$oid": "67e68a465560ccddcd4ed906"
       }
-    }
-  ],
-  "email": "dothif6@example.com",
-  "so_dien_thoai": "0328146406",
-  "created_at": {
-    "$date": "2025-03-28T11:38:46.211Z"
+    },
+    "giay_to_tuy_than": [
+      {
+        "type": "cccd",
+        "so": "079201000567",
+        "ngay_cap": {
+          "$date": "2021-04-10T00:00:00.000Z"
+        },
+        "noi_cap": "Cục Cảnh sát ĐKQL cư trú và DLQG về dân cư",
+        "ngay_het_han": {
+          "$date": "2036-04-10T00:00:00.000Z"
+        },
+        "co_gan_chip": true,
+        "_id": {
+          "$oid": "67e68a465560ccddcd4ed907"
+        }
+      }
+    ],
+    "email": "dothif6@example.com",
+    "so_dien_thoai": "0328146406",
+    "tinh_trang": "67da9f0e7ecfb41b077c5f1f",
+    "created_at": {
+      "$date": "2025-03-28T11:38:46.211Z"
+    },
+    "updated_at": {
+      "$date": "2025-03-28T11:38:46.211Z"
+    },
+    "__v": 0
   },
-  "updated_at": {
-    "$date": "2025-03-28T11:38:46.211Z"
-  },
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "67e68a465560ccddcd4ed90c"
-  },
-  "ma_so_sinh_vien": "M_008",
-  "ho_ten": "Lý Thị H",
-  "ngay_sinh": "2002-12-30",
-  "gioi_tinh": "Nữ",
-  "khoa": {
-    "$oid": "67da70117ecfb41b077c5f05"
-  },
-  "khoa_hoc": "2019",
-  "chuong_trinh": {
-    "$oid": "67da96f77ecfb41b077c5f0d"
-  },
-  "dia_chi_thuong_tru": {
-    "chi_tiet": "156 Nguyễn Thị Minh Khai",
-    "phuong_xa": "Phường 6",
-    "quan_huyen": "Quận 3",
-    "tinh_thanh_pho": "Thành phố Hồ Chí Minh",
-    "quoc_gia": "Việt Nam",
+  {
     "_id": {
-      "$oid": "67e68a465560ccddcd4ed90d"
-    }
-  },
-  "giay_to_tuy_than": [
-    {
-      "type": "cccd",
-      "so": "079202000789",
-      "ngay_cap": {
-        "$date": "2022-07-20T00:00:00.000Z"
-      },
-      "noi_cap": "Cục Cảnh sát ĐKQL cư trú và DLQG về dân cư",
-      "ngay_het_han": {
-        "$date": "2037-07-20T00:00:00.000Z"
-      },
-      "co_gan_chip": true,
+      "$oid": "67e68a465560ccddcd4ed90c"
+    },
+    "ma_so_sinh_vien": "M_008",
+    "ho_ten": "Lý Thị H",
+    "ngay_sinh": "2002-12-30",
+    "gioi_tinh": "Nữ",
+    "khoa": {
+      "$oid": "67da70117ecfb41b077c5f05"
+    },
+    "khoa_hoc": "2019",
+    "chuong_trinh": {
+      "$oid": "67da96f77ecfb41b077c5f0d"
+    },
+    "dia_chi_thuong_tru": {
+      "chi_tiet": "156 Nguyễn Thị Minh Khai",
+      "phuong_xa": "Phường 6",
+      "quan_huyen": "Quận 3",
+      "tinh_thanh_pho": "Thành phố Hồ Chí Minh",
+      "quoc_gia": "Việt Nam",
       "_id": {
-        "$oid": "67e68a465560ccddcd4ed90e"
+        "$oid": "67e68a465560ccddcd4ed90d"
       }
-    }
-  ],
-  "email": "lythih8@example.com",
-  "so_dien_thoai": "0328146408",
-  "created_at": {
-    "$date": "2025-03-28T11:38:46.229Z"
+    },
+    "giay_to_tuy_than": [
+      {
+        "type": "cccd",
+        "so": "079202000789",
+        "ngay_cap": {
+          "$date": "2022-07-20T00:00:00.000Z"
+        },
+        "noi_cap": "Cục Cảnh sát ĐKQL cư trú và DLQG về dân cư",
+        "ngay_het_han": {
+          "$date": "2037-07-20T00:00:00.000Z"
+        },
+        "co_gan_chip": true,
+        "_id": {
+          "$oid": "67e68a465560ccddcd4ed90e"
+        }
+      }
+    ],
+    "email": "lythih8@example.com",
+    "so_dien_thoai": "0328146408",
+    "tinh_trang": "67da9f0e7ecfb41b077c5f1f",
+    "created_at": {
+      "$date": "2025-03-28T11:38:46.229Z"
+    },
+    "updated_at": {
+      "$date": "2025-03-28T11:38:46.229Z"
+    },
+    "__v": 0
   },
-  "updated_at": {
-    "$date": "2025-03-28T11:38:46.229Z"
-  },
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "67e68a465560ccddcd4ed913"
-  },
-  "ma_so_sinh_vien": "M_009",
-  "ho_ten": "Mai Văn I",
-  "ngay_sinh": "2001-05-25",
-  "gioi_tinh": "Nam",
-  "khoa": {
-    "$oid": "67da70117ecfb41b077c5f07"
-  },
-  "khoa_hoc": "2019",
-  "chuong_trinh": {
-    "$oid": "67da96f77ecfb41b077c5f10"
-  },
-  "dia_chi_thuong_tru": {
-    "chi_tiet": "34 Đường 3/2",
-    "phuong_xa": "Phường 12",
-    "quan_huyen": "Quận 10",
-    "tinh_thanh_pho": "TP. Hồ Chí Minh",
-    "quoc_gia": "Việt Nam",
+  {
     "_id": {
-      "$oid": "67e68a465560ccddcd4ed914"
-    }
-  },
-  "giay_to_tuy_than": [
-    {
-      "type": "cmnd",
-      "so": "023456789",
-      "ngay_cap": {
-        "$date": "2016-09-12T00:00:00.000Z"
-      },
-      "noi_cap": "Công an TP.HCM",
-      "ngay_het_han": {
-        "$date": "2026-09-12T00:00:00.000Z"
-      },
+      "$oid": "67e68a465560ccddcd4ed913"
+    },
+    "ma_so_sinh_vien": "M_009",
+    "ho_ten": "Mai Văn I",
+    "ngay_sinh": "2001-05-25",
+    "gioi_tinh": "Nam",
+    "khoa": {
+      "$oid": "67da70117ecfb41b077c5f07"
+    },
+    "khoa_hoc": "2019",
+    "chuong_trinh": {
+      "$oid": "67da96f77ecfb41b077c5f10"
+    },
+    "dia_chi_thuong_tru": {
+      "chi_tiet": "34 Đường 3/2",
+      "phuong_xa": "Phường 12",
+      "quan_huyen": "Quận 10",
+      "tinh_thanh_pho": "TP. Hồ Chí Minh",
+      "quoc_gia": "Việt Nam",
       "_id": {
-        "$oid": "67e68a465560ccddcd4ed915"
+        "$oid": "67e68a465560ccddcd4ed914"
       }
-    }
-  ],
-  "email": "maivani9@example.com",
-  "so_dien_thoai": "0328146409",
-  "created_at": {
-    "$date": "2025-03-28T11:38:46.248Z"
+    },
+    "giay_to_tuy_than": [
+      {
+        "type": "cmnd",
+        "so": "023456789",
+        "ngay_cap": {
+          "$date": "2016-09-12T00:00:00.000Z"
+        },
+        "noi_cap": "Công an TP.HCM",
+        "ngay_het_han": {
+          "$date": "2026-09-12T00:00:00.000Z"
+        },
+        "_id": {
+          "$oid": "67e68a465560ccddcd4ed915"
+        }
+      }
+    ],
+    "email": "maivani9@example.com",
+    "so_dien_thoai": "0328146409",
+    "tinh_trang": "67da9f0e7ecfb41b077c5f1f",
+    "created_at": {
+      "$date": "2025-03-28T11:38:46.248Z"
+    },
+    "updated_at": {
+      "$date": "2025-03-28T11:38:46.248Z"
+    },
+    "__v": 0
   },
-  "updated_at": {
-    "$date": "2025-03-28T11:38:46.248Z"
-  },
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "67e68a465560ccddcd4ed91a"
-  },
-  "ma_so_sinh_vien": "M_010",
-  "ho_ten": "Trương Thị K",
-  "ngay_sinh": "2000-11-08",
-  "gioi_tinh": "Nữ",
-  "khoa": {
-    "$oid": "67da70117ecfb41b077c5f05"
-  },
-  "khoa_hoc": "2019",
-  "chuong_trinh": {
-    "$oid": "67da96f77ecfb41b077c5f0d"
-  },
-  "dia_chi_thuong_tru": {
-    "chi_tiet": "567 Bạch Đằng",
-    "phuong_xa": "Phường 24",
-    "quan_huyen": "Quận Bình Thạnh",
-    "tinh_thanh_pho": "Thành phố Hồ Chí Minh",
-    "quoc_gia": "Việt Nam",
+  {
     "_id": {
-      "$oid": "67e68a465560ccddcd4ed91b"
-    }
-  },
-  "giay_to_tuy_than": [
-    {
-      "type": "cccd",
-      "so": "079203000123",
-      "ngay_cap": {
-        "$date": "2023-01-15T00:00:00.000Z"
-      },
-      "noi_cap": "Cục Cảnh sát ĐKQL cư trú và DLQG về dân cư",
-      "ngay_het_han": {
-        "$date": "2038-01-15T00:00:00.000Z"
-      },
-      "co_gan_chip": true,
+      "$oid": "67e68a465560ccddcd4ed91a"
+    },
+    "ma_so_sinh_vien": "M_010",
+    "ho_ten": "Trương Thị K",
+    "ngay_sinh": "2000-11-08",
+    "gioi_tinh": "Nữ",
+    "khoa": {
+      "$oid": "67da70117ecfb41b077c5f05"
+    },
+    "khoa_hoc": "2019",
+    "chuong_trinh": {
+      "$oid": "67da96f77ecfb41b077c5f0d"
+    },
+    "dia_chi_thuong_tru": {
+      "chi_tiet": "567 Bạch Đằng",
+      "phuong_xa": "Phường 24",
+      "quan_huyen": "Quận Bình Thạnh",
+      "tinh_thanh_pho": "Thành phố Hồ Chí Minh",
+      "quoc_gia": "Việt Nam",
       "_id": {
-        "$oid": "67e68a465560ccddcd4ed91c"
+        "$oid": "67e68a465560ccddcd4ed91b"
       }
-    }
-  ],
-  "email": "truongthik10@example.com",
-  "so_dien_thoai": "0328146410",
-  "created_at": {
-    "$date": "2025-03-28T11:38:46.268Z"
+    },
+    "giay_to_tuy_than": [
+      {
+        "type": "cccd",
+        "so": "079203000123",
+        "ngay_cap": {
+          "$date": "2023-01-15T00:00:00.000Z"
+        },
+        "noi_cap": "Cục Cảnh sát ĐKQL cư trú và DLQG về dân cư",
+        "ngay_het_han": {
+          "$date": "2038-01-15T00:00:00.000Z"
+        },
+        "co_gan_chip": true,
+        "_id": {
+          "$oid": "67e68a465560ccddcd4ed91c"
+        }
+      }
+    ],
+    "email": "truongthik10@example.com",
+    "so_dien_thoai": "0328146410",
+    "tinh_trang": "67da9f0e7ecfb41b077c5f1f",
+    "created_at": {
+      "$date": "2025-03-28T11:38:46.268Z"
+    },
+    "updated_at": {
+      "$date": "2025-03-28T11:38:46.268Z"
+    },
+    "__v": 0
   },
-  "updated_at": {
-    "$date": "2025-03-28T11:38:46.268Z"
-  },
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "67e68a465560ccddcd4ed921"
-  },
-  "ma_so_sinh_vien": "M_007",
-  "ho_ten": "Vũ Văn G",
-  "ngay_sinh": "2000-08-22",
-  "gioi_tinh": "Nam",
-  "khoa": {
-    "$oid": "67da70117ecfb41b077c5f05"
-  },
-  "khoa_hoc": "2019",
-  "chuong_trinh": {
-    "$oid": "67da96f77ecfb41b077c5f0d"
-  },
-  "dia_chi_thuong_tru": {
-    "chi_tiet": "45 Đường Lê Lai",
-    "phuong_xa": "Phường Bến Thành",
-    "quan_huyen": "Quận 1",
-    "tinh_thanh_pho": "TP. Hồ Chí Minh",
-    "quoc_gia": "Việt Nam",
+  {
     "_id": {
-      "$oid": "67e68a465560ccddcd4ed922"
-    }
-  },
-  "giay_to_tuy_than": [
-    {
-      "type": "passport",
-      "so": "P9876543",
-      "ngay_cap": {
-        "$date": "2023-06-15T00:00:00.000Z"
-      },
-      "noi_cap": "Cục Quản lý Xuất nhập cảnh",
-      "ngay_het_han": {
-        "$date": "2033-06-15T00:00:00.000Z"
-      },
-      "quoc_gia_cap": "Việt Nam",
+      "$oid": "67e68a465560ccddcd4ed921"
+    },
+    "ma_so_sinh_vien": "M_007",
+    "ho_ten": "Vũ Văn G",
+    "ngay_sinh": "2000-08-22",
+    "gioi_tinh": "Nam",
+    "khoa": {
+      "$oid": "67da70117ecfb41b077c5f05"
+    },
+    "khoa_hoc": "2019",
+    "chuong_trinh": {
+      "$oid": "67da96f77ecfb41b077c5f0d"
+    },
+    "dia_chi_thuong_tru": {
+      "chi_tiet": "45 Đường Lê Lai",
+      "phuong_xa": "Phường Bến Thành",
+      "quan_huyen": "Quận 1",
+      "tinh_thanh_pho": "TP. Hồ Chí Minh",
+      "quoc_gia": "Việt Nam",
       "_id": {
-        "$oid": "67e68a465560ccddcd4ed923"
+        "$oid": "67e68a465560ccddcd4ed922"
       }
-    }
-  ],
-  "email": "vuvang7@example.com",
-  "so_dien_thoai": "0328146407",
-  "created_at": {
-    "$date": "2025-03-28T11:38:46.284Z"
-  },
-  "updated_at": {
-    "$date": "2025-03-28T11:38:46.284Z"
-  },
-  "__v": 0
-}]
+    },
+    "giay_to_tuy_than": [
+      {
+        "type": "passport",
+        "so": "P9876543",
+        "ngay_cap": {
+          "$date": "2023-06-15T00:00:00.000Z"
+        },
+        "noi_cap": "Cục Quản lý Xuất nhập cảnh",
+        "ngay_het_han": {
+          "$date": "2033-06-15T00:00:00.000Z"
+        },
+        "quoc_gia_cap": "Việt Nam",
+        "_id": {
+          "$oid": "67e68a465560ccddcd4ed923"
+        }
+      }
+    ],
+    "email": "vuvang7@example.com",
+    "so_dien_thoai": "0328146407",
+    "tinh_trang": "67da9f0e7ecfb41b077c5f1f",
+    "created_at": {
+      "$date": "2025-03-28T11:38:46.284Z"
+    },
+    "updated_at": {
+      "$date": "2025-03-28T11:38:46.284Z"
+    },
+    "__v": 0
+  }
+]
