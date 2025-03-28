@@ -5,8 +5,6 @@ import { IStudentStatusRepository, STUDENT_STATUS_REPOSITORY } from '../reposito
 import { CreateStudentStatusDto, UpdateStudentStatusDto } from '../dtos/student_status.dto';
 import { PaginationOptions } from '../../common/paginator/pagination.interface';
 import { PaginatedResponse } from '../../common/paginator/pagination-response.dto';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { StudentStatusNotFoundException } from '../exceptions/student_status-not-found.exception';
 import { isValidObjectId } from '../../common/utils/validation.util';
 @Injectable()
@@ -15,7 +13,6 @@ export class StudentStatusService {
 
   constructor(
     @Inject(STUDENT_STATUS_REPOSITORY) private readonly studentStatusRepository: IStudentStatusRepository,
-    @InjectModel('StudentStatus') private studentStatusModel: Model<StudentStatus>
   ) { }
 
   async create(createReq: CreateStudentStatusDto): Promise<StudentStatus> {
@@ -97,7 +94,7 @@ export class StudentStatusService {
         this.logger.error(`student_status.service.detail: Invalid ObjectId format for ID ${id}`);
         throw new StudentStatusNotFoundException(id, true);
       }
-      const studentStatus = await this.studentStatusRepository.getOne(id);
+      const studentStatus = await this.studentStatusRepository.detail(id);
       if (!studentStatus) {
         throw new NotFoundException(`Student status with ID ${id} not found`);
       }

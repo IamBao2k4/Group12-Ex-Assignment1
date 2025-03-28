@@ -10,5 +10,5 @@ export interface IStudentStatusRepository {
     findAll(paginationOpts: PaginationOptions, searchString: string, page: number): Promise<PaginatedResponse<StudentStatus>>;
     softDelete(id: string): Promise<StudentStatus | null>;
     getAll(): Promise<StudentStatus[]>;
-    getOne(id: string): Promise<StudentStatus>;
+    detail(id: string): Promise<StudentStatus>;
 }

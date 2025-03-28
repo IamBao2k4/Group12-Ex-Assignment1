@@ -70,6 +70,7 @@ export class StudentTransformer {
 
     if (khoaMa) {
       const faculty = await facultyService.findByCode(khoaMa);
+      console.log(faculty);
       if (faculty && faculty._id) {
         khoaId = faculty._id as Schema.Types.ObjectId;
       }
@@ -92,6 +93,10 @@ export class StudentTransformer {
 
     if ((idDoc as any).type === 'cccd') {
       (idDoc as any).co_gan_chip = row['Có gắn chip'] || row.co_gan_chip || false;
+    }
+
+    if ((idDoc as any).type === 'passport') {
+      (idDoc as any).quoc_gia_cap = row['Quốc gia cấp'] || row.quoc_gia_cap || '';
     }
 
     const diaChiThuongTru = {
