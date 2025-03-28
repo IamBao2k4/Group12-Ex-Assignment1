@@ -5,8 +5,6 @@ import { IProgramRepository, PROGRAM_REPOSITORY } from '../repositories/program.
 import { CreateProgramDto, UpdateProgramDto } from '../dtos/program.dto';
 import { PaginationOptions } from '../../common/paginator/pagination.interface';
 import { PaginatedResponse } from '../../common/paginator/pagination-response.dto';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { ProgramNotFoundException } from '../exceptions/program-not-found.exception';
 import { isValidObjectId } from '../../common/utils/validation.util';
 @Injectable()
@@ -15,7 +13,6 @@ export class ProgramService {
 
   constructor(
     @Inject(PROGRAM_REPOSITORY) private readonly programRepository: IProgramRepository,
-    @InjectModel('Program') private programModel: Model<Program>
   ) {}
 
   async create(createReq: CreateProgramDto): Promise<Program> {
@@ -84,7 +81,7 @@ export class ProgramService {
 
   async getAll(): Promise<Program[]> {
     try {
-      return await this.programModel.find().exec();
+      return await this.programRepository.getAll();
     } catch (error) {
       this.logger.error(`program.service.getAll: ${error.message}`, error.stack);
       throw error;
@@ -93,7 +90,7 @@ export class ProgramService {
 
   async findByCode(ma: string): Promise<Program | null> {
     try {
-      return await this.programModel.findOne({ ma }).exec();
+      return await this.programRepository.findByCode(ma);
     } catch (error) {
       this.logger.error(`program.service.findByCode: ${error.message}`, error.stack);
       throw error;
@@ -106,7 +103,7 @@ export class ProgramService {
         this.logger.error(`program.service.detail: Invalid ObjectId format for ID ${id}`);
         throw new ProgramNotFoundException(id, true);
       }
-      const program = await this.programModel.findById(id).exec();
+      const program = await this.programRepository.detail(id);
       if (!program) {
         throw new NotFoundException(`Program with ID ${id} not found`);
       }

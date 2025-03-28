@@ -10,4 +10,6 @@ export interface IFacultyRepository {
     findAll(paginationOpts: PaginationOptions, searchString: string, page: number): Promise<PaginatedResponse<Faculty>>;
     softDelete(id: string): Promise<Faculty | null>;
     getAll(): Promise<Faculty[]>;
+    findByCode(code: string): Promise<Faculty | null>;
+    detail(id: string): Promise<Faculty | null>;
 }

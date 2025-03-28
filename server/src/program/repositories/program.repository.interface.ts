@@ -10,4 +10,6 @@ export interface IProgramRepository {
     findAll(paginationOpts: PaginationOptions, searchString: string, page: number): Promise<PaginatedResponse<Program>>;
     softDelete(id: string): Promise<Program | null>;
     getAll(): Promise<Program[]>;
+    findByCode(code: string): Promise<Program | null>;
+    detail(id: string): Promise<Program | null>;
 }

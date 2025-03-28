@@ -148,7 +148,7 @@ export class StudentStatusRepository implements IStudentStatusRepository {
     return studentStatuses;
   }
 
-  async getOne(id: string): Promise<StudentStatus> {
+  async detail(id: string): Promise<StudentStatus> {
     let studentStatus: StudentStatus | null = null;
     try {
       studentStatus = await this.studentStatusModel.findOne({ _id: id, $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] }).exec();
