@@ -94,9 +94,6 @@ export class StudentRepository implements IStudentRepository {
     try {
       students = await this.studentModel
         .find(query)
-        .populate('tinh_trang', 'tinh_trang')
-        .populate('khoa', 'ten_khoa')
-        .populate('chuong_trinh', 'name')
         .skip(skip)
         .limit(limit)
         .exec();

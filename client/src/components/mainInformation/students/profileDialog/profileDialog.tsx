@@ -368,7 +368,9 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
         // identificationDocuments: documents,
     });
 
-    const profileDialog = useRef<HTMLDivElement>(null);
+    const profileDialog = document.querySelector(
+        ".profile-dialog-container"
+    ) as HTMLElement;
 
     useEffect(() => {
         const fetchData = async (url: string, setState: Function) => {
@@ -462,7 +464,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                     ? "Tạo sinh viên thành công!"
                     : "Cập nhật sinh viên thành công!"
             );
-            profileDialog.current?.classList.toggle("hidden");
+            profileDialog.classList.toggle("hidden");
             window.location.reload();
         } catch (error) {
             alert(
@@ -472,7 +474,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
     };
 
     const handleCancel = () => {
-        profileDialog.current?.classList.toggle("hidden");
+        profileDialog.classList.toggle("hidden");
     };
 
     return (

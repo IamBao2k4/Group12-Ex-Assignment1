@@ -16,7 +16,7 @@ export class StudentStatusService {
   constructor(
     @Inject(STUDENT_STATUS_REPOSITORY) private readonly studentStatusRepository: IStudentStatusRepository,
     @InjectModel('StudentStatus') private studentStatusModel: Model<StudentStatus>
-  ) {}
+  ) { }
 
   async create(createReq: CreateStudentStatusDto): Promise<StudentStatus> {
     try {
@@ -76,7 +76,7 @@ export class StudentStatusService {
 
   async getAll(): Promise<StudentStatus[]> {
     try {
-      return await this.studentStatusModel.find().exec();
+      return await this.studentStatusRepository.getAll();
     } catch (error) {
       this.logger.error(`student_status.service.getAll: ${error.message}`, error.stack);
       throw error;
@@ -85,7 +85,7 @@ export class StudentStatusService {
 
   async detail(id: string): Promise<StudentStatus> {
     try {
-      const studentStatus = await this.studentStatusModel.findById(id).exec();
+      const studentStatus = await this.studentStatusRepository.getOne(id);
       if (!studentStatus) {
         throw new NotFoundException(`Student status with ID ${id} not found`);
       }
