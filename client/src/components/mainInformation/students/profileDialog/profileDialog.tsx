@@ -310,8 +310,6 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
     // function CancelHandler() {
     //     profileDialog.classList.toggle("hidden");
     // }
-
-    const [studentIds, setStudentIds] = useState<string[]>([]);
     const [faculties, setFaculties] = useState<Faculty[]>([]);
     const [programs, setPrograms] = useState<Program[]>([]);
     const [studentStatuses, setStudentStatuses] = useState<StudentStatus[]>([]);
@@ -440,12 +438,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
     ) => {
         const { name, value } = e.target;
-        if (name === "ma_so_sinh_vien") {
-            if (studentIds.includes(value)) {
-                alert("Mã số sinh viên đã tồn tại, vui lòng nhập mã khác!");
-                return;
-            }
-        } else if (name === "tinh_trang") {
+            if (name === "tinh_trang") {
             const currentStatusObj = studentStatuses.find(
                 (status) => status._id.toString() === formData.tinh_trang
             );
