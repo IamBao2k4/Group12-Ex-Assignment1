@@ -13,7 +13,15 @@ import { Student } from '../interfaces/student.interface';
 import { PaginationOptions } from '../../common/paginator/pagination.interface';
 import { PaginatedResponse } from '../../common/paginator/pagination-response.dto';
 import { IStudentRepository, STUDENT_REPOSITORY } from '../repositories/student.repository.interface';
-import { StudentNotFoundException, StudentExistsException } from '../exceptions';
+import { 
+  StudentNotFoundException, 
+  StudentExistsException, 
+  InvalidStatusTransitionException,
+  StudentIdExistsException,
+  FacultyNotExistsException,
+  ProgramNotExistsException,
+  StudentStatusNotExistsException
+} from '../exceptions';
 import { ValidationError } from 'class-validator';
 import { CreateStudentDto, UpdateStudentDto } from '../dtos/student.dto';
 import { FacultyService } from '../../faculty/services/faculty.service';
@@ -198,7 +206,13 @@ export class StudentService {
       });
     }
 
-    if (error instanceof StudentExistsException || error instanceof StudentNotFoundException) {
+    if (error instanceof StudentExistsException || 
+        error instanceof StudentNotFoundException ||
+        error instanceof InvalidStatusTransitionException ||
+        error instanceof StudentIdExistsException ||
+        error instanceof FacultyNotExistsException ||
+        error instanceof ProgramNotExistsException ||
+        error instanceof StudentStatusNotExistsException) {
       this.logger.error(`${error.message}`, { ...errorContext, stack: error.stack });
       throw error;
     }
@@ -246,12 +260,17 @@ export class StudentService {
   }
 
 
+  /**
+   * Kiểm tra MSSV là duy nhất, không trùng với sinh viên khác
+   * @param mssv Mã số sinh viên cần kiểm tra
+   * @param excludeId ID sinh viên cần loại trừ khỏi việc kiểm tra (dùng khi update)
+   */
   private async validateMSSVUnique(mssv: string, excludeId?: string): Promise<void> {
     const existingStudentWithMSSV = await this.studentRepository.findByMSSV(mssv, excludeId);
     
     if (existingStudentWithMSSV) {
       this.logger.error(`student.service.validateMSSVUnique: Student ID '${mssv}' already exists`);
-      throw new BadRequestException(`Student ID '${mssv}' already exists`);
+      throw new StudentIdExistsException(mssv);
     }
   }
 
@@ -265,14 +284,21 @@ export class StudentService {
   }
 
 
+  /**
+   * Kiểm tra khoa có tồn tại không
+   * @param facultyId ID của khoa cần kiểm tra
+   */
   private async validateFacultyExists(facultyId: string): Promise<void> {
     try {
       const faculty = await this.facultyService.detail(facultyId);
       if (!faculty) {
         this.logger.error(`student.service.validateFacultyExists: Faculty with ID '${facultyId}' does not exist`);
-        throw new BadRequestException(`Faculty with ID '${facultyId}' does not exist`);
+        throw new FacultyNotExistsException(facultyId);
       }
     } catch (error) {
+      if (error instanceof FacultyNotExistsException) {
+        throw error;
+      }
       this.logger.error(`student.service.validateFacultyExists: Faculty validation error: ${error.message}`);
       throw new BadRequestException(`Faculty validation error: ${error.message}`);
     }
@@ -284,9 +310,12 @@ export class StudentService {
       const program = await this.programService.detail(programId);
       if (!program) {
         this.logger.error(`student.service.validateProgramExists: Program with ID '${programId}' does not exist`);
-        throw new BadRequestException(`Program with ID '${programId}' does not exist`);
+        throw new ProgramNotExistsException(programId);
       }
     } catch (error) {
+      if (error instanceof ProgramNotExistsException) {
+        throw error;
+      }
       this.logger.error(`student.service.validateProgramExists: Program validation error: ${error.message}`);
       throw new BadRequestException(`Program validation error: ${error.message}`);
     }
@@ -298,9 +327,12 @@ export class StudentService {
       const studentStatus = await this.studentStatusService.detail(statusId);
       if (!studentStatus) {
         this.logger.error(`student.service.validateStudentStatusExists: Student status with ID '${statusId}' does not exist`);
-        throw new BadRequestException(`Student status with ID '${statusId}' does not exist`);
+        throw new StudentStatusNotExistsException(statusId);
       }
     } catch (error) {
+      if (error instanceof StudentStatusNotExistsException) {
+        throw error;
+      }
       this.logger.error(`student.service.validateStudentStatusExists: Student status validation error: ${error.message}`);
       throw new BadRequestException(`Student status validation error: ${error.message}`);
     }
@@ -314,7 +346,13 @@ export class StudentService {
       const statusBefore = currentStudent.tinh_trang ? currentStudent.tinh_trang.toString() : null;
       
       if (statusBefore && !(await this.isValidStatusTransition(statusBefore, newStatusId))) {
-        throw new BadRequestException(`Invalid status transition from '${currentStudent.tinh_trang}' to '${newStatusId}'`);
+        const currentStatusObj = await this.studentStatusService.detail(statusBefore);
+        const newStatusObj = await this.studentStatusService.detail(newStatusId);
+        
+        const fromStatusName = currentStatusObj?.tinh_trang || statusBefore;
+        const toStatusName = newStatusObj?.tinh_trang || newStatusId;
+        
+        throw new InvalidStatusTransitionException(fromStatusName, toStatusName);
       }
     } catch (error) {
       if (error instanceof BadRequestException) {
