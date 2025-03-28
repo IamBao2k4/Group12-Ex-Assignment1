@@ -4,7 +4,7 @@ import { BaseException } from '../../common/exceptions';
 export class StudentExistsException extends BaseException {
   constructor() {
     super(
-      'Email hoặc số điện thoại đã tồn tại',
+      'Email or phone number already exists',
       'STUDENT_EXISTS',
       HttpStatus.BAD_REQUEST,
     );

@@ -9,8 +9,10 @@ import { StudentStatusModule } from './student_status/student_status.module';
 import { ProgramModule } from './program/program.module';
 import { ImportModule } from './import/import.module';
 import { ExportModule } from './export/export.module';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { GlobalExceptionFilter } from './common/exceptions/http-exception.filter';
+import { ApiLoggerService } from './common/logger/api-logger.service';
+import { ApiLoggerInterceptor } from './common/logger/api-logger.interceptor';
 import configuration from './config/configuration';
 
 @Module({
@@ -35,10 +37,16 @@ import configuration from './config/configuration';
     ExportModule,
   ],
   controllers: [AppController],
-  providers: [AppService,
+  providers: [
+    AppService,
+    ApiLoggerService,
     {
       provide: APP_FILTER,
       useClass: GlobalExceptionFilter,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ApiLoggerInterceptor,
     },
   ],
 })

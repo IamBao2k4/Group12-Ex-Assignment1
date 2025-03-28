@@ -1,10 +1,11 @@
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus, Logger } from '@nestjs/common';
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { BaseException } from "./base.exception";
+import { ApiLoggerService } from '../logger/api-logger.service';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
-  private readonly logger = new Logger(GlobalExceptionFilter.name);
+  private readonly logger = new ApiLoggerService(GlobalExceptionFilter.name);
 
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
@@ -15,10 +16,9 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     let message = 'Lỗi không xác định';
     let error = 'Internal Server Error';
     let errorCode = 'INTERNAL_SERVER_ERROR';
-    let details = undefined;
+    let details: Record<string, string[]> | undefined = undefined;
 
     if (exception instanceof BaseException) {
-      // Xử lý exception tùy chỉnh của ứng dụng
       status = exception.getStatus();
       const responseBody = exception.getResponse() as any;
       message = responseBody.message || exception.message;
@@ -26,28 +26,74 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       errorCode = responseBody.errorCode || 'UNKNOWN_ERROR';
       details = responseBody.details;
     } else if (exception instanceof HttpException) {
-      // Xử lý các HTTP exceptions tiêu chuẩn của NestJS
       status = exception.getStatus();
       const responseBody = exception.getResponse();
-      message = typeof responseBody === 'object' && 'message' in responseBody
-        ? (Array.isArray(responseBody.message)
-          ? responseBody.message[0]
-          : responseBody.message as string)
-        : exception.message;
+      
+      if (typeof responseBody === 'object') {
+        if ('message' in responseBody) {
+          if ('errors' in responseBody) {
+            const validationResponse = responseBody as { 
+              message: string;
+              errors: Record<string, string[]>;
+            };
+            
+            this.logger.error(`Validation errors: ${JSON.stringify(validationResponse.errors)}`);
+            
+            if (validationResponse.errors.email) {
+              message = `Email validation error: ${validationResponse.errors.email[0]}`;
+            }
+            else if (validationResponse.errors.so_dien_thoai) {
+              message = `Phone validation error: ${validationResponse.errors.so_dien_thoai[0]}`;
+            }
+            else {
+              const firstKey = Object.keys(validationResponse.errors)[0];
+              if (firstKey) {
+                message = `${firstKey} validation error: ${validationResponse.errors[firstKey][0]}`;
+              } else {
+                message = 'Validation error';
+              }
+            }
+            
+            details = validationResponse.errors;
+          } else {
+            message = Array.isArray(responseBody.message)
+              ? responseBody.message[0]
+              : responseBody.message as string;
+          }
+        } else {
+          message = exception.message;
+        }
+      } else {
+        message = exception.message;
+      }
+      
       error = exception.name;
+      
+      if (exception.name === 'BadRequestException') {
+        errorCode = 'BAD_REQUEST';
+      } else if (exception.name === 'UnauthorizedException') {
+        errorCode = 'UNAUTHORIZED';
+      } else if (exception.name === 'ForbiddenException') {
+        errorCode = 'FORBIDDEN';
+      } else if (exception.name === 'NotFoundException') {
+        errorCode = 'NOT_FOUND';
+      } else {
+        errorCode = exception.name.replace('Exception', '').toUpperCase();
+      }
     } else if (exception instanceof Error) {
-      // Xử lý các lỗi JavaScript/TypeScript cơ bản
       message = exception.message;
       error = exception.name;
     }
 
-    // Log lỗi
-    this.logger.error(
-      `${request.method} ${request.url} - ${status} - ${message}`,
-      exception instanceof Error ? exception.stack : undefined,
-    );
+    this.logger.logApiError(request, {
+      status,
+      message,
+      name: error,
+      errorCode,
+      details,
+      stack: exception instanceof Error ? exception.stack : undefined,
+    });
 
-    // Trả về response chuẩn hóa
     response.status(status).json({
       statusCode: status,
       message,
