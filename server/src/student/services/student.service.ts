@@ -155,6 +155,9 @@ export class StudentService {
 
   private async isValidStatusTransition(currentStatusId: string, newStatusId: string): Promise<boolean> {
     try {
+      if (currentStatusId === newStatusId) {
+        return true;
+      }
       const currentStatus = await this.studentStatusService.detail(currentStatusId);
       const newStatus = await this.studentStatusService.detail(newStatusId);
       
