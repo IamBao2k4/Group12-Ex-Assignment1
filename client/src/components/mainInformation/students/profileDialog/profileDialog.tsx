@@ -384,28 +384,6 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
     ) as HTMLElement;
 
     useEffect(() => {
-        const fetchStudentIds = async () => {
-            try {
-                const response = await fetch(
-                    `${SERVER_URL}/api/v1/students/all`
-                );
-                if (!response.ok)
-                    throw new Error("Lỗi khi lấy danh sách sinh viên");
-                const data = await response.json();
-                const ids = data.map(
-                    (student: { ma_so_sinh_vien: string }) =>
-                        student.ma_so_sinh_vien
-                );
-                setStudentIds(ids);
-            } catch (error) {
-                console.error("Lỗi khi lấy danh sách sinh viên:", error);
-            }
-        };
-
-        fetchStudentIds();
-    }, []);
-
-    useEffect(() => {
         const fetchData = async (url: string, setState: Function) => {
             try {
                 const response = await fetch(`${SERVER_URL}${url}`);
@@ -711,7 +689,6 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student }) => {
                                 style={{ marginTop: "20px" }}
                             >
                                 <label htmlFor="tinh_trang">Tình trạng</label>
-                                {/* <input type="text" id="status" name="status" /> */}
                                 <div className="profile-dialog-info-form-select">
                                     <select
                                         name="tinh_trang"
