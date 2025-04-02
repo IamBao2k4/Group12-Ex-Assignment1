@@ -25,7 +25,7 @@ const Subjects: React.FC = () => {
   const fetchSubjects = useCallback(async () => {
     try {
       const response = await fetch(
-        `${SERVER_URL}/api/v1/subjects?faculty=${faculty}&page=${currentPage}`
+        `${SERVER_URL}/api/v1/courses?faculty=${faculty}&page=${currentPage}`
       );
       const data = await response.json();
       setSubjects(data.data);
