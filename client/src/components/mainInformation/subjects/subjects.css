@@ -1,0 +1,88 @@
+.subjects {
+    padding: 20px;
+    background-color: var(--primary);
+    border-radius: 5px;
+    flex: 9;
+}
+
+.subjects h1 {
+    margin-bottom: 20px;
+    color: var(--text);
+}
+
+.subjects-add {
+    display: flex;
+    gap: 10px;
+}
+
+.subjects-add button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--secondary);
+    color: var(--primary);
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.subjects-add button:hover {
+    background-color: var(--secondary-dark);
+}
+
+.subjects-faculty {
+    margin: 20px 0;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.3s ease-in-out;
+}
+
+.subjects-faculty:focus {
+    border-color: var(--secondary);
+}
+
+.subjects-list {
+    margin-top: 20px;
+}
+
+.subjects-list-header {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    font-weight: bold;
+    background-color: var(--secondary);
+    color: var(--primary);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.list-subjects {
+    margin-top: 10px;
+}
+
+.subjects-pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.subjects-pagination-btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--secondary);
+    color: var(--primary);
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.subjects-pagination-btn:disabled {
+    background-color: var(--disabled);
+    cursor: not-allowed;
+}
+
+.subjects-pagination-btn:hover:not(:disabled) {
+    background-color: var(--secondary-dark);
+}

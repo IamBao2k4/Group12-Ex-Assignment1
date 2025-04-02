@@ -12,4 +12,5 @@ export interface IFacultyRepository {
     getAll(): Promise<Faculty[]>;
     findByCode(code: string): Promise<Faculty | null>;
     detail(id: string): Promise<Faculty | null>;
+    getById(id: string): Promise<Faculty | null>;
 }

@@ -72,4 +72,14 @@ import {
         throw error;
       }
     }
+
+    @Get(':id')
+    async getById(@Param('id') id: string) {
+      try {
+        return await this.facultyService.getById(id);
+      } catch (error) {
+        this.logger.error(`faculty.controller.getById: ${error.message}`, error.stack);
+        throw error;
+      }
+    }
   }

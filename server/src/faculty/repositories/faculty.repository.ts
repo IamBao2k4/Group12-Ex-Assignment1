@@ -164,4 +164,13 @@ export class FacultyRepository implements IFacultyRepository {
       throw new BaseException(error, 'FIND_FACULTY_BY_ID_ERROR');
     }
   }
+
+  async getById(id: string): Promise<Faculty | null> {
+    try {
+      return this.facultyModel.findOne({ _id: id, $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] }).exec();
+    } catch (error) {
+      this.logger.error(`faculty.repository.getById: Error finding faculty by id ${id}`, error.stack);
+      throw new BaseException(error, 'FIND_FACULTY_BY_ID_ERROR');
+    }
+  }
 }

@@ -114,4 +114,18 @@ export class FacultyService {
       throw error;
     }
   }
+
+  async getById(id: string): Promise<Faculty | null> {
+    try {
+      if (!isValidObjectId(id)) {
+        this.logger.error(`faculty.service.getById: Invalid ObjectId format for ID ${id}`);
+        throw new FacultyNotFoundException(id, true);
+      }
+      return await this.facultyRepository.getById(id);
+    }
+    catch (error) {
+      this.logger.error(`faculty.service.getById: ${error.message}`, error.stack);
+      throw error;
+    }
+  }
 }
