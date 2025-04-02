@@ -7,6 +7,7 @@ export interface Subject extends Document {
     tin_chi: number; // Credits
     khoa: mongoose.Types.ObjectId; // Reference to Faculty
     mon_tien_quyet: mongoose.Types.ObjectId[]; // Prerequisite subjects
+    vo_hieu_hoa: boolean;
     created_at: Date;
     updated_at: Date;
     deleted_at?: Date; // Optional for soft delete

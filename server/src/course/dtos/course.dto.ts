@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional, IsNumber, IsArray } from "class-validator";
+import { IsString, IsNotEmpty, IsOptional, IsNumber, IsArray, IsBoolean } from "class-validator";
 
 export class CreateCourseDto {
     @IsString()
@@ -20,6 +20,10 @@ export class CreateCourseDto {
     @IsArray()
     @IsOptional()
     readonly mon_tien_quyet?: string[]; // Prerequisite course IDs
+
+    @IsBoolean()
+    @IsOptional()
+    readonly vo_hieu_hoa?: boolean; // Soft delete flag
 }
 
 export class UpdateCourseDto {
@@ -42,4 +46,8 @@ export class UpdateCourseDto {
     @IsArray()
     @IsOptional()
     readonly mon_tien_quyet?: string[]; // Prerequisite course IDs
+
+    @IsBoolean()
+    @IsOptional()
+    readonly vo_hieu_hoa?: boolean;
 }

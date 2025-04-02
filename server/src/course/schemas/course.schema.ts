@@ -7,6 +7,7 @@ export const CourseSchema = new mongoose.Schema(
     tin_chi: { type: Number, required: true }, // Credits
     khoa: { type: mongoose.Schema.Types.ObjectId, ref: 'Faculty', required: true }, // Reference to Faculty
     mon_tien_quyet: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }], // Prerequisite courses
+    vo_hieu_hoa: { type: Boolean, default: false }, // Soft delete flag
     created_at: { type: Date, default: Date.now }, // Creation timestamp
     updated_at: { type: Date, default: Date.now }, // Update timestamp
     deleted_at: { type: Date, default: null }, // Soft delete timestamp
