@@ -2,16 +2,16 @@ import React, { useState, useEffect } from "react";
 import "./subjectDialog.css";
 import { SERVER_URL } from "../../../../../global";
 
-import { Subject } from "../models/subject";
+import { Subject } from "../models/course";
 import { Faculty } from "../../faculties/models/faculty";
 
-interface SubjectDialogProps {
+interface CourseDialogProps {
   subject: Subject | null;
   type: string; // "add" or "edit"
   onSuccess: () => void;
 }
 
-const SubjectDialog: React.FC<SubjectDialogProps> = ({ subject, type, onSuccess }) => {
+const CourseDialog: React.FC<CourseDialogProps> = ({ subject, type, onSuccess }) => {
   const [maMonHoc, setMaMonHoc] = useState(subject?.ma_mon_hoc || "");
   const [ten, setTen] = useState(subject?.ten || "");
   const [tinChi, setTinChi] = useState(subject?.tin_chi || 0);
@@ -131,4 +131,4 @@ const SubjectDialog: React.FC<SubjectDialogProps> = ({ subject, type, onSuccess 
   );
 };
 
-export default SubjectDialog;
+export default CourseDialog;

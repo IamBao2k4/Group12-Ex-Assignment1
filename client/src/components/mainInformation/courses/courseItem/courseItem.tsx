@@ -1,10 +1,10 @@
 import React,{ useState, useEffect } from "react";
 import "./subjectItem.css";
 
-import { Subject } from "../models/subject";
+import { Subject } from "../models/course";
 import { SERVER_URL } from "../../../../../global";
 
-interface SubjectItemProps {
+interface CourseItemProps {
     id: string;
     subject: Subject;
     DialogHandler: (type: string) => void;
@@ -12,7 +12,7 @@ interface SubjectItemProps {
     onDeleteSuccess: () => void;
 }
 
-const SubjectItem: React.FC<SubjectItemProps> = ({
+const CourseItem: React.FC<CourseItemProps> = ({
     id,
     subject,
     DialogHandler,
@@ -75,4 +75,4 @@ const SubjectItem: React.FC<SubjectItemProps> = ({
     );
 };
 
-export default SubjectItem;
+export default CourseItem;

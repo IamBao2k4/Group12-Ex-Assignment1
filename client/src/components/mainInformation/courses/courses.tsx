@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useCallback } from "react";
 import "./subjects.css";
 
-import SubjectItem from "./subjectItem/subjectItem";
-import SubjectDialog from "./subjectDialog/subjectDialog";
+import CourseItem from "./courseItem/courseItem";
+import CourseDialog from "./courseDialog/courseDialog";
 
-import { Subject } from "./models/subject";
+import { Subject } from "./models/course";
 import { Faculty } from "../faculties/models/faculty";
 import AddIcon from "@mui/icons-material/Add";
 
@@ -122,7 +122,7 @@ const Subjects: React.FC = () => {
 
   return (
     <div className="subjects">
-      <SubjectDialog
+      <CourseDialog
         subject={chosenSubject ?? subjects[0]}
         type={dialogType}
         onSuccess={fetchSubjects}
@@ -178,7 +178,7 @@ const Subjects: React.FC = () => {
 
         <div className="list-subjects">
           {subjects.map((subject) => (
-            <SubjectItem
+            <CourseItem
               key={subject._id.toString()}
               id={subject._id.toString()}
               subject={subject}
