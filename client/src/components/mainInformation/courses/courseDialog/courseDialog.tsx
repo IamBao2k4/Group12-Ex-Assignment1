@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./subjectDialog.css";
+import "./courseDialog.css";
 import { SERVER_URL } from "../../../../../global";
 
 import { Subject } from "../models/course";

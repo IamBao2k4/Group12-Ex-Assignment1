@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import "./subjects.css";
+import "./courses.css";
 
 import CourseItem from "./courseItem/courseItem";
 import CourseDialog from "./courseDialog/courseDialog";

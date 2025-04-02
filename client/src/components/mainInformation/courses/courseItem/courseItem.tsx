@@ -1,5 +1,5 @@
 import React,{ useState, useEffect } from "react";
-import "./subjectItem.css";
+import "./courseItem.css";
 
 import { Subject } from "../models/course";
 import { SERVER_URL } from "../../../../../global";
