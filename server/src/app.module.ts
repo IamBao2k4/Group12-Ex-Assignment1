@@ -9,6 +9,7 @@ import { StudentStatusModule } from './student_status/student_status.module';
 import { ProgramModule } from './program/program.module';
 import { ImportModule } from './import/import.module';
 import { ExportModule } from './export/export.module';
+import { EnrollmentModule } from './enrollment/enrollment.module';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { GlobalExceptionFilter } from './common/exceptions/http-exception.filter';
 import { ApiLoggerService } from './common/logger/api-logger.service';
@@ -35,6 +36,7 @@ import configuration from './config/configuration';
     ProgramModule,
     ImportModule,
     ExportModule,
+    EnrollmentModule,
   ],
   controllers: [AppController],
   providers: [
