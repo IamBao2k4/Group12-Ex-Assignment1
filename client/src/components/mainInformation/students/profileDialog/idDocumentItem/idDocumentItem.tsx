@@ -27,8 +27,35 @@ const IdDocumentItem: React.FC<IdDocumentItemProps> = ({ student, setDocuments, 
 
     useEffect(() => {
         setDocument(giayToSelected);
-        setDocuments([giayToSelected as IDDocument]);
     }, [giayToSelected]);
+
+    useEffect(() => {
+        if (document) {
+            // Check if the document type already exists in the current documents
+            const existingDocument = student.giay_to_tuy_than.find(
+                (item) => item.type === document.type
+            );
+    
+            let updatedDocuments;
+            if (existingDocument) {
+                // Update the existing document
+                updatedDocuments = student.giay_to_tuy_than.map((item) => {
+                    if (item.type === document.type) {
+                        return document;
+                    }
+                    return item;
+                });
+            } else {
+                // Add the new document type to the list
+                updatedDocuments = [...student.giay_to_tuy_than, document];
+            }
+    
+            console.log("updatedDocuments", updatedDocuments);
+            setDocuments(updatedDocuments);
+        } else {
+            setDocuments(student?.giay_to_tuy_than);
+        }
+    }, [document]);
 
     return (
         <div className="profile-dialog-info-form-group">

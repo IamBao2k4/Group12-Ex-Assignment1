@@ -197,7 +197,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess })
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        console.log(formData);
+        console.log(documents);
 
         if (
             !validateEmail(formData.email) ||
@@ -213,7 +213,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess })
                     : `/api/v1/students/${student?._id}`;
             const cleanedData = {
                 ...formData,
-                giay_to_tuy_than: formData.giay_to_tuy_than.map(
+                giay_to_tuy_than: documents.map(
                     ({ _id, ...rest }) => rest
                 ),
                 dia_chi_thuong_tru: Array.isArray(formData.dia_chi_thuong_tru)
@@ -232,7 +232,6 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess })
                     : null,
             };
 
-            console.log(cleanedData);
             const response = await fetch(`${SERVER_URL}${url}`, {
                 method,
                 headers: { "Content-Type": "application/json" },
