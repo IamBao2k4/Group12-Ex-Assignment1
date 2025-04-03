@@ -22,7 +22,6 @@ const StudentItem: React.FC<StudentItemProps> = ({ id, student, ProfileHandler, 
     const { showNotification } = useNotification();
 
     function EditBtnHandler() {
-        console.log("Edit button clicked");
         setChosenStudent(student);
         ProfileHandler('edit');
     }

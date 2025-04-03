@@ -197,8 +197,6 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess })
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        console.log(documents);
-
         if (
             !validateEmail(formData.email) ||
             !validatePhone(formData.so_dien_thoai)
@@ -213,23 +211,12 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess })
                     : `/api/v1/students/${student?._id}`;
             const cleanedData = {
                 ...formData,
-                giay_to_tuy_than: documents.map(
+                giay_to_tuy_than: documents ? documents.map(
                     ({ _id, ...rest }) => rest
-                ),
-                dia_chi_thuong_tru: Array.isArray(formData.dia_chi_thuong_tru)
-                    ? formData.dia_chi_thuong_tru.map(
-                          ({ _id, ...rest }) => rest
-                      )
-                    : formData.dia_chi_thuong_tru &&
-                      typeof formData.dia_chi_thuong_tru === "object"
-                    ? (({ _id, ...rest }) => rest)(formData.dia_chi_thuong_tru)
-                    : null,
-                dia_chi_tam_tru: Array.isArray(formData.dia_chi_tam_tru)
-                    ? formData.dia_chi_tam_tru.map(({ _id, ...rest }) => rest)
-                    : formData.dia_chi_tam_tru &&
-                      typeof formData.dia_chi_tam_tru === "object"
-                    ? (({ _id, ...rest }) => rest)(formData.dia_chi_tam_tru)
-                    : null,
+                )
+                : [],
+                dia_chi_thuong_tru: addresses ? addresses[0] : null, 
+                dia_chi_tam_tru: addresses ? addresses[1] : null,
             };
 
             const response = await fetch(`${SERVER_URL}${url}`, {

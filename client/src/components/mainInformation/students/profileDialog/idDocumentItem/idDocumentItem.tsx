@@ -50,12 +50,11 @@ const IdDocumentItem: React.FC<IdDocumentItemProps> = ({ student, setDocuments, 
                 updatedDocuments = [...student.giay_to_tuy_than, document];
             }
     
-            console.log("updatedDocuments", updatedDocuments);
             setDocuments(updatedDocuments);
         } else {
             setDocuments(student?.giay_to_tuy_than);
         }
-    }, [document]);
+    }, [document, student, setDocuments]);
 
     return (
         <div className="profile-dialog-info-form-group">
@@ -69,6 +68,7 @@ const IdDocumentItem: React.FC<IdDocumentItemProps> = ({ student, setDocuments, 
                         name="giayto"
                         value="CMND"
                         onChange={(e) => setSelected(e.target.value)}
+                        defaultChecked={type === "edit"}
                     />
                     CMND
                 </label>
