@@ -5,16 +5,16 @@
 
 :root {
     --primary: #ffffff;
-    --secondary: #4880ff;
+    --secondary: #509cdb;
     --success: #28a745;
     --info: #17a2b8;
     --warning: #ffc107;
     --danger: #dc3545;
     --light: #f8f9fa;
     --dark: #343a40;
-    --text: #202224;
+    --text: #4f4f4f;
     --text-light: #ffffff;
-    --search: #f5f6fa;
+    --search: #fcfafa;
     --border: #d5d5d5;
 }
 
@@ -32,4 +32,11 @@ body {
 
 #root {
     height: 100%;
+}
+
+input,
+select,
+textarea,
+button {
+    font-family: inherit;
 }
