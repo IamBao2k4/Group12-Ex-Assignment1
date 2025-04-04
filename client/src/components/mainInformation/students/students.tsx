@@ -1,14 +1,14 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import './students.css';
+import React, { useEffect, useState, useCallback } from "react";
+import "./students.css";
 
 import StudentItem from "./studentItem/studentItem";
 import ProfileDialog from "./profileDialog/profileDialog";
 
-import { Student } from './models/student';
-import { Faculty } from '../faculties/models/faculty';
-import AddIcon from '@mui/icons-material/Add';
+import { Student } from "./models/student";
+import { Faculty } from "../faculties/models/faculty";
+import AddIcon from "@mui/icons-material/Add";
 
-import { SERVER_URL } from '../../../../global';
+import { SERVER_URL } from "../../../../global";
 
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
@@ -18,39 +18,41 @@ interface StudentProps {
 }
 
 const Students: React.FC<StudentProps> = ({ searchString }) => {
-    const [students, setStudents] = useState<Student[]>([])
-    const [profileType, setProfileType] = useState('add')
-    const [currentPage, setCurrentPage] = useState(1)
-    const [totalPages, setTotalPages] = useState(1)
-    const [chosenStudent, setChosenStudent] = useState<Student | null>(null)
-    const [faculties, setFaculties] = useState<Faculty[]>([])
-    const [faculty, setFaculty] = useState('')
+    const [students, setStudents] = useState<Student[]>([]);
+    const [profileType, setProfileType] = useState("add");
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [chosenStudent, setChosenStudent] = useState<Student | null>(null);
+    const [faculties, setFaculties] = useState<Faculty[]>([]);
+    const [faculty, setFaculty] = useState("");
 
     const fetchStudents = useCallback(async () => {
         try {
-            const response = await fetch(`${SERVER_URL}/api/v1/students?searchString=${searchString}&faculty=${faculty}&page=${currentPage}`)
-            const data = await response.json()
-            setStudents(data.data)
-            setTotalPages(data.meta.total)
+            const response = await fetch(
+                `${SERVER_URL}/api/v1/students?searchString=${searchString}&faculty=${faculty}&page=${currentPage}`
+            );
+            const data = await response.json();
+            setStudents(data.data);
+            setTotalPages(data.meta.total);
         } catch (error) {
-            console.error('Error fetching students:', error)
+            console.error("Error fetching students:", error);
         }
     }, [searchString, faculty, currentPage]);
 
     const fetchFaculty = useCallback(async () => {
         try {
-            const response = await fetch(`${SERVER_URL}/api/v1/faculties/all`)
-            const data = await response.json()
-            setFaculties(data)
+            const response = await fetch(`${SERVER_URL}/api/v1/faculties/all`);
+            const data = await response.json();
+            setFaculties(data);
         } catch (error) {
-            console.error('Error fetching faculty:', error)
+            console.error("Error fetching faculty:", error);
         }
     }, []);
 
     useEffect(() => {
-        fetchFaculty()
-        fetchStudents()
-    }, [fetchFaculty, fetchStudents])
+        fetchFaculty();
+        fetchStudents();
+    }, [fetchFaculty, fetchStudents]);
 
     function Filter(event: React.ChangeEvent<HTMLSelectElement>) {
         setFaculty(event.target.value);
@@ -58,8 +60,10 @@ const Students: React.FC<StudentProps> = ({ searchString }) => {
 
     function ProfileHandler(type: string) {
         setProfileType(type);
-        const profileDialog = document.querySelector('.profile-dialog-container') as HTMLElement
-        profileDialog.classList.toggle('hidden')
+        const profileDialog = document.querySelector(
+            ".profile-dialog-container"
+        ) as HTMLElement;
+        profileDialog.classList.toggle("hidden");
     }
 
     function handlePreviousPage() {
@@ -124,12 +128,12 @@ const Students: React.FC<StudentProps> = ({ searchString }) => {
 
     return (
         <div className="students">
-            <ProfileDialog 
-                student={chosenStudent ?? students[0]} 
-                type={profileType} 
+            <ProfileDialog
+                student={chosenStudent ?? students[0]}
+                type={profileType}
                 onSuccess={fetchStudents}
             />
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <h1>Students</h1>
                 <div className="students-add">
                     <input
@@ -144,36 +148,52 @@ const Students: React.FC<StudentProps> = ({ searchString }) => {
                             document.getElementById("fileInput")?.click()
                         }
                     >
-                        <i className="fa-solid fa-file-import"></i>
+                        Import File
                     </button>
 
                     <button
                         className="add-student"
                         onClick={() => ProfileHandler("add")}
                     >
-                        <AddIcon />
+                        Add Student
                     </button>
                 </div>
             </div>
 
-            <select
-                className="students-faculty"
-                name="faculty"
-                id="faculty"
-                onChange={Filter}
-            >
-                <option value="" defaultChecked>
-                    All
-                </option>
-                {faculties.map((faculty) => (
-                    <option
-                        key={faculty._id.toString()}
-                        value={faculty._id.toString()}
-                    >
-                        {faculty.ten_khoa}
+            <div className="select-wrapper">
+                <select
+                    className="students-faculty"
+                    name="faculty"
+                    id="faculty"
+                    onChange={Filter}
+                >
+                    <option value="" defaultChecked>
+                        All
                     </option>
-                ))}
-            </select>
+                    {faculties.map((faculty) => (
+                        <option
+                            key={faculty._id.toString()}
+                            value={faculty._id.toString()}
+                        >
+                            {faculty.ten_khoa}
+                        </option>
+                    ))}
+                </select>
+
+                <svg
+                    width="9"
+                    height="7"
+                    viewBox="0 0 9 7"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="students-select-icon"
+                >
+                    <path
+                        d="M4.243 6.32851L0 2.08551L1.415 0.671509L4.243 3.50051L7.071 0.671509L8.486 2.08551L4.243 6.32851Z"
+                        fill="#C4C4C4"
+                    />
+                </svg>
+            </div>
 
             <div className="students-list">
                 <div className="students-list-header row">
@@ -192,11 +212,11 @@ const Students: React.FC<StudentProps> = ({ searchString }) => {
 
                 <div className="list-students">
                     {students.map((student) => (
-                        <StudentItem 
-                            key={student._id.toString()} 
-                            id={student._id.toString()} 
-                            student={student} 
-                            ProfileHandler={ProfileHandler} 
+                        <StudentItem
+                            key={student._id.toString()}
+                            id={student._id.toString()}
+                            student={student}
+                            ProfileHandler={ProfileHandler}
                             setChosenStudent={setChosenStudent}
                             onDeleteSuccess={fetchStudents}
                         />
@@ -205,12 +225,10 @@ const Students: React.FC<StudentProps> = ({ searchString }) => {
             </div>
 
             <div className="students-export">
-                <button onClick={() => handleExport("csv")}>
-                    <i className="fa-solid fa-file-export"></i> Export CSV
-                </button>
+                <button onClick={() => handleExport("csv")}>Export CSV</button>
 
                 <button onClick={() => handleExport("xlsx")}>
-                    <i className="fa-solid fa-file-export"></i> Export Excel
+                    Export Excel
                 </button>
             </div>
 
