@@ -74,3 +74,16 @@ Student Manager
 
 ### Xác thực tình trạng
   - ![alt text](image/status_validate.jpg)
+
+### Tạo module
+## Course
+- ![alt text](image/module_course.jpg)
+
+## Enrollment
+- ![alt text](image/module_enrollment.jpg)
+
+## Grade
+- ![alt text](image/module_grade.jpg)
+
+## Transcript
+- ![alt text](image/module_transcript.jpg)
