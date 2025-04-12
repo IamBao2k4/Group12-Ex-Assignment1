@@ -6,7 +6,7 @@ import { IStudentRepository } from './student.repository.interface';
 import { Pagination } from '../../common/paginator/pagination.class';
 import { PaginationOptions } from '../../common/paginator/pagination.interface';
 import { PaginatedResponse } from '../../common/paginator/pagination-response.dto';
-import { BaseException } from 'src/common/exceptions/base.exception';
+import { BaseException } from '../../common/exceptions/base.exception';
 import { StudentNotFoundException } from '../exceptions/student-not-found.exception';
 import { isValidObjectId } from '../../common/utils/validation.util';
 

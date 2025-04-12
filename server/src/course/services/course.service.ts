@@ -65,11 +65,15 @@ export class CourseService {
         this.logger.error(`course.service.delete: Invalid ObjectId format for ID ${id}`);
         throw new CourseNotFoundException(id, true);
       }
+      
+      // Gọi repository và kiểm tra kết quả trả về
       const result = await this.courseRepository.softDelete(id);
       if (!result) {
+        this.logger.error(`course.service.delete: Course with ID ${id} not found`);
         throw new CourseNotFoundException(id);
       }
       return result;
+      
     } catch (error) {
       if (error instanceof CourseNotFoundException) {
         this.logger.error(`course.service.delete: ${error.message}`, error.stack);
@@ -121,7 +125,12 @@ export class CourseService {
         this.logger.error(`course.service.getById: Invalid ObjectId format for ID ${id}`);
         throw new CourseNotFoundException(id, true);
       }
-      return await this.courseRepository.getById(id);
+      const course = await this.courseRepository.getById(id);
+      if (!course) {
+        this.logger.error(`course.service.getById: Course with ID ${id} not found`);
+        throw new CourseNotFoundException(id);
+      }
+      return course;
     } catch (error) {
       this.logger.error(`course.service.getById: ${error.message}`, error.stack);
       throw error;

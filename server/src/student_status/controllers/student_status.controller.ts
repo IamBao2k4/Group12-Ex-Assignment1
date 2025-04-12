@@ -75,6 +75,11 @@ import {
 
     @Get(':id')
     async detail(@Param('id') id: string) {
-      return this.studentStatusService.detail(id);
+      try {
+        return await this.studentStatusService.detail(id);
+      } catch (error) {
+        this.logger.error(`student_status.controller.detail: ${error.message}`, error.stack);
+        throw error;
+      }
     }
   }
