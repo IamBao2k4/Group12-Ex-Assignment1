@@ -10,6 +10,9 @@ import { ProgramModule } from './program/program.module';
 import { ImportModule } from './import/import.module';
 import { ExportModule } from './export/export.module';
 import { EnrollmentModule } from './enrollment/enrollment.module';
+import { CourseModule } from './course/course.module';
+import { TranscriptModule } from './transcript/transcript.module';
+import { OpenClassModule } from './open_class/open_class.module';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { GlobalExceptionFilter } from './common/exceptions/http-exception.filter';
 import { ApiLoggerService } from './common/logger/api-logger.service';
@@ -37,6 +40,9 @@ import configuration from './config/configuration';
     ImportModule,
     ExportModule,
     EnrollmentModule,
+    CourseModule,
+    TranscriptModule,
+    OpenClassModule,
   ],
   controllers: [AppController],
   providers: [

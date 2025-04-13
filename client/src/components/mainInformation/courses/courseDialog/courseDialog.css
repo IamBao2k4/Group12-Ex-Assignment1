@@ -85,3 +85,7 @@
 .form-actions button[type="button"]:hover {
     background-color: var(--danger-dark);
 }
+
+.hidden {
+    display: none;
+}

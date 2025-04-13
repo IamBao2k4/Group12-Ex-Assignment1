@@ -4,6 +4,7 @@ import { OpenClassService } from './services/open_class.service';
 import { Logger } from '@nestjs/common';
 import { CreateOpenClassDto, UpdateOpenClassDto } from './dtos/open_class.dto';
 import { OpenClassNotFoundException } from './exceptions/class-not-found.exception';
+import { SearchOptions } from './dtos/search_options.dto';
 
 describe('OpenClassController', () => {
   let controller: OpenClassController;
@@ -32,9 +33,7 @@ describe('OpenClassController', () => {
     controller = module.get<OpenClassController>(OpenClassController);
     service = module.get<OpenClassService>(OpenClassService);
 
-    // Mock logger to avoid console outputs during tests
     jest.spyOn(Logger.prototype, 'error').mockImplementation(() => {});
-    jest.spyOn(Logger.prototype, 'log').mockImplementation(() => {});
   });
 
   afterEach(() => {
@@ -47,16 +46,23 @@ describe('OpenClassController', () => {
 
   describe('create', () => {
     it('should call service create with open_class data', async () => {
-      const createDto = {
-        ma_diem: 'A',
-        diem_so: 4.0,
-        diem_chu: 'A',
-        muc_dat: 'Excellent',
-      } as unknown as CreateOpenClassDto;
-      
+      const createDto: CreateOpenClassDto = {
+        ma_lop: 'CS101',
+        ma_mon_hoc: 'CS101',
+        si_so: 0,
+        nam_hoc: 2025,
+        hoc_ky: 1,
+        giang_vien: 'Dr. John Doe',
+        so_luong_toi_da: 50,
+        lich_hoc: 'Monday 9:00-11:00',
+        phong_hoc: 'Room 101',
+      };
+
       const expectedResult = {
         _id: 'open_class-id',
         ...createDto,
+        created_at: new Date(),
+        updated_at: new Date(),
       };
 
       jest.spyOn(service, 'create').mockResolvedValue(expectedResult as any);
@@ -68,15 +74,19 @@ describe('OpenClassController', () => {
     });
 
     it('should propagate errors from service', async () => {
-      const createDto = {
-        ma_diem: 'A',
-        diem_so: 4.0,
-        diem_chu: 'A',
-        muc_dat: 'Excellent',
-      } as unknown as CreateOpenClassDto;
-      
-      const serviceError = new Error('Service error');
-      jest.spyOn(service, 'create').mockRejectedValue(serviceError);
+      const createDto: CreateOpenClassDto = {
+        ma_lop: 'CS101',
+        ma_mon_hoc: 'CS101',
+        si_so: 0,
+        nam_hoc: 2025,
+        hoc_ky: 1,
+        giang_vien: 'Dr. John Doe',
+        so_luong_toi_da: 50,
+        lich_hoc: 'Monday 9:00-11:00',
+        phong_hoc: 'Room 101',
+      };
+
+      jest.spyOn(service, 'create').mockRejectedValue(new Error('Service error'));
 
       await expect(controller.create(createDto)).rejects.toThrow('Service error');
     });
@@ -85,44 +95,45 @@ describe('OpenClassController', () => {
   describe('get', () => {
     it('should call service get with query parameters', async () => {
       const query = { limit: 10, skip: 0 };
-      const searchString = 'search';
-      const page = 1;
-      
-      const paginatedResult = {
-        data: [{ _id: 'open_class-id', ma_diem: 'A' }],
-        meta: { page: 1, limit: 10, totalPages: 1, total: 1 }
+      const searchString: SearchOptions = { ma_mon_hoc: 'CS101' };
+      const expectedResult = {
+        data: [{ _id: 'open_class-id', ma_lop: 'CS101', ma_mon_hoc: 'CS101' }],
+        meta: { page: 1, limit: 10, totalPages: 1, total: 1 },
       };
 
-      jest.spyOn(service, 'get').mockResolvedValue(paginatedResult as any);
+      jest.spyOn(service, 'get').mockResolvedValue(expectedResult as any);
 
-      const result = await controller.get(query, searchString, page);
+      const result = await controller.get(query, searchString);
 
-      expect(service.get).toHaveBeenCalledWith(query, searchString, page);
-      expect(result).toEqual(paginatedResult);
+      expect(service.get).toHaveBeenCalledWith(query, searchString);
+      expect(result).toEqual(expectedResult);
     });
 
     it('should propagate errors from service', async () => {
       const query = { limit: 10, skip: 0 };
-      
+      const searchString: SearchOptions = { ma_mon_hoc: 'CS101' };
+
       jest.spyOn(service, 'get').mockRejectedValue(new Error('Service error'));
 
-      await expect(controller.get(query, '', 1)).rejects.toThrow('Service error');
+      await expect(controller.get(query, searchString)).rejects.toThrow('Service error');
     });
   });
 
   describe('update', () => {
     it('should call service update with id and update data', async () => {
       const id = 'open_class-id';
-      const updateDto = {
-        diem_so: 3.7,
-        diem_chu: 'A-',
-      } as unknown as UpdateOpenClassDto;
-      
+      const updateDto: UpdateOpenClassDto = {
+        si_so: 35,
+        phong_hoc: 'Room 102',
+      };
+
       const expectedResult = {
         _id: id,
-        ma_diem: 'A-',
-        ...updateDto,
-        muc_dat: 'Very Good',
+        ma_lop: 'CS101',
+        ma_mon_hoc: 'CS101',
+        si_so: 35,
+        phong_hoc: 'Room 102',
+        updated_at: new Date(),
       };
 
       jest.spyOn(service, 'update').mockResolvedValue(expectedResult as any);
@@ -135,17 +146,16 @@ describe('OpenClassController', () => {
 
     it('should propagate OpenClassNotFoundException', async () => {
       const id = 'non-existent-id';
-      const updateDto = { diem_so: 3.5 } as unknown as UpdateOpenClassDto;
-      const notFoundError = new OpenClassNotFoundException(id);
+      const updateDto: UpdateOpenClassDto = { si_so: 35 };
 
-      jest.spyOn(service, 'update').mockRejectedValue(notFoundError);
+      jest.spyOn(service, 'update').mockRejectedValue(new OpenClassNotFoundException(id));
 
       await expect(controller.update(id, updateDto)).rejects.toThrow(OpenClassNotFoundException);
     });
 
     it('should propagate other errors from service', async () => {
       const id = 'open_class-id';
-      const updateDto = { diem_chu: 'B+' } as unknown as UpdateOpenClassDto;
+      const updateDto: UpdateOpenClassDto = { phong_hoc: 'Room 103' };
 
       jest.spyOn(service, 'update').mockRejectedValue(new Error('Service error'));
 
@@ -156,25 +166,24 @@ describe('OpenClassController', () => {
   describe('delete', () => {
     it('should call service delete with id', async () => {
       const id = 'open_class-id';
-      const deletedOpenClass = {
+      const expectedResult = {
         _id: id,
-        ma_diem: 'A',
+        ma_lop: 'CS101',
         deleted_at: new Date(),
       };
 
-      jest.spyOn(service, 'delete').mockResolvedValue(deletedOpenClass as any);
+      jest.spyOn(service, 'delete').mockResolvedValue(expectedResult as any);
 
       const result = await controller.delete(id);
 
       expect(service.delete).toHaveBeenCalledWith(id);
-      expect(result).toEqual(deletedOpenClass);
+      expect(result).toEqual(expectedResult);
     });
 
     it('should propagate OpenClassNotFoundException', async () => {
       const id = 'non-existent-id';
-      const notFoundError = new OpenClassNotFoundException(id);
 
-      jest.spyOn(service, 'delete').mockRejectedValue(notFoundError);
+      jest.spyOn(service, 'delete').mockRejectedValue(new OpenClassNotFoundException(id));
 
       await expect(controller.delete(id)).rejects.toThrow(OpenClassNotFoundException);
     });
@@ -190,17 +199,17 @@ describe('OpenClassController', () => {
 
   describe('getAll', () => {
     it('should call service getAll', async () => {
-      const open_classs = [
-        { _id: 'open_class1', ma_diem: 'A', diem_so: 4.0 },
-        { _id: 'open_class2', ma_diem: 'B', diem_so: 3.0 }
+      const expectedResult = [
+        { _id: 'open_class1', ma_lop: 'CS101', si_so: 30 },
+        { _id: 'open_class2', ma_lop: 'CS102', si_so: 25 },
       ];
 
-      jest.spyOn(service, 'getAll').mockResolvedValue(open_classs as any);
+      jest.spyOn(service, 'getAll').mockResolvedValue(expectedResult as any);
 
       const result = await controller.getAll();
 
       expect(service.getAll).toHaveBeenCalled();
-      expect(result).toEqual(open_classs);
+      expect(result).toEqual(expectedResult);
     });
 
     it('should propagate errors from service', async () => {
@@ -213,21 +222,20 @@ describe('OpenClassController', () => {
   describe('getById', () => {
     it('should call service getById with id', async () => {
       const id = 'open_class-id';
-      const open_class = { _id: id, ma_diem: 'A', diem_so: 4.0 };
+      const expectedResult = { _id: id, ma_lop: 'CS101', si_so: 30 };
 
-      jest.spyOn(service, 'getById').mockResolvedValue(open_class as any);
+      jest.spyOn(service, 'getById').mockResolvedValue(expectedResult as any);
 
       const result = await controller.getById(id);
 
       expect(service.getById).toHaveBeenCalledWith(id);
-      expect(result).toEqual(open_class);
+      expect(result).toEqual(expectedResult);
     });
 
     it('should propagate OpenClassNotFoundException', async () => {
       const id = 'non-existent-id';
-      const notFoundError = new OpenClassNotFoundException(id);
 
-      jest.spyOn(service, 'getById').mockRejectedValue(notFoundError);
+      jest.spyOn(service, 'getById').mockRejectedValue(new OpenClassNotFoundException(id));
 
       await expect(controller.getById(id)).rejects.toThrow(OpenClassNotFoundException);
     });

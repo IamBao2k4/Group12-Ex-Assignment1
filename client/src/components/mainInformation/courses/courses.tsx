@@ -110,6 +110,10 @@ const Subjects: React.FC = () => {
     }
   };
 
+  if(!subjects) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="domain-container">
       <CourseDialog
