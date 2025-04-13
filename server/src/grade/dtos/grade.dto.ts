@@ -18,11 +18,11 @@ export class CreateGradeDto {
 
   @IsInt()
   @IsNotEmpty()
-  readonly nam_hoc: Int32Array;
+  readonly nam_hoc: number;
 
   @IsInt()
   @IsNotEmpty()
-  readonly hoc_ky: Int32Array;
+  readonly hoc_ky: number;
 
   @IsString()
   @IsNotEmpty()
@@ -30,7 +30,7 @@ export class CreateGradeDto {
 
   @IsInt()
   @IsNotEmpty()
-  readonly so_luong_toi_da: Int32Array;
+  readonly so_luong_toi_da: number;
 
   @IsString()
   @IsNotEmpty()
@@ -52,11 +52,11 @@ export class UpdateGradeDto {
 
   @IsNumber()
   @IsOptional()
-  readonly nam_hoc?: Int32Array;
+  readonly nam_hoc?: number;
 
   @IsNumber()
   @IsOptional()
-  readonly hoc_ky?: Int32Array;
+  readonly hoc_ky?: number;
 
   @IsString()
   @IsOptional()
@@ -64,7 +64,7 @@ export class UpdateGradeDto {
 
   @IsNumber()
   @IsOptional()
-  readonly so_luong_toi_da?: Int32Array;
+  readonly so_luong_toi_da?: number;
 
   @IsString()
   @IsOptional()

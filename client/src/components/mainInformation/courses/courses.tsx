@@ -6,6 +6,7 @@ import CourseDialog from "./courseDialog/courseDialog";
 
 import { Subject } from "./models/course";
 import { Faculty } from "../faculties/models/faculty";
+import Header from "../header/header";
 import AddIcon from "@mui/icons-material/Add";
 
 import { SERVER_URL } from "../../../../global";
@@ -14,13 +15,14 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 
 const Subjects: React.FC = () => {
-  const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [courses, setSubjects] = useState<Subject[]>([]);
   const [dialogType, setDialogType] = useState("add");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [chosenSubject, setChosenSubject] = useState<Subject | null>(null);
   const [faculties, setFaculties] = useState<Faculty[]>([]);
   const [faculty, setFaculty] = useState("");
+  const [search, setSearch] = useState("");
 
   const fetchSubjects = useCallback(async () => {
     try {
@@ -31,7 +33,7 @@ const Subjects: React.FC = () => {
       setSubjects(data.data);
       setTotalPages(data.meta.total);
     } catch (error) {
-      console.error("Error fetching subjects:", error);
+      console.error("Error fetching courses:", error);
     }
   }, [faculty, currentPage]);
 
@@ -92,12 +94,12 @@ const Subjects: React.FC = () => {
   };
 
   const handleExport = (fileType: "csv" | "xlsx") => {
-    if (subjects.length === 0) {
+    if (courses.length === 0) {
       alert("Không có dữ liệu để xuất!");
       return;
     }
 
-    const ws = XLSX.utils.json_to_sheet(subjects);
+    const ws = XLSX.utils.json_to_sheet(courses);
 
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Subjects");
@@ -110,26 +112,27 @@ const Subjects: React.FC = () => {
       const data = new Blob([excelBuffer], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
-      saveAs(data, "subjects.xlsx");
+      saveAs(data, "courses.xlsx");
     } else {
-      XLSX.writeFile(wb, "subjects.csv");
+      XLSX.writeFile(wb, "courses.csv");
     }
   };
 
-  if (!subjects) {
-    return <div className="subjects">Loading...</div>;
+  if (!courses) {
+    return <div className="courses">Loading...</div>;
   }
 
   return (
-    <div className="subjects">
+    <div className="courses">
+      <Header searchHandler={setSearch} />
       <CourseDialog
-        subject={chosenSubject ?? subjects[0]}
+        subject={chosenSubject ?? courses[0]}
         type={dialogType}
         onSuccess={fetchSubjects}
       />
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <div style={{ display: "flex", justifyContent: "space-between" , width: "100%"}}>
         <h1>Subjects</h1>
-        <div className="subjects-add">
+        <div className="courses-add">
           <input
             type="file"
             accept=".csv, .xlsx"
@@ -137,23 +140,17 @@ const Subjects: React.FC = () => {
             style={{ display: "none" }}
             id="fileInput"
           />
-          <button
-            onClick={() => document.getElementById("fileInput")?.click()}
-          >
+          <button onClick={() => document.getElementById("fileInput")?.click()}>
             <i className="fa-solid fa-file-import"></i>
           </button>
-
-          <button
-            className="add-subject"
-            onClick={() => DialogHandler("add")}
-          >
+          <button className="add-subject" onClick={() => DialogHandler("add")}>
             <AddIcon />
           </button>
         </div>
       </div>
-
+  
       <select
-        className="subjects-faculty"
+        className="courses-faculty"
         name="faculty"
         id="faculty"
         onChange={Filter}
@@ -167,17 +164,17 @@ const Subjects: React.FC = () => {
           </option>
         ))}
       </select>
-
-      <div className="subjects-list">
-        <div className="subjects-list-header row">
-          <div className="subjects-list-header-name">Tên môn học</div>
-          <div className="subjects-list-header-code">Mã môn học</div>
-          <div className="subjects-list-header-faculty">Khoa</div>
-          <div className="subjects-list-header-action"></div>
+  
+      <div className="courses-list">
+        <div className="courses-list-header row">
+          <div className="courses-list-header-name">Tên môn học</div>
+          <div className="courses-list-header-code">Mã môn học</div>
+          <div className="courses-list-header-faculty">Khoa</div>
+          <div className="courses-list-header-action"></div>
         </div>
-
-        <div className="list-subjects">
-          {subjects.map((subject) => (
+  
+        <div className="list-courses">
+          {courses.map((subject) => (
             <CourseItem
               key={subject._id.toString()}
               id={subject._id.toString()}
@@ -189,27 +186,26 @@ const Subjects: React.FC = () => {
           ))}
         </div>
       </div>
-
-      <div className="subjects-export">
+  
+      <div className="courses-export">
         <button onClick={() => handleExport("csv")}>
           <i className="fa-solid fa-file-export"></i> Export CSV
         </button>
-
         <button onClick={() => handleExport("xlsx")}>
           <i className="fa-solid fa-file-export"></i> Export Excel
         </button>
       </div>
-
-      <div className="subjects-pagination">
+  
+      <div className="courses-pagination">
         <button
-          className="subjects-pagination-btn prev"
+          className="courses-pagination-btn prev"
           onClick={handlePreviousPage}
           disabled={currentPage === 1}
         >
           Previous
         </button>
         <button
-          className="subjects-pagination-btn next"
+          className="courses-pagination-btn next"
           onClick={handleNextPage}
           disabled={currentPage === totalPages}
         >
