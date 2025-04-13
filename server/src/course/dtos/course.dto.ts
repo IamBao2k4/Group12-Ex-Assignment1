@@ -1,4 +1,5 @@
 import { IsString, IsNotEmpty, IsOptional, IsNumber, IsArray, IsBoolean } from "class-validator";
+import { ObjectId } from "mongoose";
 
 export class CreateCourseDto {
     @IsString()
@@ -19,7 +20,7 @@ export class CreateCourseDto {
 
     @IsArray()
     @IsOptional()
-    readonly mon_tien_quyet?: string[]; // Prerequisite course IDs
+    readonly mon_tien_quyet?: ObjectId[]; // Prerequisite course IDs
 
     @IsBoolean()
     @IsOptional()
@@ -45,7 +46,7 @@ export class UpdateCourseDto {
 
     @IsArray()
     @IsOptional()
-    readonly mon_tien_quyet?: string[]; // Prerequisite course IDs
+    readonly mon_tien_quyet?: ObjectId[]; // Prerequisite course IDs
 
     @IsBoolean()
     @IsOptional()

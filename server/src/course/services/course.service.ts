@@ -27,11 +27,11 @@ export class CourseService {
 
   async get(
     query: PaginationOptions,
-    searchString: string,
+    faculty: string,
     page: number,
   ): Promise<PaginatedResponse<Course>> {
     try {
-      return await this.courseRepository.findAll(query, searchString, page);
+      return await this.courseRepository.findAll(query, faculty, page);
     } catch (error) {
       this.logger.error(`course.service.get: ${error.message}`, error.stack);
       throw error;

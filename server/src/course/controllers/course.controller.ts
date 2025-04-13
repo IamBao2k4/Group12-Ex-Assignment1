@@ -17,7 +17,7 @@ import { PaginationOptions } from '../../common/paginator/pagination.interface';
 export class CourseController {
   private readonly logger = new Logger(CourseController.name);
 
-  constructor(private readonly courseService: CourseService) {}
+  constructor(private readonly courseService: CourseService) { }
 
   @Post()
   async create(@Body() createReq: CreateCourseDto) {
@@ -32,11 +32,11 @@ export class CourseController {
   @Get()
   async get(
     @Query() query: PaginationOptions,
-    @Query('searchString') searchString: string,
+    @Query('faculty') faculty: string,
     @Query('page') page: number,
   ) {
     try {
-      return await this.courseService.get(query, searchString, page);
+      return await this.courseService.get(query, faculty, page);
     } catch (error) {
       this.logger.error(`course.controller.get: ${error.message}`, error.stack);
       throw error;

@@ -56,7 +56,7 @@ export class CourseRepository implements ICourseRepository {
 
   async findAll(
     paginationOpts: PaginationOptions,
-    searchString: string,
+    faculty: string,
     page: number,
   ): Promise<PaginatedResponse<Course>> {
     const pagination = new Pagination(paginationOpts);
@@ -65,21 +65,11 @@ export class CourseRepository implements ICourseRepository {
 
     let query = {};
 
-    if (searchString) {
+    if (faculty) {
       query = {
         $and: [
-          {
-            $or: [
-              { ten: { $regex: searchString, $options: 'i' } },
-              { ma_mon_hoc: { $regex: searchString, $options: 'i' } },
-            ],
-          },
-          {
-            $or: [
-              { deleted_at: { $exists: false } },
-              { deleted_at: null },
-            ],
-          },
+          { khoa: faculty },
+          { $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] },
         ],
       };
     } else {
