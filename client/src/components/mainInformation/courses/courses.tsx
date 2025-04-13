@@ -1,41 +1,42 @@
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { Subject } from "./models/course";
+import { Faculty } from "../faculties/models/faculty";
+import Header from "../header/header";
 import "./courses.css";
 import CourseItem from "./courseItem/courseItem";
 import CourseDialog from "./courseDialog/courseDialog";
-import { Subject } from "./models/course";
-import { Faculty } from "../faculties/models/faculty";
 import AddIcon from "@mui/icons-material/Add";
-import { Card, Button, Form, Table, Pagination, Row, Col } from 'react-bootstrap';
-import '../../../components/common/DomainStyles.css';
-import { SERVER_URL } from "../../../../global";
-import * as XLSX from "xlsx";
-import { saveAs } from "file-saver";
+import { Card, Button, Table, Pagination, Form } from "react-bootstrap";
+import "../../../components/common/DomainStyles.css";
 
-const Subjects: React.FC = () => {
-  const [subjects, setSubjects] = useState<Subject[]>([]);
-  const [dialogType, setDialogType] = useState("add");
+import { SERVER_URL } from "../../../../global";
+
+const Courses = () => {
+  const [courses, setCourses] = useState<Subject[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [chosenSubject, setChosenSubject] = useState<Subject | null>(null);
+  const [dialogType, setDialogType] = useState("");
+  const [chosenCourse, setChosenCourse] = useState<Subject | null>(null);
+  const [search, setSearch] = useState("");
   const [faculties, setFaculties] = useState<Faculty[]>([]);
   const [faculty, setFaculty] = useState("");
   const [loading, setLoading] = useState(true);
 
-  const fetchSubjects = useCallback(async () => {
+  const fetchCourses = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `${SERVER_URL}/api/v1/courses?faculty=${faculty}&page=${currentPage}`
+        `${SERVER_URL}/api/v1/courses?page=${currentPage}&searchString=${search}&faculty=${faculty}`
       );
       const data = await response.json();
-      setSubjects(data.data);
+      setCourses(data.data);
       setTotalPages(data.meta.total);
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching subjects:", error);
+      console.error("Error fetching courses:", error);
       setLoading(false);
     }
-  }, [faculty, currentPage]);
+  }, [search, faculty, currentPage]);
 
   const fetchFaculties = useCallback(async () => {
     try {
@@ -49,16 +50,12 @@ const Subjects: React.FC = () => {
 
   useEffect(() => {
     fetchFaculties();
-    fetchSubjects();
-  }, [fetchFaculties, fetchSubjects]);
-
-  function Filter(event: React.ChangeEvent<HTMLSelectElement>) {
-    setFaculty(event.target.value);
-  }
+    fetchCourses();
+  }, [fetchFaculties, fetchCourses]);
 
   function DialogHandler(type: string) {
+    const dialog = document.querySelector(".dialog-container") as HTMLElement;
     setDialogType(type);
-    const dialog = document.querySelector(".subject-dialog-container") as HTMLElement;
     dialog.classList.toggle("hidden");
   }
 
@@ -66,107 +63,40 @@ const Subjects: React.FC = () => {
     setCurrentPage(page);
   }
 
-  const handleImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const data = e.target?.result;
-      const workbook = XLSX.read(data, { type: "array" });
-
-      const sheetName = workbook.SheetNames[0];
-      const sheet = workbook.Sheets[sheetName];
-
-      const jsonData: Subject[] = XLSX.utils.sheet_to_json(sheet);
-      setSubjects(jsonData);
-    };
-
-    reader.readAsArrayBuffer(file);
-  };
-
-  const handleExport = (fileType: "csv" | "xlsx") => {
-    if (subjects.length === 0) {
-      alert("Không có dữ liệu để xuất!");
-      return;
-    }
-
-    const ws = XLSX.utils.json_to_sheet(subjects);
-
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Subjects");
-
-    if (fileType === "xlsx") {
-      const excelBuffer = XLSX.write(wb, {
-        bookType: "xlsx",
-        type: "array",
-      });
-      const data = new Blob([excelBuffer], {
-        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      });
-      saveAs(data, "subjects.xlsx");
-    } else {
-      XLSX.writeFile(wb, "subjects.csv");
-    }
-  };
-
-  if(!subjects) {
-    return <div>Loading...</div>;
+  function handleFacultyChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    setFaculty(event.target.value);
   }
 
   return (
     <div className="domain-container">
       <CourseDialog
-        subject={chosenSubject ?? subjects[0]}
         type={dialogType}
-        onSuccess={fetchSubjects}
+        subject={chosenCourse ?? courses[0]}
+        onSuccess={fetchCourses}
       />
-      
+      <Header searchHandler={setSearch} />
+
       <Card>
         <Card.Header>
           <div className="d-flex justify-content-between align-items-center">
             <h2>Danh sách môn học</h2>
-            <div className="d-flex gap-2">
-              <input
-                type="file"
-                accept=".csv, .xlsx"
-                onChange={handleImport}
-                style={{ display: "none" }}
-                id="fileInput"
-              />
-              <Button variant="secondary" onClick={() => document.getElementById("fileInput")?.click()}>
-                <i className="fa-solid fa-file-import"></i> Nhập Excel
-              </Button>
-              <Button variant="success" onClick={() => DialogHandler("add")}>
-                <AddIcon /> Thêm môn học
-              </Button>
-            </div>
+            <Button variant="success" onClick={() => DialogHandler("add")}>
+              <AddIcon /> Thêm môn học
+            </Button>
           </div>
         </Card.Header>
         <Card.Body>
-          <Row className="mb-3">
-            <Col md={6}>
-              <Form.Group>
-                <Form.Label>Khoa:</Form.Label>
-                <Form.Select onChange={Filter} value={faculty}>
-                  <option value="">Tất cả</option>
-                  {faculties.map((faculty) => (
-                    <option key={faculty._id.toString()} value={faculty._id.toString()}>
-                      {faculty.ten_khoa}
-                    </option>
-                  ))}
-                </Form.Select>
-              </Form.Group>
-            </Col>
-            <Col md={6} className="d-flex align-items-end justify-content-end">
-              <Button variant="outline-secondary" className="me-2" onClick={() => handleExport("csv")}>
-                <i className="fa-solid fa-file-export"></i> Xuất CSV
-              </Button>
-              <Button variant="outline-primary" onClick={() => handleExport("xlsx")}>
-                <i className="fa-solid fa-file-export"></i> Xuất Excel
-              </Button>
-            </Col>
-          </Row>
+          <Form.Group className="mb-3">
+            <Form.Label>Khoa:</Form.Label>
+            <Form.Select onChange={handleFacultyChange} value={faculty}>
+              <option value="">Tất cả</option>
+              {faculties.map((faculty) => (
+                <option key={faculty._id.toString()} value={faculty._id.toString()}>
+                  {faculty.ten_khoa}
+                </option>
+              ))}
+            </Form.Select>
+          </Form.Group>
 
           <div className="table-responsive">
             <Table striped bordered hover>
@@ -183,19 +113,19 @@ const Subjects: React.FC = () => {
                   <tr>
                     <td colSpan={4} className="text-center">Đang tải...</td>
                   </tr>
-                ) : subjects.length === 0 ? (
+                ) : courses.length === 0 ? (
                   <tr>
                     <td colSpan={4} className="text-center">Không tìm thấy môn học nào</td>
                   </tr>
                 ) : (
-                  subjects.map((subject) => (
+                  courses.map((course) => (
                     <CourseItem
-                      key={subject._id.toString()}
-                      id={subject._id.toString()}
-                      subject={subject}
+                      key={course._id.toString()}
+                      subject={course}
+                      setChosenSubject={setChosenCourse}
                       DialogHandler={DialogHandler}
-                      setChosenSubject={setChosenSubject}
-                      onDeleteSuccess={fetchSubjects}
+                      onDeleteSuccess={fetchCourses}
+                      id={course._id.toString()}
                     />
                   ))
                 )}
@@ -206,8 +136,10 @@ const Subjects: React.FC = () => {
           <div className="d-flex justify-content-center mt-3">
             <Pagination>
               <Pagination.First onClick={() => handlePageChange(1)} disabled={currentPage === 1} />
-              <Pagination.Prev onClick={() => handlePageChange(Math.max(1, currentPage - 1))} disabled={currentPage === 1} />
-              
+              <Pagination.Prev
+                onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                disabled={currentPage === 1}
+              />
               {Array.from({ length: totalPages }, (_, i) => (
                 <Pagination.Item
                   key={i + 1}
@@ -217,9 +149,14 @@ const Subjects: React.FC = () => {
                   {i + 1}
                 </Pagination.Item>
               ))}
-              
-              <Pagination.Next onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))} disabled={currentPage === totalPages} />
-              <Pagination.Last onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages} />
+              <Pagination.Next
+                onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+                disabled={currentPage === totalPages}
+              />
+              <Pagination.Last
+                onClick={() => handlePageChange(totalPages)}
+                disabled={currentPage === totalPages}
+              />
             </Pagination>
           </div>
         </Card.Body>
@@ -228,4 +165,4 @@ const Subjects: React.FC = () => {
   );
 };
 
-export default Subjects;
+export default Courses;
