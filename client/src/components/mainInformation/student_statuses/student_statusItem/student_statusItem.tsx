@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-
 import './student_statusItem.css';
-
 import { StudentStatus } from '../models/student_status';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ConfirmationDialog from '../../../common/ConfirmationDialog';
 import { useNotification } from '../../../common/NotificationContext';
+import { Button } from 'react-bootstrap';
 
 import { SERVER_URL } from '../../../../../global';
 
@@ -58,17 +57,19 @@ const StudentStatusItem: React.FC<StudentStatusItemProps> = ({ studentStatus, De
                 onConfirm={DeleteHandler}
                 onCancel={() => setShowConfirmation(false)}
             />
-            <div className="student-status-item row">
-                <div className="student-status-item-info">
-                    <div className="student-status-item-info-name">{studentStatus.tinh_trang}</div>
-                    <div className="student-status-item-info-created-date">{studentStatus.created_at?.toString().split("T")[0]}</div>
-                    <div className="student-status-item-info-updated-date">{studentStatus.updated_at?.toString().split("T")[0]}</div>
-                    <div className="student-status-item-info-action">
-                        <button className="student-status-item-info-action-edit" onClick={() => { DetailHandler('edit'); setChosenStudentStatus(studentStatus); }}><EditIcon /></button>
-                        <button className="student-status-item-info-action-delete" onClick={deleteConfirmHandler}><DeleteIcon /></button>
-                    </div>
-                </div>
-            </div>
+            <tr>
+                <td>{studentStatus.tinh_trang}</td>
+                <td>{studentStatus.created_at?.toString().split("T")[0]}</td>
+                <td>{studentStatus.updated_at?.toString().split("T")[0]}</td>
+                <td>
+                    <Button variant="outline-primary" size="sm" className="me-2" onClick={() => { DetailHandler('edit'); setChosenStudentStatus(studentStatus); }}>
+                        <EditIcon fontSize="small" />
+                    </Button>
+                    <Button variant="outline-danger" size="sm" onClick={deleteConfirmHandler}>
+                        <DeleteIcon fontSize="small" />
+                    </Button>
+                </td>
+            </tr>
         </>
     );
 };

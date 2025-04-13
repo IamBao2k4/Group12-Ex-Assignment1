@@ -2,27 +2,30 @@ import {
   IsString,
   IsNotEmpty,
   IsOptional,
-  IsNumber,
   IsInt,
+  Min,
 } from 'class-validator';
-import { isInt32Array } from 'util/types';
 
-export class CreateGradeDto {
+export class CreateOpenClassDto {
   @IsString()
   @IsNotEmpty()
   readonly ma_lop: string;
 
   @IsString()
   @IsNotEmpty()
-  readonly ma_khoa_hoc: string;
+  readonly ma_mon_hoc: string;
+
+  @IsInt()
+  @IsOptional()
+  readonly si_so = 0;
 
   @IsInt()
   @IsNotEmpty()
-  readonly nam_hoc: Int32Array;
+  readonly nam_hoc: number;
 
   @IsInt()
   @IsNotEmpty()
-  readonly hoc_ky: Int32Array;
+  readonly hoc_ky: number;
 
   @IsString()
   @IsNotEmpty()
@@ -30,7 +33,8 @@ export class CreateGradeDto {
 
   @IsInt()
   @IsNotEmpty()
-  readonly so_luong_toi_da: Int32Array;
+  @Min(1, { message: 'Maximum student count must be at least 1' })
+  readonly so_luong_toi_da: number;
 
   @IsString()
   @IsNotEmpty()
@@ -41,30 +45,35 @@ export class CreateGradeDto {
   readonly phong_hoc: string;
 }
 
-export class UpdateGradeDto {
+export class UpdateOpenClassDto {
   @IsString()
   @IsOptional()
   readonly ma_lop?: string;
 
   @IsString()
   @IsOptional()
-  readonly ma_khoa_hoc?: string;
+  readonly ma_mon_hoc?: string;
 
-  @IsNumber()
+  @IsInt()
   @IsOptional()
-  readonly nam_hoc?: Int32Array;
+  readonly si_so?: number;
 
-  @IsNumber()
+  @IsInt()
   @IsOptional()
-  readonly hoc_ky?: Int32Array;
+  readonly nam_hoc?: number;
+
+  @IsInt()
+  @IsOptional()
+  readonly hoc_ky?: number;
 
   @IsString()
   @IsOptional()
   readonly giang_vien?: string;
 
-  @IsNumber()
+  @IsInt()
   @IsOptional()
-  readonly so_luong_toi_da?: Int32Array;
+  @Min(1, { message: 'Maximum student count must be at least 1' })
+  readonly so_luong_toi_da?: number;
 
   @IsString()
   @IsOptional()

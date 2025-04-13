@@ -1,0 +1,36 @@
+.open-class-container {
+  margin-bottom: 2rem;
+}
+
+.open-class-container .card {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.open-class-container .table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
+
+.open-class-container .table td {
+  vertical-align: middle;
+}
+
+.open-class-container .pagination {
+  margin-top: 1.5rem;
+}
+
+.open-class-container .modal-content {
+  border-radius: 0.25rem;
+}
+
+/* Custom styles for form elements */
+.open-class-container input:focus,
+.open-class-container select:focus {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Hover effect on table rows */
+.open-class-container .table tbody tr:hover {
+  background-color: rgba(0, 123, 255, 0.05);
+} 

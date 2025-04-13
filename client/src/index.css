@@ -1,8 +1,3 @@
-@import "@fontsource/roboto/300.css";
-@import "@fontsource/roboto/400.css";
-@import "@fontsource/roboto/500.css";
-@import "@fontsource/roboto/700.css";
-
 :root {
     --primary: #ffffff;
     --secondary: #509cdb;
@@ -22,16 +17,23 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Open Sans", sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 html,
 body {
     height: 100%;
+    width: 100%;
 }
 
 #root {
     height: 100%;
+    width: 100%;
+}
+
+#main-container {
+    height: 100%;
+    width: 100%;
 }
 
 input,

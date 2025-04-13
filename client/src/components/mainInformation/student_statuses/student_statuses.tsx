@@ -1,33 +1,37 @@
 import { useEffect, useState, useCallback } from "react";
-
 import { StudentStatus } from "./models/student_status";
 import Header from "../header/header";
 import './student_statuses.css';
-
-import StudentStatusItem from "./student_statusItem/student_statusItem";
+import StudentStatusItem from "./student_statusItem/student_statusItem.tsx";
 import DetailDialog from "./detailDialog/detailDialog";
 import AddIcon from '@mui/icons-material/Add';
+import { Card, Button, Table, Pagination } from 'react-bootstrap';
+import '../../../components/common/DomainStyles.css';
 
 import { SERVER_URL } from '../../../../global';
 
 const StudentStatuses = () => {
     const [studentStatuses, setStudentStatuses] = useState<StudentStatus[]>([]);
-    const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [currentPage, setCurrentPage] = useState(1);
     const [type, setType] = useState('');
-    const [chosenStudentStatus, setChosenStudentStatus] = useState<StudentStatus | null>(null);
+    const [chosenStatus, setChosenStatus] = useState<StudentStatus | null>(null);
     const [search, setSearch] = useState('');
+    const [loading, setLoading] = useState(true);
 
     const fetchStudentStatuses = useCallback(async () => {
+        setLoading(true);
         try {
-            const response = await fetch(SERVER_URL + `/api/v1/student-statuses?page=${currentPage}&searchString=${search}`,);
+            const response = await fetch(SERVER_URL + `/api/v1/student-statuses?page=${currentPage}&searchString=${search}`);
             const data = await response.json();
             setStudentStatuses(data.data);
             setTotalPages(data.meta.total);
+            setLoading(false);
         } catch (error) {
             console.error('Error fetching student statuses:', error);
+            setLoading(false);
         }
-    }, [search, currentPage]);
+    }, [currentPage, search]);
 
     useEffect(() => {
         fetchStudentStatuses();
@@ -39,55 +43,89 @@ const StudentStatuses = () => {
         detailDialog.classList.toggle('hidden');
     }
 
-    function handlePreviousPage() {
-        if (currentPage > 1) {
-            setCurrentPage(currentPage - 1);
-        }
-    }
-
-    function handleNextPage() {
-        if (currentPage < totalPages) {
-            setCurrentPage(currentPage + 1);
-        }
-    }
-
     return (
-        <div className="student-statuses">
+        <div className="domain-container">
             <DetailDialog 
                 type={type} 
-                studentStatus={chosenStudentStatus ?? studentStatuses[0]} 
+                studentStatus={chosenStatus ?? studentStatuses[0]} 
                 onSuccess={fetchStudentStatuses}
             />
             <Header searchHandler={setSearch} />
-            <div className="student-statuses-content">
-                <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-                    <h1>Student Statuses</h1>
-                    <button className="add-student-status" onClick={() => DetailHandler('add')}><AddIcon /></button>
-                </div>
-
-                <div className="student-statuses-list">
-                    <div className="student-statuses-list-header row">
-                        <div className="student-statuses-list-header-id">Tình trạng</div>
-                        <div className="student-statuses-list-header-birthday">Ngày thêm</div>
-                        <div className="student-statuses-list-header-status">Ngày chỉnh sửa</div>
-                        <div className="student-statuses-list-header-action"></div>
+            
+            <Card>
+                <Card.Header>
+                    <div className="d-flex justify-content-between align-items-center">
+                        <h2>Danh sách trạng thái sinh viên</h2>
+                        <Button variant="success" onClick={() => DetailHandler('add')}>
+                            <AddIcon /> Thêm trạng thái mới
+                        </Button>
                     </div>
-                    {studentStatuses.map((studentStatus) => (
-                        <StudentStatusItem 
-                            key={studentStatus._id.toString()} 
-                            studentStatus={studentStatus} 
-                            setChosenStudentStatus={setChosenStudentStatus} 
-                            DetailHandler={DetailHandler} 
-                            onDeleteSuccess={fetchStudentStatuses}
-                        />
-                    ))}
-                </div>
+                </Card.Header>
+                <Card.Body>
+                    <div className="table-responsive">
+                        <Table striped bordered hover>
+                            <thead>
+                                <tr>
+                                    <th>Tên trạng thái</th>
+                                    <th>Ngày thêm</th>
+                                    <th>Ngày cập nhật</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {loading ? (
+                                    <tr>
+                                        <td colSpan={4} className="text-center">Đang tải...</td>
+                                    </tr>
+                                ) : studentStatuses.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={4} className="text-center">Không tìm thấy trạng thái nào</td>
+                                    </tr>
+                                ) : (
+                                    studentStatuses.map((status) => (
+                                        <StudentStatusItem 
+                                            key={status._id.toString()} 
+                                            studentStatus={status} 
+                                            setChosenStudentStatus={setChosenStatus} 
+                                            DetailHandler={DetailHandler}
+                                            onDeleteSuccess={fetchStudentStatuses}
+                                        />
+                                    ))
+                                )}
+                            </tbody>
+                        </Table>
+                    </div>
 
-                <div className="student-statuses-pagination">
-                    <button className='student-statuses-pagination-btn prev' onClick={handlePreviousPage} disabled={currentPage === 1}>Previous</button>
-                    <button className='student-statuses-pagination-btn next' onClick={handleNextPage} disabled={currentPage === totalPages}>Next</button>
-                </div>
-            </div>
+                    <div className="d-flex justify-content-center mt-3">
+                        <Pagination>
+                            <Pagination.First onClick={() => setCurrentPage(1)} disabled={currentPage === 1} />
+                            <Pagination.Prev 
+                                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))} 
+                                disabled={currentPage === 1}
+                            />
+                            
+                            {Array.from({ length: totalPages }, (_, i) => (
+                                <Pagination.Item 
+                                    key={i + 1}
+                                    active={i + 1 === currentPage}
+                                    onClick={() => setCurrentPage(i + 1)}
+                                >
+                                    {i + 1}
+                                </Pagination.Item>
+                            ))}
+                            
+                            <Pagination.Next 
+                                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))} 
+                                disabled={currentPage === totalPages}
+                            />
+                            <Pagination.Last 
+                                onClick={() => setCurrentPage(totalPages)} 
+                                disabled={currentPage === totalPages}
+                            />
+                        </Pagination>
+                    </div>
+                </Card.Body>
+            </Card>
         </div>
     );
 };

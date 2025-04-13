@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { GradeService } from './services/grade.service';
-import { GRADE_REPOSITORY } from './repositories/grade.repository.interface';
-import { GradeNotFoundException } from './exceptions/grade-not-found.exception';
+import { OpenClassService } from './services/open_class.service';
+import { OPEN_CLASS_REPOSITORY } from './repositories/open_class.repository.interface';
+import { OpenClassNotFoundException } from './exceptions/class-not-found.exception';
 import { Logger } from '@nestjs/common';
 import { isValidObjectId } from 'mongoose';
 
@@ -10,8 +10,8 @@ jest.mock('mongoose', () => ({
   isValidObjectId: jest.fn(),
 }));
 
-describe('GradeService', () => {
-  let service: GradeService;
+describe('OpenClassService', () => {
+  let service: OpenClassService;
   let mockRepository: any;
 
   beforeEach(async () => {
@@ -28,15 +28,15 @@ describe('GradeService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        GradeService,
+        OpenClassService,
         {
-          provide: GRADE_REPOSITORY,
+          provide: OPEN_CLASS_REPOSITORY,
           useValue: mockRepository,
         },
       ],
     }).compile();
 
-    service = module.get<GradeService>(GradeService);
+    service = module.get<OpenClassService>(OpenClassService);
     
     // Mock logger methods to avoid console outputs during tests
     jest.spyOn(Logger.prototype, 'error').mockImplementation(() => {});
@@ -139,24 +139,24 @@ describe('GradeService', () => {
       expect(result).toEqual(expectedResult);
     });
 
-    it('should throw GradeNotFoundException for invalid ObjectId format', async () => {
+    it('should throw OpenClassNotFoundException for invalid ObjectId format', async () => {
       const id = 'invalid-id';
       const updateDto = { diem_so: 3.5 } as any;
 
       (isValidObjectId as jest.Mock).mockReturnValue(false);
 
-      await expect(service.update(id, updateDto)).rejects.toThrow(GradeNotFoundException);
+      await expect(service.update(id, updateDto)).rejects.toThrow(OpenClassNotFoundException);
       expect(mockRepository.update).not.toHaveBeenCalled();
     });
 
-    it('should throw GradeNotFoundException when grade not found', async () => {
+    it('should throw OpenClassNotFoundException when grade not found', async () => {
       const id = 'valid-id-not-found';
       const updateDto = { diem_chu: 'B+' } as any;
 
       (isValidObjectId as jest.Mock).mockReturnValue(true);
       mockRepository.update.mockResolvedValue(null);
 
-      await expect(service.update(id, updateDto)).rejects.toThrow(GradeNotFoundException);
+      await expect(service.update(id, updateDto)).rejects.toThrow(OpenClassNotFoundException);
     });
   });
 
@@ -179,22 +179,22 @@ describe('GradeService', () => {
       expect(result).toEqual(deletedGrade);
     });
 
-    it('should throw GradeNotFoundException for invalid ObjectId format', async () => {
+    it('should throw OpenClassNotFoundException for invalid ObjectId format', async () => {
       const id = 'invalid-id';
 
       (isValidObjectId as jest.Mock).mockReturnValue(false);
 
-      await expect(service.delete(id)).rejects.toThrow(GradeNotFoundException);
+      await expect(service.delete(id)).rejects.toThrow(OpenClassNotFoundException);
       expect(mockRepository.softDelete).not.toHaveBeenCalled();
     });
 
-    it('should throw GradeNotFoundException when grade not found', async () => {
+    it('should throw OpenClassNotFoundException when grade not found', async () => {
       const id = 'valid-id-not-found';
 
       (isValidObjectId as jest.Mock).mockReturnValue(true);
       mockRepository.softDelete.mockResolvedValue(null);
 
-      await expect(service.delete(id)).rejects.toThrow(GradeNotFoundException);
+      await expect(service.delete(id)).rejects.toThrow(OpenClassNotFoundException);
     });
   });
 
@@ -255,22 +255,22 @@ describe('GradeService', () => {
       expect(result).toEqual(grade);
     });
 
-    it('should throw GradeNotFoundException for invalid ObjectId format', async () => {
+    it('should throw OpenClassNotFoundException for invalid ObjectId format', async () => {
       const id = 'invalid-id';
 
       (isValidObjectId as jest.Mock).mockReturnValue(false);
 
-      await expect(service.detail(id)).rejects.toThrow(GradeNotFoundException);
+      await expect(service.detail(id)).rejects.toThrow(OpenClassNotFoundException);
       expect(mockRepository.detail).not.toHaveBeenCalled();
     });
 
-    it('should throw GradeNotFoundException when grade not found', async () => {
+    it('should throw OpenClassNotFoundException when grade not found', async () => {
       const id = 'valid-id-not-found';
 
       (isValidObjectId as jest.Mock).mockReturnValue(true);
       mockRepository.detail.mockResolvedValue(null);
 
-      await expect(service.detail(id)).rejects.toThrow(GradeNotFoundException);
+      await expect(service.detail(id)).rejects.toThrow(OpenClassNotFoundException);
     });
   });
 
@@ -289,12 +289,12 @@ describe('GradeService', () => {
       expect(result).toEqual(grade);
     });
 
-    it('should throw GradeNotFoundException for invalid ObjectId format', async () => {
+    it('should throw OpenClassNotFoundException for invalid ObjectId format', async () => {
       const id = 'invalid-id';
 
       (isValidObjectId as jest.Mock).mockReturnValue(false);
 
-      await expect(service.getById(id)).rejects.toThrow(GradeNotFoundException);
+      await expect(service.getById(id)).rejects.toThrow(OpenClassNotFoundException);
       expect(mockRepository.getById).not.toHaveBeenCalled();
     });
 

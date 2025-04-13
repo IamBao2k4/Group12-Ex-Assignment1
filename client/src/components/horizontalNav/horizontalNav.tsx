@@ -1,6 +1,6 @@
 import './horizontalNav.css';
 import NavItem from './navigation/navItem/navItem';
-import { FaUser, FaBook, FaChalkboardTeacher, FaBuilding, FaChartBar, FaCog, FaGraduationCap, FaUserCheck } from 'react-icons/fa';
+import { FaUser, FaBook, FaChalkboardTeacher, FaBuilding, FaChartBar, FaCog, FaGraduationCap, FaUserCheck, FaLayerGroup } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 const HorizontalNav = () => {
@@ -15,6 +15,9 @@ const HorizontalNav = () => {
                 </Link>
                 <Link to="/courses">
                     <NavItem name="Courses" icon={<FaBook />} />
+                </Link>
+                <Link to="/open-classes">
+                    <NavItem name="Open Classes" icon={<FaLayerGroup />} />
                 </Link>
                 <Link to="/faculties">
                     <NavItem name="Faculty" icon={<FaChalkboardTeacher />} />
