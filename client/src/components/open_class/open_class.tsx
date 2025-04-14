@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { OpenClass, PaginationOptions, SearchOptions } from './models/open_class.model';
-import { OpenClassService } from './services/openClass.service';
+import { OpenClassService } from './route/openClass.service';
 import { Button, Form, Table, Modal, Pagination, Row, Col, Card } from 'react-bootstrap';
 import './open_class.css';
 
@@ -28,7 +28,12 @@ const OpenClassComponent: React.FC = () => {
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
   const [newClass, setNewClass] = useState<OpenClass>({
     ma_lop: '',
-    ma_mon_hoc: '',
+    ma_mon_hoc: {
+      _id: '',
+      ma_mon_hoc: '',
+      ten: ''
+    },
+    ten: '', 
     si_so: 0,
     nam_hoc: new Date().getFullYear(),
     hoc_ky: 1,
@@ -93,7 +98,12 @@ const OpenClassComponent: React.FC = () => {
       // Reset form
       setNewClass({
         ma_lop: '',
-        ma_mon_hoc: '',
+        ma_mon_hoc: {
+          _id: '',
+          ma_mon_hoc: '',
+          ten: ''
+        },
+        ten: '',
         si_so: 0,
         nam_hoc: new Date().getFullYear(),
         hoc_ky: 1,
@@ -177,7 +187,7 @@ const OpenClassComponent: React.FC = () => {
                 <tr>
                   <th>Mã MH</th>
                   <th>Tên Môn Học</th>
-                  <th>Tên Lớp</th>
+                  <th>Lớp</th>
                   <th>Số TC</th>
                   <th>Sĩ Số</th>
                   <th>Đã ĐK</th>
@@ -201,8 +211,8 @@ const OpenClassComponent: React.FC = () => {
                 ) : (
                   openClasses.map((openClass) => (
                     <tr key={openClass._id}>
-                      <td>{openClass.ma_mon_hoc}</td>
-                      <td>Môn học {openClass.ma_mon_hoc}</td> {/* This would be replaced with actual course name in a real app */}
+                      <td>{openClass.ma_mon_hoc.ma_mon_hoc}</td>
+                      <td>{openClass.ma_mon_hoc.ten}</td> {/* This would be replaced with actual course name in a real app */}
                       <td>{openClass.ma_lop}</td>
                       <td>3</td> {/* This would be dynamic in a real app */}
                       <td>{openClass.so_luong_toi_da}</td>
@@ -275,7 +285,7 @@ const OpenClassComponent: React.FC = () => {
               <Form.Control
                 type="text"
                 name="ma_mon_hoc"
-                value={newClass.ma_mon_hoc}
+                value={newClass.ma_mon_hoc._id}
                 onChange={handleNewClassChange}
                 placeholder="Ví dụ: CS101"
                 required

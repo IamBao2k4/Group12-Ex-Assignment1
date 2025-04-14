@@ -101,8 +101,8 @@ export class CourseRepository implements ICourseRepository {
       courses,
       page,
       limit,
-      total,
       totalPages,
+      total,
     );
   }
 

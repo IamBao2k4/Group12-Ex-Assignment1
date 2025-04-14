@@ -1,5 +1,4 @@
-import { Document } from 'mongoose';
-
+import { Document, Types } from 'mongoose'; 
 // danh sách lớp mở
 export interface OpenClass extends Document {
   ma_lop: string;

@@ -72,9 +72,15 @@ export class OpenClassRepository implements IOpenClassRepository {
     const limit = pagination.Limit();
     const page = pagination.Page();
     const query = BuildQuery(searchString);
-    let OpenClasss: OpenClass[] = [];
+    let OpenClass: OpenClass[] = [];
     try {
-      OpenClasss = await this.OpenClassModel.find(query).skip(skip).limit(limit).exec();
+      OpenClass= await this.OpenClassModel
+      .find(query)
+      .skip(skip)
+      .limit(limit)
+      .populate('ma_mon_hoc', 'ma_mon_hoc ten')
+      .lean()
+      .exec();
     } catch (error) {
       this.logger.error(
         'OpenClass.repository.findAll: Error fetching OpenClasss',
@@ -98,7 +104,7 @@ export class OpenClassRepository implements IOpenClassRepository {
 
     const totalPages = pagination.TotalPages(total);
 
-    return new PaginatedResponse<OpenClass>(OpenClasss, page, limit, total, totalPages);
+    return new PaginatedResponse<OpenClass>(OpenClass, page, limit, totalPages, total);
   }
 
   async softDelete(id: string): Promise<OpenClass | null> {

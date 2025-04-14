@@ -13,7 +13,7 @@ import { OpenClassService } from '../services/open_class.service';
 import { CreateOpenClassDto, UpdateOpenClassDto } from '../dtos/open_class.dto';
 import { PaginationOptions } from '../../common/paginator/pagination.interface';
 import { SearchOptions } from '../dtos/search_options.dto';
-@Controller('open_classs')
+@Controller('open_class')
 export class OpenClassController {
   private readonly logger = new Logger(OpenClassController.name);
 

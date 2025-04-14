@@ -4,14 +4,17 @@ import {
   IsOptional,
   IsInt,
   Min,
+  IsMongoId,
 } from 'class-validator';
+import { Types } from 'mongoose';
+import { Transform } from 'class-transformer';
 
 export class CreateOpenClassDto {
   @IsString()
   @IsNotEmpty()
   readonly ma_lop: string;
 
-  @IsString()
+  @IsMongoId()
   @IsNotEmpty()
   readonly ma_mon_hoc: string;
 
@@ -50,9 +53,9 @@ export class UpdateOpenClassDto {
   @IsOptional()
   readonly ma_lop?: string;
 
-  @IsString()
+  @IsMongoId()
   @IsOptional()
-  readonly ma_mon_hoc?: string;
+  readonly ma_mon_hoc?: string
 
   @IsInt()
   @IsOptional()
