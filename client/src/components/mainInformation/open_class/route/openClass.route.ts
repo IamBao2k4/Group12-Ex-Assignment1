@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { OpenClass, PaginationOptions, SearchOptions, PaginatedResponse } from '../models/open_class.model';
-
-import { SERVER_URL } from '../../../../global';
+import { OpenClass, PaginationOptions, SearchOptions, PaginatedResponse, CreateOpenClassDto } from '../models/open_class.model';
+import {Subject} from '../../courses/models/course';
+import { SERVER_URL } from '../../../../../global';
 const API_URL = `${SERVER_URL}/api/v1/open_class`;
-export const OpenClassService = {
+export const OpenClassRoute = {
   getOpenClasses: async (
     pagination: PaginationOptions = { page: 1, limit: 10 }, 
     searchOptions: SearchOptions = {}
@@ -31,7 +31,7 @@ export const OpenClassService = {
     }
   },
 
-  createOpenClass: async (openClass: OpenClass): Promise<OpenClass> => {
+  createOpenClass: async (openClass: CreateOpenClassDto): Promise<OpenClass> => {
     try {
       const response = await axios.post(API_URL, openClass);
       return response.data;
@@ -78,5 +78,31 @@ export const OpenClassService = {
       console.error('Error fetching all open classes:', error);
       throw error;
     }
+  },
+
+  getAllCourseAvailable: async (): Promise<Subject[]> => {
+    try {
+      const response = await axios.get(`${SERVER_URL}/api/v1/courses/all-available`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching all available courses:', error);
+      throw error;
+    }
+  },
+  getAllCourseAvailablePaging: async (pagination: PaginationOptions): Promise<PaginatedResponse<Subject>> => {
+    try {
+      const response = await axios.get(`${SERVER_URL}/api/v1/courses/`, {
+        params: {
+          page: pagination.page,
+          limit: pagination.limit,
+          available: true
+        }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching all available courses:', error);
+      throw error;
+    }
   }
+
 }; 

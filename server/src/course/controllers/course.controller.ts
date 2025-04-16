@@ -33,15 +33,26 @@ export class CourseController {
   async get(
     @Query() query: PaginationOptions,
     @Query('faculty') faculty: string,
-    @Query('page') page: number,
+    @Query('available') available: string,
   ) {
     try {
-      return await this.courseService.get(query, faculty, page);
+      return await this.courseService.get(query, faculty,available);
     } catch (error) {
       this.logger.error(`course.controller.get: ${error.message}`, error.stack);
       throw error;
     }
   }
+
+  @Get('all-available')
+  async getAllAvailable() {
+    try {
+      return await this.courseService.getAllAvailable();
+    } catch (error) {
+      this.logger.error(`course.controller.getAllAvailable: ${error.message}`, error.stack);
+      throw error;
+    }
+  }
+
 
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateReq: UpdateCourseDto) {

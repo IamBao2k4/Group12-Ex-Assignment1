@@ -109,18 +109,6 @@ export class OpenClassService {
     }
   }
 
-  async findByCode(ma: string): Promise<OpenClass | null> {
-    try {
-      return await this.OpenClassRepository.findByCode(ma);
-    } catch (error) {
-      this.logger.error(
-        `OpenClass.service.findByCode: ${error.message}`,
-        error.stack,
-      );
-      throw error;
-    }
-  }
-
   async detail(id: string): Promise<OpenClass> {
     try {
       if (!isValidObjectId(id)) {

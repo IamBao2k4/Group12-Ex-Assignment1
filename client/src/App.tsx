@@ -6,7 +6,7 @@ import Faculties from './components/mainInformation/faculties/faculties';
 import Programs from './components/mainInformation/programs/programs';
 import StudentStatuses from './components/mainInformation/student_statuses/student_statuses';
 import Courses from './components/mainInformation/courses/courses';
-import OpenClassComponent from './components/open_class';
+import OpenClassComponent from './components/mainInformation/open_class';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
