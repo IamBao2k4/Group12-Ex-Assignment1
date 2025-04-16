@@ -134,10 +134,6 @@ const ProfilePage = () => {
         giay_to_tuy_than: documents,
     });
 
-    const profileDialog = document.querySelector(
-        ".profile-page-container"
-    ) as HTMLElement;
-
     useEffect(() => {
         const fetchData = async (url: string, setState: Function) => {
             try {
