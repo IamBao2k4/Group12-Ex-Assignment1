@@ -3,7 +3,7 @@ import "./studentItem.css";
 import { Student } from "../models/student";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import DetailIcon from "@mui/icons-material/Info";
+import ArticleIcon from '@mui/icons-material/Article';
 import ConfirmationDialog from "../../../common/ConfirmationDialog";
 import { useNotification } from "../../../common/NotificationContext";
 import { Button } from 'react-bootstrap';
@@ -112,7 +112,7 @@ const StudentItem: React.FC<StudentItemProps> = ({
                         <DeleteIcon fontSize="small" />
                     </Button>
                     <Button variant="outline-info" size="sm" className="ms-2" onClick={handleDetailClick}>
-                        <DetailIcon fontSize="small" />
+                        <ArticleIcon fontSize="small" />
                     </Button>
                 </td>
             </tr>

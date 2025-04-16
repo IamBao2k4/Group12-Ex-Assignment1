@@ -13,10 +13,17 @@
     overflow: auto;
 }
 
-.profile-page h1 {
+.profile-page-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.profile-page-header h1 {
     text-align: center;
     margin-bottom: 20px;
     color: var(--text);
+    flex: 1;
 }
 
 .profile-page-info-form {

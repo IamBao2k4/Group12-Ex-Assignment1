@@ -14,7 +14,7 @@ import React, { useEffect, useState } from "react";
 import AddressItem from "../profileDialog/addressItem/addressItem";
 import IdDocumentItem from "../profileDialog/idDocumentItem/idDocumentItem";
 import { useNotification } from "../../../../components/common/NotificationContext";
-
+import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import { SERVER_URL } from "../../../../../global";
 import { useParams } from "react-router-dom";
 
@@ -54,7 +54,7 @@ const ProfilePage = () => {
     const [studentStatuses, setStudentStatuses] = useState<StudentStatus[]>([]);
     const { showNotification } = useNotification();
     const type = "edit";
-    const id = useParams <{ id: string }>().id;
+    const id = useParams<{ id: string }>().id;
     const [student, setStudent] = useState<Student>();
 
     useEffect(() => {
@@ -76,7 +76,7 @@ const ProfilePage = () => {
             console.log("Student data fetched:", student);
         }
     }
-    , []);
+        , []);
 
     const defaultAddress: Address = {
         chi_tiet: "",
@@ -191,7 +191,7 @@ const ProfilePage = () => {
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
     ) => {
         const { name, value } = e.target;
-            if (name === "tinh_trang") {
+        if (name === "tinh_trang") {
             const currentStatusObj = studentStatuses.find(
                 (status) => status._id.toString() === formData.tinh_trang
             );
@@ -219,15 +219,15 @@ const ProfilePage = () => {
             return;
 
         try {
-            const method ="PATCH";
-            const url =`/api/v1/students/${student?._id}`;
+            const method = "PATCH";
+            const url = `/api/v1/students/${student?._id}`;
             const cleanedData = {
                 ...formData,
                 giay_to_tuy_than: documents ? documents.map(
                     ({ _id, ...rest }) => rest
                 )
-                : [],
-                dia_chi_thuong_tru: addresses ? addresses[0] : null, 
+                    : [],
+                dia_chi_thuong_tru: addresses ? addresses[0] : null,
                 dia_chi_tam_tru: addresses ? addresses[1] : null,
             };
 
@@ -268,7 +268,15 @@ const ProfilePage = () => {
     return (
         <div className="profile-page-container">
             <div className="profile-page">
-                <h1>Profile</h1>
+                <div className="profile-page-header">
+                    <button
+                        className="profile-page-header-back"
+                        onClick={handleCancel}
+                    >
+                        <ArrowLeftIcon fontSize="large"/>
+                    </button>
+                    <h1>Thông tin sinh viên</h1>
+                </div>
                 <div className="profile-page-info">
                     <form
                         className="profile-page-info-form"
