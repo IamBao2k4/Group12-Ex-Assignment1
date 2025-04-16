@@ -96,3 +96,69 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+# API Documentation with Swagger
+
+The server includes Swagger UI for interactive API documentation. After starting the server, you can access the documentation at:
+
+```
+http://localhost:3001/api/docs
+```
+
+## Features
+
+- Interactive documentation of all API endpoints
+- Test API endpoints directly from the browser
+- Detailed request and response schemas
+- Authentication support for protected endpoints
+
+## Adding Documentation to Your Code
+
+To add Swagger documentation to new controllers and DTOs, use the following decorators:
+
+### For Controllers
+
+```typescript
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiQuery,
+  ApiBody,
+} from '@nestjs/swagger';
+
+@ApiTags('resource-name')
+@Controller('resource-name')
+export class YourController {
+  @ApiOperation({
+    summary: 'Short description',
+    description: 'Detailed description',
+  })
+  @ApiResponse({ status: 200, description: 'Success response description' })
+  @Get()
+  async yourMethod() {
+    // Your code
+  }
+}
+```
+
+### For DTOs
+
+```typescript
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+
+export class YourDto {
+  @ApiProperty({
+    description: 'Property description',
+    example: 'Example value',
+  })
+  property: string;
+
+  @ApiPropertyOptional({
+    description: 'Optional property',
+    example: 'Example value',
+  })
+  optionalProperty?: string;
+}
+```
