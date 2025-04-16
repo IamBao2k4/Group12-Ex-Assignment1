@@ -11,7 +11,11 @@ import { SERVER_URL } from "../../../../global";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 
-const Students = () => {
+interface StudentsProps {
+    searchString: string;
+}
+
+const Students: React.FC<StudentsProps> = (searchString) => {
     const [students, setStudents] = useState<Student[]>([]);
     const [profileType, setProfileType] = useState("add");
     const [currentPage, setCurrentPage] = useState(1);
@@ -19,14 +23,13 @@ const Students = () => {
     const [chosenStudent, setChosenStudent] = useState<Student | null>(null);
     const [faculties, setFaculties] = useState<Faculty[]>([]);
     const [faculty, setFaculty] = useState("");
-    const [search, setSearch] = useState("");
     const [loading, setLoading] = useState(true);
 
     const fetchStudents = useCallback(async () => {
         setLoading(true);
         try {
             const response = await fetch(
-                `${SERVER_URL}/api/v1/students?searchString=${search}&faculty=${faculty}&page=${currentPage}`
+                `${SERVER_URL}/api/v1/students?searchString=${searchString.searchString}&faculty=${faculty}&page=${currentPage}`
             );
             const data = await response.json();
             setStudents(data.data);
@@ -36,7 +39,7 @@ const Students = () => {
             console.error("Error fetching students:", error);
             setLoading(false);
         }
-    }, [search, faculty, currentPage]);
+    }, [searchString, faculty, currentPage]);
 
     const fetchFaculty = useCallback(async () => {
         try {

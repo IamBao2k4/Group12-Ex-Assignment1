@@ -3,11 +3,13 @@ import "./studentItem.css";
 import { Student } from "../models/student";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import DetailIcon from "@mui/icons-material/Info";
 import ConfirmationDialog from "../../../common/ConfirmationDialog";
 import { useNotification } from "../../../common/NotificationContext";
 import { Button } from 'react-bootstrap';
 
 import { SERVER_URL } from "../../../../../global";
+import { useNavigate } from "react-router-dom";
 
 interface StudentItemProps {
     id: string;
@@ -83,6 +85,11 @@ const StudentItem: React.FC<StudentItemProps> = ({
         }
     }
 
+    const navigate = useNavigate(); 
+    function handleDetailClick() {
+        navigate(`/students/${student._id}`); // Navigate to students/:id
+    }
+
     return (
         <>
             <ConfirmationDialog
@@ -103,6 +110,9 @@ const StudentItem: React.FC<StudentItemProps> = ({
                     </Button>
                     <Button variant="outline-danger" size="sm" onClick={deleteConfirmHandler}>
                         <DeleteIcon fontSize="small" />
+                    </Button>
+                    <Button variant="outline-info" size="sm" className="ms-2" onClick={handleDetailClick}>
+                        <DetailIcon fontSize="small" />
                     </Button>
                 </td>
             </tr>

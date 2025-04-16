@@ -1,7 +1,7 @@
-import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import HorizontalNav from './components/horizontalNav/horizontalNav';
 import MainInformation from './components/mainInformation/mainInformation';
+import ProfilePage from './components/mainInformation/students/profilePage/profilePage';
 import Faculties from './components/mainInformation/faculties/faculties';
 import Programs from './components/mainInformation/programs/programs';
 import StudentStatuses from './components/mainInformation/student_statuses/student_statuses';
@@ -31,6 +31,7 @@ function App() {
           <Routes>
             <Route path='/' element={<MainInformation/>}/>
             <Route path="/students" element={<MainInformation />} />
+            <Route path="/students/:id" element={<ProfilePage />} />
             <Route path="/faculties" element={<Faculties />} />
             <Route path="/programs" element={<Programs />} />
             <Route path="/student-statuses" element={<StudentStatuses />} />

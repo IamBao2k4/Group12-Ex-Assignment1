@@ -30,7 +30,7 @@ const Courses = () => {
       );
       const data = await response.json();
       setCourses(data.data);
-      setTotalPages(data.meta.total);
+      setTotalPages(data.meta.totalPages);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching courses:", error);
