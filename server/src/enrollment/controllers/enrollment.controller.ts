@@ -66,7 +66,7 @@ export class EnrollmentController {
   async detail(@Param('id') id: string) {
     try {
       const sanitizedId = id.trim();
-      return await this.enrollmentService.detail(sanitizedId);
+      return await this.enrollmentService.detail(id);
     } catch (error) {
       this.logger.error(`Error fetching enrollment with ID ${id}: ${error.message}`, error.stack);
       
@@ -93,6 +93,32 @@ export class EnrollmentController {
         throw error;
       }
       
+      throw new HttpException(
+        'An error occurred while deleting the enrollment', 
+        HttpStatus.INTERNAL_SERVER_ERROR
+      );
+    }
+  }
+
+  @Get('/student/:studentId')
+  async getByStudentId(@Param('studentId') studentId: string) {
+    try {
+      return await this.enrollmentService.getByStudentId(studentId);
+    } catch (error) {
+      this.logger.error(`Error fetching enrollment for student ID ${studentId}: ${error.message}`, error.stack);
+      throw new HttpException(
+        'An error occurred while fetching the enrollment', 
+        HttpStatus.INTERNAL_SERVER_ERROR
+      );
+    }
+  }
+
+  @Delete(`/course/:courseId`)
+  async deleteByCourseId(@Param('courseId') courseId: string) {
+    try {
+      return await this.enrollmentService.deleteByCourseId(courseId);
+    } catch (error) {
+      this.logger.error(`Error deleting enrollment for course ID ${courseId}: ${error.message}`, error.stack);
       throw new HttpException(
         'An error occurred while deleting the enrollment', 
         HttpStatus.INTERNAL_SERVER_ERROR

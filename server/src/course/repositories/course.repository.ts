@@ -57,23 +57,38 @@ export class CourseRepository implements ICourseRepository {
   async findAll(
     paginationOpts: PaginationOptions,
     faculty: string,
-    page: number,
+    available: string,
   ): Promise<PaginatedResponse<Course>> {
     const pagination = new Pagination(paginationOpts);
     const skip = pagination.Skip();
     const limit = pagination.Limit();
+    const  page = pagination.Page();
 
-    let query = {};
+    let query: any = { $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] };
 
     if (faculty) {
       query = {
         $and: [
-          { khoa: faculty },
-          { $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] },
-        ],
+          { $or: [{ ma_khoa: faculty }, { ten_khoa: faculty }]},
+          query,
+        ]
       };
-    } else {
-      query = { $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] };
+    }
+    if (available === 'true') {
+      query = {
+        $and: [
+          { $or: [{ vo_hieu_hoa: { $exists: false } }, { vo_hieu_hoa: false }]},
+          query,
+        ]
+      };
+    }
+    if (available === 'false') {
+      query = {
+        $and: [
+          { $or: [{ vo_hieu_hoa: { $exists: true } }, { vo_hieu_hoa: true }]},
+          query,
+        ]
+      };
     }
     let courses: Course[] = [];
     try {
@@ -101,9 +116,29 @@ export class CourseRepository implements ICourseRepository {
       courses,
       page,
       limit,
-      total,
       totalPages,
+      total,
     );
+  }
+
+  async findAllAvailable(): Promise<Course[]> {
+    let courses: Course[] = [];
+    const query = {
+      $and: [
+        { $or: [{vo_hieu_hoa: { $exists: false }}, {vo_hieu_hoa: false}] },
+        { $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] },
+      ],
+    };
+    try {
+      courses = await this.courseModel
+        .find(query)
+        .exec();
+      console.log('courses', courses);
+    } catch (error) {
+      this.logger.error('course.repository.getAllAvailable: Error getting all available courses', error.stack);
+      throw new BaseException(error, 'GET_ALL_AVAILABLE_COURSES_ERROR');
+    }
+    return courses;
   }
 
   async softDelete(id: string): Promise<Course | null> {

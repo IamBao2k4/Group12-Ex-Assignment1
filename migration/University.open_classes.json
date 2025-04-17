@@ -1,0 +1,818 @@
+[
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8df0"
+        },
+        "ma_lop": "21_001",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8df0"
+        },
+        "si_so": 30,
+        "nam_hoc": 2021,
+        "hoc_ky": 1,
+        "giang_vien": "Nguyễn Văn A",
+        "so_luong_toi_da": 35,
+        "lich_hoc": "T2(1-4), T5(6-9)",
+        "phong_hoc": "A102"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8df1"
+        },
+        "ma_lop": "21_002",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8df1"
+        },
+        "si_so": 28,
+        "nam_hoc": 2021,
+        "hoc_ky": 1,
+        "giang_vien": "Trần Thị B",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T3(1-4), T6(1-4)",
+        "phong_hoc": "B205"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8df2"
+        },
+        "ma_lop": "21_003",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8df2"
+        },
+        "si_so": 25,
+        "nam_hoc": 2021,
+        "hoc_ky": 1,
+        "giang_vien": "Lê Văn C",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T4(6-9), T7(1-4)",
+        "phong_hoc": "C103"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8df3"
+        },
+        "ma_lop": "21_004",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8df3"
+        },
+        "si_so": 32,
+        "nam_hoc": 2021,
+        "hoc_ky": 1,
+        "giang_vien": "Phạm Thị D",
+        "so_luong_toi_da": 35,
+        "lich_hoc": "T2(6-9), T5(1-4)",
+        "phong_hoc": "D201"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8df4"
+        },
+        "ma_lop": "21_005",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8df4"
+        },
+        "si_so": 29,
+        "nam_hoc": 2021,
+        "hoc_ky": 1,
+        "giang_vien": "Hoàng Văn E",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T3(6-9), T6(6-9)",
+        "phong_hoc": "E102"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8df5"
+        },
+        "ma_lop": "21_006",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8df5"
+        },
+        "si_so": 27,
+        "nam_hoc": 2021,
+        "hoc_ky": 1,
+        "giang_vien": "Vũ Thị F",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T4(1-4), T7(6-9)",
+        "phong_hoc": "F305"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8df6"
+        },
+        "ma_lop": "21_007",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8df6"
+        },
+        "si_so": 30,
+        "nam_hoc": 2021,
+        "hoc_ky": 2,
+        "giang_vien": "Đỗ Văn G",
+        "so_luong_toi_da": 35,
+        "lich_hoc": "T2(1-4), T4(1-4)",
+        "phong_hoc": "G104"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8df7"
+        },
+        "ma_lop": "21_008",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8df7"
+        },
+        "si_so": 28,
+        "nam_hoc": 2021,
+        "hoc_ky": 2,
+        "giang_vien": "Ngô Thị H",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T3(1-4), T5(1-4)",
+        "phong_hoc": "H203"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8df8"
+        },
+        "ma_lop": "21_009",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8df8"
+        },
+        "si_so": 26,
+        "nam_hoc": 2021,
+        "hoc_ky": 2,
+        "giang_vien": "Lý Văn I",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T2(6-9), T6(1-4)",
+        "phong_hoc": "A105"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8df9"
+        },
+        "ma_lop": "21_010",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8df9"
+        },
+        "si_so": 33,
+        "nam_hoc": 2021,
+        "hoc_ky": 2,
+        "giang_vien": "Bùi Thị K",
+        "so_luong_toi_da": 35,
+        "lich_hoc": "T3(6-9), T7(1-4)",
+        "phong_hoc": "B108"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8dfa"
+        },
+        "ma_lop": "21_011",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8dfa"
+        },
+        "si_so": 29,
+        "nam_hoc": 2021,
+        "hoc_ky": 2,
+        "giang_vien": "Dương Văn L",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T4(6-9), T6(6-9)",
+        "phong_hoc": "C207"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8dfb"
+        },
+        "ma_lop": "21_012",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8dfb"
+        },
+        "si_so": 27,
+        "nam_hoc": 2021,
+        "hoc_ky": 2,
+        "giang_vien": "Phan Thị M",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T5(6-9), T7(6-9)",
+        "phong_hoc": "D103"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8dfc"
+        },
+        "ma_lop": "22_001",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8dfc"
+        },
+        "si_so": 31,
+        "nam_hoc": 2022,
+        "hoc_ky": 1,
+        "giang_vien": "Trương Văn N",
+        "so_luong_toi_da": 35,
+        "lich_hoc": "T2(1-4), T5(1-4)",
+        "phong_hoc": "E206"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8dfd"
+        },
+        "ma_lop": "22_002",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8dfd"
+        },
+        "si_so": 28,
+        "nam_hoc": 2022,
+        "hoc_ky": 1,
+        "giang_vien": "Hồ Thị O",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T3(1-4), T6(1-4)",
+        "phong_hoc": "F104"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8dfe"
+        },
+        "ma_lop": "22_003",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8dfe"
+        },
+        "si_so": 26,
+        "nam_hoc": 2022,
+        "hoc_ky": 1,
+        "giang_vien": "Đinh Văn P",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T4(1-4), T7(1-4)",
+        "phong_hoc": "G301"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8dff"
+        },
+        "ma_lop": "22_004",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8dff"
+        },
+        "si_so": 33,
+        "nam_hoc": 2022,
+        "hoc_ky": 1,
+        "giang_vien": "Mai Thị Q",
+        "so_luong_toi_da": 35,
+        "lich_hoc": "T2(6-9), T5(6-9)",
+        "phong_hoc": "H102"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e00"
+        },
+        "ma_lop": "22_005",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8e00"
+        },
+        "si_so": 29,
+        "nam_hoc": 2022,
+        "hoc_ky": 1,
+        "giang_vien": "Cao Văn R",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T3(6-9), T6(6-9)",
+        "phong_hoc": "A203"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e01"
+        },
+        "ma_lop": "22_006",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8e01"
+        },
+        "si_so": 27,
+        "nam_hoc": 2022,
+        "hoc_ky": 1,
+        "giang_vien": "Lưu Thị S",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T4(6-9), T7(6-9)",
+        "phong_hoc": "B305"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e02"
+        },
+        "ma_lop": "22_007",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8e02"
+        },
+        "si_so": 31,
+        "nam_hoc": 2022,
+        "hoc_ky": 2,
+        "giang_vien": "Đặng Văn T",
+        "so_luong_toi_da": 35,
+        "lich_hoc": "T2(1-4), T4(1-4)",
+        "phong_hoc": "C108"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e03"
+        },
+        "ma_lop": "22_008",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8e03"
+        },
+        "si_so": 28,
+        "nam_hoc": 2022,
+        "hoc_ky": 2,
+        "giang_vien": "Vương Thị U",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T3(1-4), T5(1-4)",
+        "phong_hoc": "D205"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e04"
+        },
+        "ma_lop": "22_009",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8df0"
+        },
+        "si_so": 26,
+        "nam_hoc": 2022,
+        "hoc_ky": 2,
+        "giang_vien": "Tô Văn V",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T2(6-9), T6(1-4)",
+        "phong_hoc": "E103"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e05"
+        },
+        "ma_lop": "22_010",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8df1"
+        },
+        "si_so": 33,
+        "nam_hoc": 2022,
+        "hoc_ky": 2,
+        "giang_vien": "Chu Thị X",
+        "so_luong_toi_da": 35,
+        "lich_hoc": "T3(6-9), T7(1-4)",
+        "phong_hoc": "F207"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e06"
+        },
+        "ma_lop": "22_011",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8df2"
+        },
+        "si_so": 27,
+        "nam_hoc": 2022,
+        "hoc_ky": 2,
+        "giang_vien": "Đồng Văn Y",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T4(6-9), T6(6-9)",
+        "phong_hoc": "G102"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e07"
+        },
+        "ma_lop": "22_012",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8df3"
+        },
+        "si_so": 34,
+        "nam_hoc": 2022,
+        "hoc_ky": 2,
+        "giang_vien": "Thái Thị Z",
+        "so_luong_toi_da": 35,
+        "lich_hoc": "T5(6-9), T7(6-9)",
+        "phong_hoc": "H204"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e08"
+        },
+        "ma_lop": "23_001",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8df4"
+        },
+        "si_so": 31,
+        "nam_hoc": 2023,
+        "hoc_ky": 1,
+        "giang_vien": "Nguyễn Văn AA",
+        "so_luong_toi_da": 35,
+        "lich_hoc": "T2(1-4), T5(1-4)",
+        "phong_hoc": "A301"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e09"
+        },
+        "ma_lop": "23_002",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8df5"
+        },
+        "si_so": 28,
+        "nam_hoc": 2023,
+        "hoc_ky": 1,
+        "giang_vien": "Trần Thị BB",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T3(1-4), T6(1-4)",
+        "phong_hoc": "B107"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e0a"
+        },
+        "ma_lop": "23_003",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8df6"
+        },
+        "si_so": 26,
+        "nam_hoc": 2023,
+        "hoc_ky": 1,
+        "giang_vien": "Lê Văn CC",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T4(1-4), T7(1-4)",
+        "phong_hoc": "C206"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e0b"
+        },
+        "ma_lop": "23_004",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8df7"
+        },
+        "si_so": 33,
+        "nam_hoc": 2023,
+        "hoc_ky": 1,
+        "giang_vien": "Phạm Thị DD",
+        "so_luong_toi_da": 35,
+        "lich_hoc": "T2(6-9), T5(6-9)",
+        "phong_hoc": "D105"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e0c"
+        },
+        "ma_lop": "23_005",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8df8"
+        },
+        "si_so": 29,
+        "nam_hoc": 2023,
+        "hoc_ky": 1,
+        "giang_vien": "Hoàng Văn EE",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T3(6-9), T6(6-9)",
+        "phong_hoc": "E202"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e0d"
+        },
+        "ma_lop": "23_006",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8df9"
+        },
+        "si_so": 27,
+        "nam_hoc": 2023,
+        "hoc_ky": 1,
+        "giang_vien": "Vũ Thị FF",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T4(6-9), T7(6-9)",
+        "phong_hoc": "F103"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e0e"
+        },
+        "ma_lop": "23_007",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8dfa"
+        },
+        "si_so": 32,
+        "nam_hoc": 2023,
+        "hoc_ky": 2,
+        "giang_vien": "Đỗ Văn GG",
+        "so_luong_toi_da": 35,
+        "lich_hoc": "T2(1-4), T4(1-4)",
+        "phong_hoc": "G208"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e0f"
+        },
+        "ma_lop": "23_008",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8dfb"
+        },
+        "si_so": 28,
+        "nam_hoc": 2023,
+        "hoc_ky": 2,
+        "giang_vien": "Ngô Thị HH",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T3(1-4), T5(1-4)",
+        "phong_hoc": "H305"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e10"
+        },
+        "ma_lop": "23_009",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8dfc"
+        },
+        "si_so": 26,
+        "nam_hoc": 2023,
+        "hoc_ky": 2,
+        "giang_vien": "Lý Văn II",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T2(6-9), T6(1-4)",
+        "phong_hoc": "A106"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e11"
+        },
+        "ma_lop": "23_010",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8dfd"
+        },
+        "si_so": 34,
+        "nam_hoc": 2023,
+        "hoc_ky": 2,
+        "giang_vien": "Bùi Thị KK",
+        "so_luong_toi_da": 35,
+        "lich_hoc": "T3(6-9), T7(1-4)",
+        "phong_hoc": "B204"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e12"
+        },
+        "ma_lop": "23_011",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8dfe"
+        },
+        "si_so": 29,
+        "nam_hoc": 2023,
+        "hoc_ky": 2,
+        "giang_vien": "Dương Văn LL",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T4(6-9), T6(6-9)",
+        "phong_hoc": "C302"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e13"
+        },
+        "ma_lop": "23_012",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8dff"
+        },
+        "si_so": 27,
+        "nam_hoc": 2023,
+        "hoc_ky": 2,
+        "giang_vien": "Phan Thị MM",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T5(6-9), T7(6-9)",
+        "phong_hoc": "D107"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e14"
+        },
+        "ma_lop": "24_001",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8e00"
+        },
+        "si_so": 31,
+        "nam_hoc": 2024,
+        "hoc_ky": 1,
+        "giang_vien": "Trương Văn NN",
+        "so_luong_toi_da": 35,
+        "lich_hoc": "T2(1-4), T5(1-4)",
+        "phong_hoc": "E304"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e15"
+        },
+        "ma_lop": "24_002",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8e01"
+        },
+        "si_so": 28,
+        "nam_hoc": 2024,
+        "hoc_ky": 1,
+        "giang_vien": "Hồ Thị OO",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T3(1-4), T6(1-4)",
+        "phong_hoc": "F205"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e16"
+        },
+        "ma_lop": "24_003",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8e02"
+        },
+        "si_so": 26,
+        "nam_hoc": 2024,
+        "hoc_ky": 1,
+        "giang_vien": "Đinh Văn PP",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T4(1-4), T7(1-4)",
+        "phong_hoc": "G106"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e17"
+        },
+        "ma_lop": "24_004",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8e03"
+        },
+        "si_so": 33,
+        "nam_hoc": 2024,
+        "hoc_ky": 1,
+        "giang_vien": "Mai Thị QQ",
+        "so_luong_toi_da": 35,
+        "lich_hoc": "T2(6-9), T5(6-9)",
+        "phong_hoc": "H203"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e18"
+        },
+        "ma_lop": "24_005",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8df0"
+        },
+        "si_so": 29,
+        "nam_hoc": 2024,
+        "hoc_ky": 1,
+        "giang_vien": "Cao Văn RR",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T3(6-9), T6(6-9)",
+        "phong_hoc": "A104"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e19"
+        },
+        "ma_lop": "24_006",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8df1"
+        },
+        "si_so": 27,
+        "nam_hoc": 2024,
+        "hoc_ky": 1,
+        "giang_vien": "Lưu Thị SS",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T4(6-9), T7(6-9)",
+        "phong_hoc": "B302"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e1a"
+        },
+        "ma_lop": "24_007",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8df2"
+        },
+        "si_so": 32,
+        "nam_hoc": 2024,
+        "hoc_ky": 2,
+        "giang_vien": "Đặng Văn TT",
+        "so_luong_toi_da": 35,
+        "lich_hoc": "T2(1-4), T4(1-4)",
+        "phong_hoc": "C105"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e1b"
+        },
+        "ma_lop": "24_008",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8df3"
+        },
+        "si_so": 28,
+        "nam_hoc": 2024,
+        "hoc_ky": 2,
+        "giang_vien": "Vương Thị UU",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T3(1-4), T5(1-4)",
+        "phong_hoc": "D202"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e1c"
+        },
+        "ma_lop": "24_009",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8df4"
+        },
+        "si_so": 26,
+        "nam_hoc": 2024,
+        "hoc_ky": 2,
+        "giang_vien": "Tô Văn VV",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T2(6-9), T6(1-4)",
+        "phong_hoc": "E108"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e1d"
+        },
+        "ma_lop": "24_010",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8df5"
+        },
+        "si_so": 34,
+        "nam_hoc": 2024,
+        "hoc_ky": 2,
+        "giang_vien": "Chu Thị XX",
+        "so_luong_toi_da": 35,
+        "lich_hoc": "T3(6-9), T7(1-4)",
+        "phong_hoc": "F306"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e1e"
+        },
+        "ma_lop": "24_011",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8df6"
+        },
+        "si_so": 29,
+        "nam_hoc": 2024,
+        "hoc_ky": 2,
+        "giang_vien": "Đồng Văn YY",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T4(6-9), T6(6-9)",
+        "phong_hoc": "G203"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e1f"
+        },
+        "ma_lop": "24_012",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8df7"
+        },
+        "si_so": 27,
+        "nam_hoc": 2024,
+        "hoc_ky": 2,
+        "giang_vien": "Thái Thị ZZ",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T5(6-9), T7(6-9)",
+        "phong_hoc": "H107"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e20"
+        },
+        "ma_lop": "21_013",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8df8"
+        },
+        "si_so": 31,
+        "nam_hoc": 2021,
+        "hoc_ky": 1,
+        "giang_vien": "Nguyễn Văn AB",
+        "so_luong_toi_da": 35,
+        "lich_hoc": "T2(1-4), T5(1-4)",
+        "phong_hoc": "A205"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e21"
+        },
+        "ma_lop": "21_014",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8df9"
+        },
+        "si_so": 28,
+        "nam_hoc": 2021,
+        "hoc_ky": 1,
+        "giang_vien": "Trần Thị BC",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T3(1-4), T6(1-4)",
+        "phong_hoc": "B103"
+    },
+    {
+        "_id": {
+            "$oid": "67f1dc3801a8914d025b8e22"
+        },
+        "ma_lop": "21_015",
+        "ma_mon_hoc": {
+            "$oid": "67ecdc3801a8914d025a8dfa"
+        },
+        "si_so": 26,
+        "nam_hoc": 2021,
+        "hoc_ky": 1,
+        "giang_vien": "Lê Văn CD",
+        "so_luong_toi_da": 30,
+        "lich_hoc": "T4(1-4), T7(1-4)",
+        "phong_hoc": "C204"
+    }
+]

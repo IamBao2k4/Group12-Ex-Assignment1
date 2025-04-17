@@ -1,41 +1,42 @@
-import React, { useEffect, useState, useCallback } from "react";
-import "./courses.css";
-
-import CourseItem from "./courseItem/courseItem";
-import CourseDialog from "./courseDialog/courseDialog";
-
+import { useEffect, useState, useCallback } from "react";
 import { Subject } from "./models/course";
 import { Faculty } from "../faculties/models/faculty";
 import Header from "../header/header";
+import "./courses.css";
+import CourseItem from "./courseItem/courseItem";
+import CourseDialog from "./courseDialog/courseDialog";
 import AddIcon from "@mui/icons-material/Add";
+import { Card, Button, Table, Pagination, Form } from "react-bootstrap";
+import "../../../components/common/DomainStyles.css";
 
 import { SERVER_URL } from "../../../../global";
 
-import * as XLSX from "xlsx";
-import { saveAs } from "file-saver";
-
-const Subjects: React.FC = () => {
-  const [courses, setSubjects] = useState<Subject[]>([]);
-  const [dialogType, setDialogType] = useState("add");
+const Courses = () => {
+  const [courses, setCourses] = useState<Subject[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [chosenSubject, setChosenSubject] = useState<Subject | null>(null);
+  const [dialogType, setDialogType] = useState("");
+  const [chosenCourse, setChosenCourse] = useState<Subject | null>(null);
+  const [search, setSearch] = useState("");
   const [faculties, setFaculties] = useState<Faculty[]>([]);
   const [faculty, setFaculty] = useState("");
-  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  const fetchSubjects = useCallback(async () => {
+  const fetchCourses = useCallback(async () => {
+    setLoading(true);
     try {
       const response = await fetch(
-        `${SERVER_URL}/api/v1/courses?faculty=${faculty}&page=${currentPage}`
+        `${SERVER_URL}/api/v1/courses?page=${currentPage}&searchString=${search}&faculty=${faculty}`
       );
       const data = await response.json();
-      setSubjects(data.data);
-      setTotalPages(data.meta.total);
+      setCourses(data.data);
+      setTotalPages(data.meta.totalPages);
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching courses:", error);
+      setLoading(false);
     }
-  }, [faculty, currentPage]);
+  }, [search, faculty, currentPage]);
 
   const fetchFaculties = useCallback(async () => {
     try {
@@ -49,171 +50,119 @@ const Subjects: React.FC = () => {
 
   useEffect(() => {
     fetchFaculties();
-    fetchSubjects();
-  }, [fetchFaculties, fetchSubjects]);
-
-  function Filter(event: React.ChangeEvent<HTMLSelectElement>) {
-    setFaculty(event.target.value);
-  }
+    fetchCourses();
+  }, [fetchFaculties, fetchCourses]);
 
   function DialogHandler(type: string) {
+    const dialog = document.querySelector(".dialog-container") as HTMLElement;
     setDialogType(type);
-    const dialog = document.querySelector(".subject-dialog-container") as HTMLElement;
     dialog.classList.toggle("hidden");
   }
 
-  function handlePreviousPage() {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
+  function handlePageChange(page: number) {
+    setCurrentPage(page);
   }
 
-  function handleNextPage() {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  }
-
-  const handleImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const data = e.target?.result;
-      const workbook = XLSX.read(data, { type: "array" });
-
-      const sheetName = workbook.SheetNames[0];
-      const sheet = workbook.Sheets[sheetName];
-
-      const jsonData: Subject[] = XLSX.utils.sheet_to_json(sheet);
-      setSubjects(jsonData);
-    };
-
-    reader.readAsArrayBuffer(file);
-  };
-
-  const handleExport = (fileType: "csv" | "xlsx") => {
-    if (courses.length === 0) {
-      alert("Không có dữ liệu để xuất!");
-      return;
-    }
-
-    const ws = XLSX.utils.json_to_sheet(courses);
-
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Subjects");
-
-    if (fileType === "xlsx") {
-      const excelBuffer = XLSX.write(wb, {
-        bookType: "xlsx",
-        type: "array",
-      });
-      const data = new Blob([excelBuffer], {
-        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      });
-      saveAs(data, "courses.xlsx");
-    } else {
-      XLSX.writeFile(wb, "courses.csv");
-    }
-  };
-
-  if (!courses) {
-    return <div className="courses">Loading...</div>;
+  function handleFacultyChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    setFaculty(event.target.value);
   }
 
   return (
-    <div className="courses">
-      <Header searchHandler={setSearch} />
+    <div className="domain-container">
       <CourseDialog
-        subject={chosenSubject ?? courses[0]}
         type={dialogType}
-        onSuccess={fetchSubjects}
+        subject={chosenCourse ?? courses[0]}
+        onSuccess={fetchCourses}
       />
-      <div style={{ display: "flex", justifyContent: "space-between" , width: "100%"}}>
-        <h1>Subjects</h1>
-        <div className="courses-add">
-          <input
-            type="file"
-            accept=".csv, .xlsx"
-            onChange={handleImport}
-            style={{ display: "none" }}
-            id="fileInput"
-          />
-          <button onClick={() => document.getElementById("fileInput")?.click()}>
-            <i className="fa-solid fa-file-import"></i>
-          </button>
-          <button className="add-subject" onClick={() => DialogHandler("add")}>
-            <AddIcon />
-          </button>
-        </div>
-      </div>
-  
-      <select
-        className="courses-faculty"
-        name="faculty"
-        id="faculty"
-        onChange={Filter}
-      >
-        <option value="" defaultChecked>
-          All
-        </option>
-        {faculties.map((faculty) => (
-          <option key={faculty._id.toString()} value={faculty._id.toString()}>
-            {faculty.ten_khoa}
-          </option>
-        ))}
-      </select>
-  
-      <div className="courses-list">
-        <div className="courses-list-header row">
-          <div className="courses-list-header-name">Tên môn học</div>
-          <div className="courses-list-header-code">Mã môn học</div>
-          <div className="courses-list-header-faculty">Khoa</div>
-          <div className="courses-list-header-action"></div>
-        </div>
-  
-        <div className="list-courses">
-          {courses.map((subject) => (
-            <CourseItem
-              key={subject._id.toString()}
-              id={subject._id.toString()}
-              subject={subject}
-              DialogHandler={DialogHandler}
-              setChosenSubject={setChosenSubject}
-              onDeleteSuccess={fetchSubjects}
-            />
-          ))}
-        </div>
-      </div>
-  
-      <div className="courses-export">
-        <button onClick={() => handleExport("csv")}>
-          <i className="fa-solid fa-file-export"></i> Export CSV
-        </button>
-        <button onClick={() => handleExport("xlsx")}>
-          <i className="fa-solid fa-file-export"></i> Export Excel
-        </button>
-      </div>
-  
-      <div className="courses-pagination">
-        <button
-          className="courses-pagination-btn prev"
-          onClick={handlePreviousPage}
-          disabled={currentPage === 1}
-        >
-          Previous
-        </button>
-        <button
-          className="courses-pagination-btn next"
-          onClick={handleNextPage}
-          disabled={currentPage === totalPages}
-        >
-          Next
-        </button>
-      </div>
+      <Header searchHandler={setSearch} />
+
+      <Card>
+        <Card.Header>
+          <div className="d-flex justify-content-between align-items-center">
+            <h2>Danh sách môn học</h2>
+            <Button variant="success" onClick={() => DialogHandler("add")}>
+              <AddIcon /> Thêm môn học
+            </Button>
+          </div>
+        </Card.Header>
+        <Card.Body>
+          <Form.Group className="mb-3">
+            <Form.Label>Khoa:</Form.Label>
+            <Form.Select onChange={handleFacultyChange} value={faculty}>
+              <option value="">Tất cả</option>
+              {faculties.map((faculty) => (
+                <option key={faculty._id.toString()} value={faculty._id.toString()}>
+                  {faculty.ten_khoa}
+                </option>
+              ))}
+            </Form.Select>
+          </Form.Group>
+
+          <div className="table-responsive">
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>Tên môn học</th>
+                  <th>Mã môn học</th>
+                  <th>Khoa</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr>
+                    <td colSpan={4} className="text-center">Đang tải...</td>
+                  </tr>
+                ) : courses.length === 0 ? (
+                  <tr>
+                    <td colSpan={4} className="text-center">Không tìm thấy môn học nào</td>
+                  </tr>
+                ) : (
+                  courses.map((course) => (
+                    <CourseItem
+                      key={course._id.toString()}
+                      subject={course}
+                      setChosenSubject={setChosenCourse}
+                      DialogHandler={DialogHandler}
+                      onDeleteSuccess={fetchCourses}
+                      id={course._id.toString()}
+                    />
+                  ))
+                )}
+              </tbody>
+            </Table>
+          </div>
+
+          <div className="d-flex justify-content-center mt-3">
+            <Pagination>
+              <Pagination.First onClick={() => handlePageChange(1)} disabled={currentPage === 1} />
+              <Pagination.Prev
+                onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                disabled={currentPage === 1}
+              />
+              {Array.from({ length: totalPages }, (_, i) => (
+                <Pagination.Item
+                  key={i + 1}
+                  active={i + 1 === currentPage}
+                  onClick={() => handlePageChange(i + 1)}
+                >
+                  {i + 1}
+                </Pagination.Item>
+              ))}
+              <Pagination.Next
+                onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+                disabled={currentPage === totalPages}
+              />
+              <Pagination.Last
+                onClick={() => handlePageChange(totalPages)}
+                disabled={currentPage === totalPages}
+              />
+            </Pagination>
+          </div>
+        </Card.Body>
+      </Card>
     </div>
   );
 };
 
-export default Subjects;
+export default Courses;

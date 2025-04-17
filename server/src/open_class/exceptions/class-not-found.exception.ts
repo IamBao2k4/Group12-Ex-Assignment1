@@ -1,13 +1,13 @@
 import { HttpStatus } from '@nestjs/common';
 import { BaseException } from '../../common/exceptions';
 
-export class GradeNotFoundException extends BaseException {
+export class OpenClassNotFoundException extends BaseException {
   constructor(id: string, isInvalidId: boolean = false) {
     const message = isInvalidId
       ? `ID is invalid: ${id}. ID must be a valid ObjectId.`
-      : `Course with ID ${id} not found`;
+      : `Open Class with ID ${id} not found`;
 
-    super(message, 'GRADE_NOT_FOUND', HttpStatus.BAD_REQUEST);
-    this.name = 'GradeNotFoundException';
+    super(message, 'OPEN_CLASS_NOT_FOUND', HttpStatus.BAD_REQUEST);
+    this.name = 'OpenClassNotFoundException';
   }
 }

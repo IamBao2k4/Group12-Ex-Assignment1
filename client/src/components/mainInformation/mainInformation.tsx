@@ -4,7 +4,7 @@ import './mainInformation.css';
 import Students from './students/students';
 
 const MainInformation = () => {
-  const [searchString, setSearchString] = useState(" ");
+  const [searchString, setSearchString] = useState("");
 
   function searchHandler(searchString: string) {
     setSearchString(searchString);

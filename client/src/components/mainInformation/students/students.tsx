@@ -1,23 +1,21 @@
 import React, { useEffect, useState, useCallback } from "react";
 import "./students.css";
-
 import StudentItem from "./studentItem/studentItem";
 import ProfileDialog from "./profileDialog/profileDialog";
-
 import { Student } from "./models/student";
 import { Faculty } from "../faculties/models/faculty";
 import AddIcon from "@mui/icons-material/Add";
-
+import { Card, Button, Table, Pagination, Form, Row, Col } from 'react-bootstrap';
+import '../../../components/common/DomainStyles.css';
 import { SERVER_URL } from "../../../../global";
-
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 
-interface StudentProps {
+interface StudentsProps {
     searchString: string;
 }
 
-const Students: React.FC<StudentProps> = ({ searchString }) => {
+const Students: React.FC<StudentsProps> = (searchString) => {
     const [students, setStudents] = useState<Student[]>([]);
     const [profileType, setProfileType] = useState("add");
     const [currentPage, setCurrentPage] = useState(1);
@@ -25,17 +23,21 @@ const Students: React.FC<StudentProps> = ({ searchString }) => {
     const [chosenStudent, setChosenStudent] = useState<Student | null>(null);
     const [faculties, setFaculties] = useState<Faculty[]>([]);
     const [faculty, setFaculty] = useState("");
+    const [loading, setLoading] = useState(true);
 
     const fetchStudents = useCallback(async () => {
+        setLoading(true);
         try {
             const response = await fetch(
-                `${SERVER_URL}/api/v1/students?searchString=${searchString}&faculty=${faculty}&page=${currentPage}`
+                `${SERVER_URL}/api/v1/students?searchString=${searchString.searchString}&faculty=${faculty}&page=${currentPage}`
             );
             const data = await response.json();
             setStudents(data.data);
             setTotalPages(data.meta.total);
+            setLoading(false);
         } catch (error) {
             console.error("Error fetching students:", error);
+            setLoading(false);
         }
     }, [searchString, faculty, currentPage]);
 
@@ -54,28 +56,12 @@ const Students: React.FC<StudentProps> = ({ searchString }) => {
         fetchStudents();
     }, [fetchFaculty, fetchStudents]);
 
-    function Filter(event: React.ChangeEvent<HTMLSelectElement>) {
-        setFaculty(event.target.value);
-    }
-
     function ProfileHandler(type: string) {
         setProfileType(type);
         const profileDialog = document.querySelector(
             ".profile-dialog-container"
         ) as HTMLElement;
         profileDialog.classList.toggle("hidden");
-    }
-
-    function handlePreviousPage() {
-        if (currentPage > 1) {
-            setCurrentPage(currentPage - 1);
-        }
-    }
-
-    function handleNextPage() {
-        if (currentPage < totalPages) {
-            setCurrentPage(currentPage + 1);
-        }
     }
 
     const handleImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -122,132 +108,139 @@ const Students: React.FC<StudentProps> = ({ searchString }) => {
         }
     };
 
-    if (!students) {
-        return <div>Loading...</div>;
-    }
-
     return (
-        <div className="students">
+        <div className="domain-container">
             <ProfileDialog
                 student={chosenStudent ?? students[0]}
                 type={profileType}
                 onSuccess={fetchStudents}
             />
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <h1>Students</h1>
-                <div className="students-add">
-                    <input
-                        type="file"
-                        accept=".csv, .xlsx"
-                        onChange={handleImport}
-                        style={{ display: "none" }}
-                        id="fileInput"
-                    />
-                    <button
-                        onClick={() =>
-                            document.getElementById("fileInput")?.click()
-                        }
-                    >
-                        Import File
-                    </button>
-
-                    <button
-                        className="add-student"
-                        onClick={() => ProfileHandler("add")}
-                    >
-                        Add Student
-                    </button>
-                </div>
-            </div>
-
-            <div className="select-wrapper">
-                <select
-                    className="students-faculty"
-                    name="faculty"
-                    id="faculty"
-                    onChange={Filter}
-                >
-                    <option value="" defaultChecked>
-                        All
-                    </option>
-                    {faculties.map((faculty) => (
-                        <option
-                            key={faculty._id.toString()}
-                            value={faculty._id.toString()}
-                        >
-                            {faculty.ten_khoa}
-                        </option>
-                    ))}
-                </select>
-
-                <svg
-                    width="9"
-                    height="7"
-                    viewBox="0 0 9 7"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="students-select-icon"
-                >
-                    <path
-                        d="M4.243 6.32851L0 2.08551L1.415 0.671509L4.243 3.50051L7.071 0.671509L8.486 2.08551L4.243 6.32851Z"
-                        fill="#C4C4C4"
-                    />
-                </svg>
-            </div>
-
-            <div className="students-list">
-                <div className="students-list-header row">
-                    <div className="students-list-header-name">Họ tên</div>
-                    <div className="students-list-header-id">
-                        Mã số sinh viên
+            
+            <Card>
+                <Card.Header>
+                    <div className="d-flex justify-content-between align-items-center">
+                        <h2>Danh sách sinh viên</h2>
+                        <div className="d-flex">
+                            <input
+                                type="file"
+                                accept=".csv, .xlsx"
+                                onChange={handleImport}
+                                style={{ display: "none" }}
+                                id="fileInput"
+                            />
+                            <Button 
+                                variant="primary" 
+                                className="mx-2"
+                                onClick={() => document.getElementById("fileInput")?.click()}
+                            >
+                                Import File
+                            </Button>
+                            <Button variant="success" onClick={() => ProfileHandler("add")}>
+                                <AddIcon /> Thêm sinh viên mới
+                            </Button>
+                        </div>
                     </div>
-                    <div className="students-list-header-birthday">
-                        Ngày sinh
+                </Card.Header>
+                <Card.Body>
+                    <Form className="mb-3">
+                        <Row>
+                            <Col md={4}>
+                                <Form.Group>
+                                    <Form.Label>Khoa:</Form.Label>
+                                    <Form.Select 
+                                        onChange={(e) => setFaculty(e.target.value)}
+                                        value={faculty}
+                                    >
+                                        <option value="">Tất cả</option>
+                                        {faculties.map((faculty) => (
+                                            <option
+                                                key={faculty._id.toString()}
+                                                value={faculty._id.toString()}
+                                            >
+                                                {faculty.ten_khoa}
+                                            </option>
+                                        ))}
+                                    </Form.Select>
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                    </Form>
+                    
+                    <div className="table-responsive">
+                        <Table striped bordered hover>
+                            <thead>
+                                <tr>
+                                    <th>Họ tên</th>
+                                    <th>Mã số sinh viên</th>
+                                    <th>Ngày sinh</th>
+                                    <th>Tình trạng</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {loading ? (
+                                    <tr>
+                                        <td colSpan={5} className="text-center">Đang tải...</td>
+                                    </tr>
+                                ) : students.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={5} className="text-center">Không tìm thấy sinh viên nào</td>
+                                    </tr>
+                                ) : (
+                                    students.map((student) => (
+                                        <StudentItem
+                                            key={student._id.toString()}
+                                            id={student._id.toString()}
+                                            student={student}
+                                            ProfileHandler={ProfileHandler}
+                                            setChosenStudent={setChosenStudent}
+                                            onDeleteSuccess={fetchStudents}
+                                        />
+                                    ))
+                                )}
+                            </tbody>
+                        </Table>
                     </div>
-                    <div className="students-list-header-status">
-                        Tình trạng
+
+                    <div className="d-flex justify-content-between align-items-center mt-3">
+                        <div>
+                            <Button variant="outline-primary" onClick={() => handleExport("csv")} className="me-2">
+                                Export CSV
+                            </Button>
+                            <Button variant="outline-primary" onClick={() => handleExport("xlsx")}>
+                                Export Excel
+                            </Button>
+                        </div>
+                        
+                        <Pagination>
+                            <Pagination.First onClick={() => setCurrentPage(1)} disabled={currentPage === 1} />
+                            <Pagination.Prev 
+                                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))} 
+                                disabled={currentPage === 1}
+                            />
+                            
+                            {Array.from({ length: totalPages }, (_, i) => (
+                                <Pagination.Item 
+                                    key={i + 1}
+                                    active={i + 1 === currentPage}
+                                    onClick={() => setCurrentPage(i + 1)}
+                                >
+                                    {i + 1}
+                                </Pagination.Item>
+                            ))}
+                            
+                            <Pagination.Next 
+                                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))} 
+                                disabled={currentPage === totalPages}
+                            />
+                            <Pagination.Last 
+                                onClick={() => setCurrentPage(totalPages)} 
+                                disabled={currentPage === totalPages}
+                            />
+                        </Pagination>
                     </div>
-                    <div className="students-list-header-action"></div>
-                </div>
-
-                <div className="list-students">
-                    {students.map((student) => (
-                        <StudentItem
-                            key={student._id.toString()}
-                            id={student._id.toString()}
-                            student={student}
-                            ProfileHandler={ProfileHandler}
-                            setChosenStudent={setChosenStudent}
-                            onDeleteSuccess={fetchStudents}
-                        />
-                    ))}
-                </div>
-            </div>
-
-            <div className="students-export">
-                <button onClick={() => handleExport("csv")}>Export CSV</button>
-
-                <button onClick={() => handleExport("xlsx")}>
-                    Export Excel
-                </button>
-            </div>
-
-            <div className="students-pagination">
-                <button
-                    className="students-pagination-btn prev"
-                    onClick={handlePreviousPage}
-                    disabled={currentPage === 1}
-                >
-                    Previous
-                </button>
-                <button
-                    className="students-pagination-btn next"
-                    onClick={handleNextPage}
-                    disabled={currentPage === totalPages}
-                >
-                    Next
-                </button>
-            </div>
+                </Card.Body>
+            </Card>
         </div>
     );
 };

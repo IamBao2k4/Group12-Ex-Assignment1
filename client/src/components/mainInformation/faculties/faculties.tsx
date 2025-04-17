@@ -1,12 +1,12 @@
 import { useEffect, useState, useCallback } from "react"
-
 import { Faculty } from "./models/faculty"
 import Header from "../header/header"
 import './faculties.css'
-
 import FacultyItem from "./facultyItem/facultyItem"
 import DetailDialog from "./detailDialog/detailDialog"
 import AddIcon from '@mui/icons-material/Add'
+import { Card, Button, Form, Table, Pagination, Row, Col } from 'react-bootstrap'
+import '../../../components/common/DomainStyles.css'
 
 import { SERVER_URL } from '../../../../global'
 
@@ -52,43 +52,78 @@ const Faculties = () => {
     }
 
     return (
-        <div className="faculties">
+        <div className="domain-container">
             <DetailDialog 
                 type={type} 
                 faculty={chosenFaculty??faculties[0]} 
                 onSuccess={fetchFaculties}
             />
             <Header searchHandler={setSearch} />
-            <div className="faculties-content">
-                <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-                    <h1>Faculties</h1>
-                    <button className="add-faculty" onClick={() => DetailHandler('add')}><AddIcon /></button>
-                </div>
-
-                <div className="faculties-list">
-                    <div className="faculties-list-header row">
-                        <div className="faculties-list-header-name">Mã khoa</div>
-                        <div className="faculties-list-header-id">Tên khoa</div>
-                        <div className="faculties-list-header-birthday">Ngày thêm</div>
-                        <div className="faculties-list-header-status">Ngày chỉnh sửa</div>
-                        <div className="faculties-list-header-action"></div>
+            
+            <Card>
+                <Card.Header>
+                    <div className="d-flex justify-content-between align-items-center">
+                        <h2>Danh sách khoa</h2>
+                        <Button variant="success" onClick={() => DetailHandler('add')}>
+                            <AddIcon /> Thêm khoa mới
+                        </Button>
                     </div>
-                    {faculties.map((faculty) => (
-                        <FacultyItem 
-                            key={faculty._id.toString()} 
-                            faculty={faculty} 
-                            setChosenFaculty={setChosenFaculty} 
-                            DetailHandler={DetailHandler}
-                            onDeleteSuccess={fetchFaculties}
-                        />
-                    ))}
-                </div>
+                </Card.Header>
+                <Card.Body>
+                    <div className="table-responsive">
+                        <Table striped bordered hover>
+                            <thead>
+                                <tr>
+                                    <th>Mã khoa</th>
+                                    <th>Tên khoa</th>
+                                    <th>Ngày thêm</th>
+                                    <th>Ngày cập nhật</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {faculties.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={5} className="text-center">Không tìm thấy khoa nào</td>
+                                    </tr>
+                                ) : (
+                                    faculties.map((faculty) => (
+                                        <FacultyItem 
+                                            key={faculty._id.toString()} 
+                                            faculty={faculty} 
+                                            setChosenFaculty={setChosenFaculty} 
+                                            DetailHandler={DetailHandler}
+                                            onDeleteSuccess={fetchFaculties}
+                                        />
+                                    ))
+                                )}
+                            </tbody>
+                        </Table>
+                    </div>
 
-                <div className="faculties-pagination">
-                    <button className='faculties-pagination-btn prev' onClick={handlePreviousPage} disabled={currentPage === 1}>Previous</button>
-                    <button className='faculties-pagination-btn next' onClick={handleNextPage} disabled={currentPage === totalPages}>Next</button>
-                </div>
-            </div>
+                    <div className="d-flex justify-content-center mt-3">
+                        <Pagination>
+                            <Pagination.Prev 
+                                onClick={handlePreviousPage} 
+                                disabled={currentPage === 1}
+                            />
+                            {Array.from({ length: totalPages }, (_, i) => (
+                                <Pagination.Item 
+                                    key={i + 1}
+                                    active={i + 1 === currentPage}
+                                    onClick={() => setCurrentPage(i + 1)}
+                                >
+                                    {i + 1}
+                                </Pagination.Item>
+                            ))}
+                            <Pagination.Next 
+                                onClick={handleNextPage} 
+                                disabled={currentPage === totalPages}
+                            />
+                        </Pagination>
+                    </div>
+                </Card.Body>
+            </Card>
         </div>
     )
 }

@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
-
 import './facultyItem.css'
-
 import { Faculty } from '../models/faculty'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import ConfirmationDialog from '../../../common/ConfirmationDialog'
 import { useNotification } from '../../../common/NotificationContext'
+import { Button } from 'react-bootstrap'
 
 import { SERVER_URL } from '../../../../../global'
 
@@ -58,18 +57,20 @@ const FacultyItem: React.FC<FacultyItemProps> = ({ faculty, DetailHandler, setCh
             onConfirm={DeleteHandler}
             onCancel={() => setShowConfirmation(false)}
         />
-        <div className="faculty-item row">
-            <div className="faculty-item-info">
-                <div className="faculty-item-info-id">{faculty.ma_khoa}</div>
-                <div className="faculty-item-info-name">{faculty.ten_khoa}</div>
-                <div className="faculty-item-info-created-date">{faculty.created_at?.toString().split("T")[0]}</div>
-                <div className="faculty-item-info-updated-date">{faculty.updated_at?.toString().split("T")[0]}</div>
-                <div className="faculty-item-info-action">
-                    <button className="faculty-item-info-action-edit" onClick={() => {DetailHandler('edit'); setChosenFaculty(faculty)}}><EditIcon/></button>
-                    <button className="faculty-item-info-action-delete" onClick={deleteConfirmHandler}><DeleteIcon/></button>
-                </div>
-            </div>
-        </div>
+        <tr>
+            <td>{faculty.ma_khoa}</td>
+            <td>{faculty.ten_khoa}</td>
+            <td>{faculty.created_at?.toString().split("T")[0]}</td>
+            <td>{faculty.updated_at?.toString().split("T")[0]}</td>
+            <td>
+                <Button variant="outline-primary" size="sm" className="me-2" onClick={() => {DetailHandler('edit'); setChosenFaculty(faculty)}}>
+                    <EditIcon fontSize="small" />
+                </Button>
+                <Button variant="outline-danger" size="sm" onClick={deleteConfirmHandler}>
+                    <DeleteIcon fontSize="small" />
+                </Button>
+            </td>
+        </tr>
     </>
   )
 }

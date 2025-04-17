@@ -27,6 +27,7 @@ import { StudentModule } from '../student/student.module';
       { name: 'Transcript', schema: TranscriptSchema },
     ]),
     TranscriptService,
+    MongooseModule,
   ],
 })
 export class TranscriptModule {}

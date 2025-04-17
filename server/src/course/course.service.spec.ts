@@ -133,7 +133,7 @@ describe('CourseService', () => {
       mockCourseRepository.findAll.mockResolvedValue(expectedResult);
       
       // Act
-      const result = await service.get({ page: 1, limit: 10 }, '', 1);
+      const result = await service.get({ page: 1, limit: 10 }, '', "true");
 
       // Assert
       expect(result).toEqual(expectedResult);

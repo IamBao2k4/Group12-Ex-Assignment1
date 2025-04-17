@@ -312,6 +312,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess })
                                     >
                                         {faculties.map((faculty, index) => (
                                             <option
+                                                key={faculty._id.toString()}
                                                 value={faculty._id.toString()}
                                                 defaultChecked={index === 0}
                                             >
@@ -346,6 +347,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess })
                                     >
                                         {programs.map((program) => (
                                             <option
+                                                key={program._id.toString()}
                                                 value={program._id.toString()}
                                             >
                                                 {program.name}
@@ -408,6 +410,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess })
                                         {studentStatuses.map(
                                             (studentStatus) => (
                                                 <option
+                                                    key={studentStatus._id.toString()}
                                                     value={studentStatus._id.toString()}
                                                 >
                                                     {studentStatus.tinh_trang}

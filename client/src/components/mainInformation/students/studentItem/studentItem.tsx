@@ -3,10 +3,13 @@ import "./studentItem.css";
 import { Student } from "../models/student";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ArticleIcon from '@mui/icons-material/Article';
 import ConfirmationDialog from "../../../common/ConfirmationDialog";
 import { useNotification } from "../../../common/NotificationContext";
+import { Button } from 'react-bootstrap';
 
 import { SERVER_URL } from "../../../../../global";
+import { useNavigate } from "react-router-dom";
 
 interface StudentItemProps {
     id: string;
@@ -82,6 +85,11 @@ const StudentItem: React.FC<StudentItemProps> = ({
         }
     }
 
+    const navigate = useNavigate(); 
+    function handleDetailClick() {
+        navigate(`/students/${student._id}`); // Navigate to students/:id
+    }
+
     return (
         <>
             <ConfirmationDialog
@@ -91,34 +99,23 @@ const StudentItem: React.FC<StudentItemProps> = ({
                 onConfirm={DeleteStudentHandler}
                 onCancel={() => setShowConfirmation(false)}
             />
-            <div className="student-item row" key={id}>
-                <div className="student-item-info">
-                    <div className="student-item-info-name">
-                        {student.ho_ten}
-                    </div>
-                    <div className="student-item-info-id">
-                        {student.ma_so_sinh_vien}
-                    </div>
-                    <div className="student-item-info-birthday">
-                        {student.ngay_sinh}
-                    </div>
-                    <div className="student-item-info-status">{status}</div>
-                    <div className="student-item-action">
-                        <button
-                            className="student-item-action-edit"
-                            onClick={EditBtnHandler}
-                        >
-                            <EditIcon />
-                        </button>
-                        <button
-                            className="student-item-action-delete"
-                            onClick={deleteConfirmHandler}
-                        >
-                            <DeleteIcon />
-                        </button>
-                    </div>
-                </div>
-            </div>
+            <tr key={id}>
+                <td>{student.ho_ten}</td>
+                <td>{student.ma_so_sinh_vien}</td>
+                <td>{student.ngay_sinh}</td>
+                <td>{status}</td>
+                <td>
+                    <Button variant="outline-primary" size="sm" className="me-2" onClick={EditBtnHandler}>
+                        <EditIcon fontSize="small" />
+                    </Button>
+                    <Button variant="outline-danger" size="sm" onClick={deleteConfirmHandler}>
+                        <DeleteIcon fontSize="small" />
+                    </Button>
+                    <Button variant="outline-info" size="sm" className="ms-2" onClick={handleDetailClick}>
+                        <ArticleIcon fontSize="small" />
+                    </Button>
+                </td>
+            </tr>
         </>
     );
 };

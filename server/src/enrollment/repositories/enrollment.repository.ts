@@ -106,6 +106,8 @@ export class EnrollmentRepository implements IEnrollmentRepository {
   async upsert(enrollment: CreateEnrollmentDto): Promise<Enrollment> {
     try {
       const { ma_sv, ma_mon, ma_lop } = enrollment;
+
+      console.log('Upsert Enrollment:', enrollment);
       
       // Query filter based on the compound key
       const filter = { ma_sv, ma_mon, ma_lop, deleted_at: null };
@@ -154,6 +156,26 @@ export class EnrollmentRepository implements IEnrollmentRepository {
       }
       
       throw new EnrollmentUpsertFailedException(error.message);
+    }
+  }
+
+  async findByStudentId(studentId: string): Promise<Enrollment[]> {
+    try {
+      return await this.enrollmentModel.find({ ma_sv: studentId, deleted_at: null }).exec();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteByCourseId(courseId: string) {
+    try {
+      await this.enrollmentModel.findOneAndDelete(
+        { ma_mon: courseId },
+      );
+      
+    } catch (error) {
+      console.error(`Error occurred while deleting enrollment: ${error.message}`);
+      throw error;
     }
   }
 } 
