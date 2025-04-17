@@ -73,7 +73,6 @@ const ProfilePage = () => {
 
         if (type === "edit" && id) {
             fetchStudent();
-            console.log("Student data fetched:", student);
         }
     }
         , []);
@@ -336,6 +335,7 @@ const ProfilePage = () => {
                                     >
                                         {faculties.map((faculty, index) => (
                                             <option
+                                                key={faculty._id.toString()}
                                                 value={faculty._id.toString()}
                                                 defaultChecked={index === 0}
                                             >
@@ -370,6 +370,7 @@ const ProfilePage = () => {
                                     >
                                         {programs.map((program) => (
                                             <option
+                                                key={program._id.toString()}
                                                 value={program._id.toString()}
                                             >
                                                 {program.name}
@@ -432,6 +433,7 @@ const ProfilePage = () => {
                                         {studentStatuses.map(
                                             (studentStatus) => (
                                                 <option
+                                                    key={studentStatus._id.toString()}
                                                     value={studentStatus._id.toString()}
                                                 >
                                                     {studentStatus.tinh_trang}
