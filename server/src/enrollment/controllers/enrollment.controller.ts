@@ -66,7 +66,7 @@ export class EnrollmentController {
   async detail(@Param('id') id: string) {
     try {
       const sanitizedId = id.trim();
-      return await this.enrollmentService.detail(id);
+      return await this.enrollmentService.detail(sanitizedId);
     } catch (error) {
       this.logger.error(`Error fetching enrollment with ID ${id}: ${error.message}`, error.stack);
       
