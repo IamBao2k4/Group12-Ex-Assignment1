@@ -8,11 +8,17 @@
 
 .regis-course-left,
 .regis-course-right {
-    flex: 1;
     padding: 20px;
     border: 1px solid var(--border);
     border-radius: 5px;
     background-color: var(--light);
+}
+
+.regis-course-left {
+    flex: 2;
+}
+.regis-course-right {
+    flex: 1;
 }
 
 .regis-course-divider {

@@ -112,4 +112,17 @@ export class EnrollmentController {
       );
     }
   }
+
+  @Delete(`/course/:courseId`)
+  async deleteByCourseId(@Param('courseId') courseId: string) {
+    try {
+      return await this.enrollmentService.deleteByCourseId(courseId);
+    } catch (error) {
+      this.logger.error(`Error deleting enrollment for course ID ${courseId}: ${error.message}`, error.stack);
+      throw new HttpException(
+        'An error occurred while deleting the enrollment', 
+        HttpStatus.INTERNAL_SERVER_ERROR
+      );
+    }
+  }
 } 

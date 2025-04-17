@@ -81,4 +81,12 @@ export class EnrollmentService {
     }
   }
 
+  async deleteByCourseId(course: string) {
+    try {
+      return await this.enrollmentRepository.deleteByCourseId(course);
+    } catch (error) {
+      this.logger.error(`Error deleting enrollments for course ID ${course}: ${error.message}`, error.stack);
+      throw error;
+    }
+  }
 } 

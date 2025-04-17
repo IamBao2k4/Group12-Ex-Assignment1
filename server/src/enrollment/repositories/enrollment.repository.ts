@@ -166,4 +166,16 @@ export class EnrollmentRepository implements IEnrollmentRepository {
       throw error;
     }
   }
+
+  async deleteByCourseId(courseId: string) {
+    try {
+      await this.enrollmentModel.findOneAndDelete(
+        { ma_mon: courseId },
+      );
+      
+    } catch (error) {
+      console.error(`Error occurred while deleting enrollment: ${error.message}`);
+      throw error;
+    }
+  }
 } 
