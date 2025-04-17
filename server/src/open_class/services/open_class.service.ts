@@ -152,4 +152,22 @@ export class OpenClassService {
       throw error;
     }
   }
+
+  async getByStudentId(studentId: string): Promise<OpenClass[] | null> {
+    try {
+      if (!isValidObjectId(studentId)) {
+        this.logger.error(
+          `OpenClass.service.getByStudentId: Invalid ObjectId format for ID ${studentId}`,
+        );
+        throw new OpenClassNotFoundException(studentId, true);
+      }
+      return await this.OpenClassRepository.getByStudentId(studentId);
+    } catch (error) {
+      this.logger.error(
+        `OpenClass.service.getByStudentId: ${error.message}`,
+        error.stack,
+      );
+      throw error;
+    }
+  }
 }

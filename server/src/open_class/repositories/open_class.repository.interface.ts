@@ -17,4 +17,5 @@ export interface IOpenClassRepository {
   findByCode(code: string): Promise<OpenClass | null>;
   detail(id: string): Promise<OpenClass | null>;
   getById(id: string): Promise<OpenClass | null>;
+  getByStudentId(id: string): Promise<OpenClass[] | null>;
 }

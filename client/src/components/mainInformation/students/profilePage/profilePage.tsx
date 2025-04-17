@@ -13,6 +13,7 @@ import "./profilePage.css";
 import React, { useEffect, useState } from "react";
 import AddressItem from "../profileDialog/addressItem/addressItem";
 import IdDocumentItem from "../profileDialog/idDocumentItem/idDocumentItem";
+import RegisCourse from "./regisCourese/regisCourse";
 import { useNotification } from "../../../../components/common/NotificationContext";
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import { SERVER_URL } from "../../../../../global";
@@ -475,6 +476,7 @@ const ProfilePage = () => {
                             </div>
                         </div>
                     </form>
+                    <RegisCourse student={student}/>
                 </div>
             </div>
         </div>

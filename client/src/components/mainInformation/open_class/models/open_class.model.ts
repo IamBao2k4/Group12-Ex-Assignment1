@@ -2,6 +2,11 @@ export interface OpenClass {
   _id?: string;
   ma_lop: string;
   ma_mon_hoc: CourseType,
+  course_details?: {
+    ma_mon_hoc: string;
+    ten: string;
+    _id: string;
+  };
   ten: string;
   si_so: number;
   nam_hoc: number;

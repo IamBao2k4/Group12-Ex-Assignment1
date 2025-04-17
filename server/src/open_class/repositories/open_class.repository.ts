@@ -9,14 +9,24 @@ import { PaginatedResponse } from '../../common/paginator/pagination-response.dt
 import { BaseException } from 'src/common/exceptions/base.exception';
 import { OpenClassNotFoundException } from '../exceptions/class-not-found.exception';
 import { SearchOptions } from '../dtos/search_options.dto';
-import { query } from 'express';
+import e, { query } from 'express';
 import { BuildQuery } from './utils';
+import { Transcript } from 'src/transcript/interfaces/transcript.interface';
+import { Course } from 'src/course/interfaces/course.interface';
+import { Student } from 'src/student/interfaces/student.interface';
+import { Enrollment } from 'src/enrollment/interfaces/enrollment.interface';
 
 @Injectable()
 export class OpenClassRepository implements IOpenClassRepository {
   private readonly logger = new Logger(OpenClassRepository.name);
 
-  constructor(@InjectModel('OpenClass') private OpenClassModel: Model<OpenClass>) {}
+  constructor(
+    @InjectModel('OpenClass') private OpenClassModel: Model<OpenClass>,
+    @InjectModel('Transcript') private TranscriptModel: Model<Transcript>,
+    @InjectModel('Course') private CourseModel: Model<Course>,
+    @InjectModel('Student') private StudentModel: Model<Student>,
+    @InjectModel('Enrollment') private EnrollmentModel: Model<Enrollment>,
+  ) {}
 
   async create(OpenClassData: any): Promise<OpenClass> {
     const OpenClass = new this.OpenClassModel(OpenClassData);
@@ -192,6 +202,68 @@ export class OpenClassRepository implements IOpenClassRepository {
         error.stack,
       );
       throw new BaseException(error, 'FIND_OpenClass_BY_ID_ERROR');
+    }
+  }
+
+  async getByStudentId(id: string): Promise<OpenClass[] | null> {
+    try {
+      // diem >= 5 and ma_sinh_vien = id select distinct ma_mon_hoc
+      const transcript = await this.TranscriptModel.find({
+        diem: { $gte: 5 },
+        ma_sinh_vien: id,
+      }).exec();
+
+      // lay khoa_hoc
+      const student = await this.StudentModel.findById(id).exec();
+      if (!student) {
+        throw new OpenClassNotFoundException(id, true);
+      }
+
+      // lay enrollments
+      const enrollments = await this.EnrollmentModel.find({
+        ma_sv: id,
+      }).exec();
+
+      // find courses where mon_tien_quyet is empty or mon_tien_quyet is include in transcript.ma_mon_hoc, 
+      // mon_tien_quyet is array of ObjetIds
+      // _id not in transcript.ma_mon_hoc and nam >= student.khoa_hoc
+      // khoa_hoc is string and nam is number so convert to number
+
+      const coursesQuery = {
+        $or: [
+          { mon_tien_quyet: { $size: 0 } },
+          { mon_tien_quyet: { $in: transcript.map((t) => t.ma_mon_hoc) } },
+        ],
+        _id: { $nin: transcript.map((t) => t.ma_mon_hoc) },
+        ma_mon_hoc: { $nin: enrollments.map((e) => e.ma_mon) },
+      }
+      const courses = await this.CourseModel.find(coursesQuery).exec();
+
+      const openClass = await this.OpenClassModel.find({
+        ma_mon_hoc: { $in: courses.map((c) => c._id) },
+        $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }],
+        nam_hoc: { $gte: Number(student.khoa_hoc) },
+      }).exec();
+
+      // change ma_mon_hoc to ma_mon_hoc.ma_mon_hoc, ma_mon_hoc.ten and ma_mon_hoc._id
+      for (let i = 0; i < openClass.length; i++) {
+        const course = await this.CourseModel.findById(openClass[i].ma_mon_hoc).exec() as Course;
+        if (course) {
+          openClass[i].course_details = {
+            ma_mon_hoc: course.ma_mon_hoc,
+            ten: course.ten,
+            _id: (course._id as unknown as string).toString(),
+          };
+        }
+      }
+      return openClass;
+
+    } catch (error) {
+      this.logger.error(
+        `OpenClass.repository.getByStudentId: Error finding OpenClass by student id ${id}`,
+        error.stack,
+      );
+      throw new BaseException(error, 'FIND_OpenClass_BY_STUDENT_ID_ERROR');
     }
   }
 }

@@ -96,4 +96,17 @@ export class OpenClassController {
       throw error;
     }
   }
+
+  @Get("/student/:studentId")
+  async getByStudentId(@Param("studentId") studentId: string) {
+    try {
+      return await this.open_classService.getByStudentId(studentId);
+    } catch (error) {
+      this.logger.error(
+        `open_class.controller.getByStudentId: ${error.message}`,
+        error.stack,
+      );
+      throw error;
+    }
+  }
 }

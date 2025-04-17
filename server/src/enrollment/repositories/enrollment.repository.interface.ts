@@ -17,4 +17,6 @@ export interface IEnrollmentRepository {
   // These methods are kept for potential future use but not currently needed
   create(enrollment: CreateEnrollmentDto): Promise<Enrollment>;
   update(id: string, enrollment: UpdateEnrollmentDto): Promise<Enrollment>;
+
+  findByStudentId(studentId: string): Promise<Enrollment[]>;
 } 

@@ -1,0 +1,94 @@
+.regis-course-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 5px;
+    padding: 20px 0 0 0;
+}
+
+.regis-course-left,
+.regis-course-right {
+    flex: 1;
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    background-color: var(--light);
+}
+
+.regis-course-divider {
+    width: 2px;
+    background-color: var(--dark);
+    height: auto;
+}
+
+.regis-course-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.regis-course-table th,
+.regis-course-table td {
+    border: 1px solid var(--border);
+    padding: 8px;
+    text-align: left;
+}
+
+.regis-course-table th {
+    background-color: var(--primary);
+    color: var(--dark);
+}
+
+.regis-course-row:hover {
+    background-color: var(--hover);
+}
+
+.regis-course-checkbox-item input[type="checkbox"] {
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+.regis-course-select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+}
+
+.regis-course-register-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: var(--success);
+    color: var(--light);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.regis-course-register-btn:disabled {
+    background-color: var(--disabled);
+    cursor: not-allowed;
+}
+
+.regis-course-list {
+    list-style: none;
+    padding: 0;
+}
+
+.regis-course-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.regis-course-unregister-btn {
+    padding: 5px 10px;
+    background-color: var(--danger);
+    color: var(--light);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
