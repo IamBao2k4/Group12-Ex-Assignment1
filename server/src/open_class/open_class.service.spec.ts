@@ -4,8 +4,10 @@ import { OPEN_CLASS_REPOSITORY } from './repositories/open_class.repository.inte
 import { OpenClassNotFoundException } from './exceptions/class-not-found.exception';
 import { Logger } from '@nestjs/common';
 import { isValidObjectId } from 'mongoose';
+import { CreateOpenClassDto, UpdateOpenClassDto } from './dtos/open_class.dto';
+import { PaginationOptions } from '../common/paginator/pagination.interface';
+import { SearchOptions } from './dtos/search_options.dto';
 
-// Mock isValidObjectId from mongoose
 jest.mock('mongoose', () => ({
   isValidObjectId: jest.fn(),
 }));
@@ -21,7 +23,6 @@ describe('OpenClassService', () => {
       update: jest.fn(),
       softDelete: jest.fn(),
       getAll: jest.fn(),
-      findByCode: jest.fn(),
       detail: jest.fn(),
       getById: jest.fn(),
     };
@@ -37,8 +38,7 @@ describe('OpenClassService', () => {
     }).compile();
 
     service = module.get<OpenClassService>(OpenClassService);
-    
-    // Mock logger methods to avoid console outputs during tests
+
     jest.spyOn(Logger.prototype, 'error').mockImplementation(() => {});
     jest.spyOn(Logger.prototype, 'log').mockImplementation(() => {});
   });
@@ -52,18 +52,20 @@ describe('OpenClassService', () => {
   });
 
   describe('create', () => {
-    it('should call repository create with grade data', async () => {
-      const createDto = {
-        ma_diem: 'A',
-        diem_so: 4.0,
-        diem_chu: 'A',
-        muc_dat: 'Excellent',
-      } as any;
-      
-      const expectedResult = {
-        _id: 'grade-id',
-        ...createDto,
+    it('should call repository create with valid data', async () => {
+      const createDto: CreateOpenClassDto = {
+        ma_lop: 'CS101',
+        ma_mon_hoc: 'CS101',
+        si_so: 0,
+        nam_hoc: 2025,
+        hoc_ky: 1,
+        giang_vien: 'Dr. John Doe',
+        so_luong_toi_da: 50,
+        lich_hoc: 'Monday 9:00-11:00',
+        phong_hoc: 'Room 101',
       };
+
+      const expectedResult = { _id: 'open_class-id', ...createDto };
 
       mockRepository.create.mockResolvedValue(expectedResult);
 
@@ -74,60 +76,53 @@ describe('OpenClassService', () => {
     });
 
     it('should propagate errors from repository', async () => {
-      const createDto = {
-        ma_diem: 'A',
-        diem_so: 4.0,
-        diem_chu: 'A',
-        muc_dat: 'Excellent',
-      } as any;
-      
-      const repositoryError = new Error('Repository error');
-      mockRepository.create.mockRejectedValue(repositoryError);
+      const createDto: CreateOpenClassDto = {
+        ma_lop: 'CS101',
+        ma_mon_hoc: 'CS101',
+        si_so: 0,
+        nam_hoc: 2025,
+        hoc_ky: 1,
+        giang_vien: 'Dr. John Doe',
+        so_luong_toi_da: 50,
+        lich_hoc: 'Monday 9:00-11:00',
+        phong_hoc: 'Room 101',
+      };
+
+      mockRepository.create.mockRejectedValue(new Error('Repository error'));
 
       await expect(service.create(createDto)).rejects.toThrow('Repository error');
     });
   });
 
   describe('get', () => {
-    it('should call repository findAll with pagination options', async () => {
-      const paginationOptions = { limit: 10, skip: 0 };
-      const searchString = 'search';
-      const page = 1;
-      
-      const paginatedResult = {
-        data: [{ _id: 'grade-id', ma_diem: 'A' }],
-        meta: { page: 1, limit: 10, totalPages: 1, total: 1 }
+    it('should call repository findAll with pagination and search options', async () => {
+      const paginationOptions: PaginationOptions = { limit: 10, page: 1 };
+      const searchOptions: SearchOptions = { ma_mon_hoc: 'CS101' };
+      const expectedResult = {
+        data: [{ _id: 'open_class-id', ma_lop: 'CS101' }],
+        meta: { page: 1, limit: 10, totalPages: 1, total: 1 },
       };
 
-      mockRepository.findAll.mockResolvedValue(paginatedResult);
+      mockRepository.findAll.mockResolvedValue(expectedResult);
 
-      const result = await service.get(paginationOptions, searchString, page);
+      const result = await service.get(paginationOptions, searchOptions);
 
-      expect(mockRepository.findAll).toHaveBeenCalledWith(paginationOptions, searchString, page);
-      expect(result).toEqual(paginatedResult);
+      expect(mockRepository.findAll).toHaveBeenCalledWith(paginationOptions, searchOptions);
+      expect(result).toEqual(expectedResult);
     });
 
     it('should propagate errors from repository', async () => {
       mockRepository.findAll.mockRejectedValue(new Error('Repository error'));
 
-      await expect(service.get({}, '', 1)).rejects.toThrow('Repository error');
+      await expect(service.get({}, {})).rejects.toThrow('Repository error');
     });
   });
 
   describe('update', () => {
-    it('should update a grade when valid id and data provided', async () => {
+    it('should update an open class with valid id and data', async () => {
       const id = 'valid-id';
-      const updateDto = {
-        diem_so: 3.7,
-        diem_chu: 'A-',
-      } as any;
-      
-      const expectedResult = {
-        _id: id,
-        ma_diem: 'A-',
-        ...updateDto,
-        muc_dat: 'Very Good',
-      };
+      const updateDto: UpdateOpenClassDto = { si_so: 35, phong_hoc: 'Room 102' };
+      const expectedResult = { _id: id, ...updateDto };
 
       (isValidObjectId as jest.Mock).mockReturnValue(true);
       mockRepository.update.mockResolvedValue(expectedResult);
@@ -141,7 +136,7 @@ describe('OpenClassService', () => {
 
     it('should throw OpenClassNotFoundException for invalid ObjectId format', async () => {
       const id = 'invalid-id';
-      const updateDto = { diem_so: 3.5 } as any;
+      const updateDto: UpdateOpenClassDto = { si_so: 35 };
 
       (isValidObjectId as jest.Mock).mockReturnValue(false);
 
@@ -149,9 +144,9 @@ describe('OpenClassService', () => {
       expect(mockRepository.update).not.toHaveBeenCalled();
     });
 
-    it('should throw OpenClassNotFoundException when grade not found', async () => {
-      const id = 'valid-id-not-found';
-      const updateDto = { diem_chu: 'B+' } as any;
+    it('should throw OpenClassNotFoundException when open class not found', async () => {
+      const id = 'valid-id';
+      const updateDto: UpdateOpenClassDto = { si_so: 35 };
 
       (isValidObjectId as jest.Mock).mockReturnValue(true);
       mockRepository.update.mockResolvedValue(null);
@@ -161,22 +156,18 @@ describe('OpenClassService', () => {
   });
 
   describe('delete', () => {
-    it('should soft delete a grade when valid id provided', async () => {
+    it('should soft delete an open class with valid id', async () => {
       const id = 'valid-id';
-      const deletedGrade = {
-        _id: id,
-        ma_diem: 'B',
-        deleted_at: new Date()
-      };
+      const expectedResult = { _id: id, deleted_at: new Date() };
 
       (isValidObjectId as jest.Mock).mockReturnValue(true);
-      mockRepository.softDelete.mockResolvedValue(deletedGrade);
+      mockRepository.softDelete.mockResolvedValue(expectedResult);
 
       const result = await service.delete(id);
 
       expect(isValidObjectId).toHaveBeenCalledWith(id);
       expect(mockRepository.softDelete).toHaveBeenCalledWith(id);
-      expect(result).toEqual(deletedGrade);
+      expect(result).toEqual(expectedResult);
     });
 
     it('should throw OpenClassNotFoundException for invalid ObjectId format', async () => {
@@ -188,8 +179,8 @@ describe('OpenClassService', () => {
       expect(mockRepository.softDelete).not.toHaveBeenCalled();
     });
 
-    it('should throw OpenClassNotFoundException when grade not found', async () => {
-      const id = 'valid-id-not-found';
+    it('should throw OpenClassNotFoundException when open class not found', async () => {
+      const id = 'valid-id';
 
       (isValidObjectId as jest.Mock).mockReturnValue(true);
       mockRepository.softDelete.mockResolvedValue(null);
@@ -200,17 +191,17 @@ describe('OpenClassService', () => {
 
   describe('getAll', () => {
     it('should call repository getAll', async () => {
-      const grades = [
-        { _id: 'grade1', ma_diem: 'A', diem_so: 4.0 },
-        { _id: 'grade2', ma_diem: 'B', diem_so: 3.0 }
+      const expectedResult = [
+        { _id: 'open_class1', ma_lop: 'CS101' },
+        { _id: 'open_class2', ma_lop: 'CS102' },
       ];
 
-      mockRepository.getAll.mockResolvedValue(grades);
+      mockRepository.getAll.mockResolvedValue(expectedResult);
 
       const result = await service.getAll();
 
       expect(mockRepository.getAll).toHaveBeenCalled();
-      expect(result).toEqual(grades);
+      expect(result).toEqual(expectedResult);
     });
 
     it('should propagate errors from repository', async () => {
@@ -220,39 +211,19 @@ describe('OpenClassService', () => {
     });
   });
 
-  describe('findByCode', () => {
-    it('should call repository findByCode with code', async () => {
-      const code = 'A';
-      const grade = { _id: 'grade-id', ma_diem: code, diem_so: 4.0 };
-
-      mockRepository.findByCode.mockResolvedValue(grade);
-
-      const result = await service.findByCode(code);
-
-      expect(mockRepository.findByCode).toHaveBeenCalledWith(code);
-      expect(result).toEqual(grade);
-    });
-
-    it('should propagate errors from repository', async () => {
-      mockRepository.findByCode.mockRejectedValue(new Error('Repository error'));
-
-      await expect(service.findByCode('A')).rejects.toThrow('Repository error');
-    });
-  });
-
   describe('detail', () => {
-    it('should return grade details when valid id provided', async () => {
+    it('should return open class details for valid id', async () => {
       const id = 'valid-id';
-      const grade = { _id: id, ma_diem: 'A', diem_so: 4.0 };
+      const expectedResult = { _id: id, ma_lop: 'CS101' };
 
       (isValidObjectId as jest.Mock).mockReturnValue(true);
-      mockRepository.detail.mockResolvedValue(grade);
+      mockRepository.detail.mockResolvedValue(expectedResult);
 
       const result = await service.detail(id);
 
       expect(isValidObjectId).toHaveBeenCalledWith(id);
       expect(mockRepository.detail).toHaveBeenCalledWith(id);
-      expect(result).toEqual(grade);
+      expect(result).toEqual(expectedResult);
     });
 
     it('should throw OpenClassNotFoundException for invalid ObjectId format', async () => {
@@ -264,8 +235,8 @@ describe('OpenClassService', () => {
       expect(mockRepository.detail).not.toHaveBeenCalled();
     });
 
-    it('should throw OpenClassNotFoundException when grade not found', async () => {
-      const id = 'valid-id-not-found';
+    it('should throw OpenClassNotFoundException when open class not found', async () => {
+      const id = 'valid-id';
 
       (isValidObjectId as jest.Mock).mockReturnValue(true);
       mockRepository.detail.mockResolvedValue(null);
@@ -275,18 +246,18 @@ describe('OpenClassService', () => {
   });
 
   describe('getById', () => {
-    it('should call repository getById with id', async () => {
+    it('should call repository getById with valid id', async () => {
       const id = 'valid-id';
-      const grade = { _id: id, ma_diem: 'A', diem_so: 4.0 };
+      const expectedResult = { _id: id, ma_lop: 'CS101' };
 
       (isValidObjectId as jest.Mock).mockReturnValue(true);
-      mockRepository.getById.mockResolvedValue(grade);
+      mockRepository.getById.mockResolvedValue(expectedResult);
 
       const result = await service.getById(id);
 
       expect(isValidObjectId).toHaveBeenCalledWith(id);
       expect(mockRepository.getById).toHaveBeenCalledWith(id);
-      expect(result).toEqual(grade);
+      expect(result).toEqual(expectedResult);
     });
 
     it('should throw OpenClassNotFoundException for invalid ObjectId format', async () => {

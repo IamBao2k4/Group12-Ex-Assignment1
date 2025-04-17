@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { OpenClass, PaginationOptions, SearchOptions } from './models/open_class.model';
-import { OpenClassService } from './route/openClass.service';
+import { OpenClass, PaginationOptions, SearchOptions, ToCreateOpenClassDto } from './models/open_class.model';
+import { OpenClassRoute } from './route/openClass.route';
 import { Button, Form, Table, Modal, Pagination, Row, Col, Card } from 'react-bootstrap';
 import './open_class.css';
 
 const OpenClassComponent: React.FC = () => {
-  // State for classes
+  // State for classes and courses
   const [openClasses, setOpenClasses] = useState<OpenClass[]>([]);
+  const [courses, setCourses] = useState<any[]>([]); // Store fetched courses
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   
@@ -43,15 +44,16 @@ const OpenClassComponent: React.FC = () => {
     phong_hoc: ''
   });
 
-  // Load classes on component mount and when filter/pagination changes
+  // Load classes and courses on component mount and when filter/pagination changes
   useEffect(() => {
     fetchOpenClasses();
+    fetchCourses(); // Fetch courses as well
   }, [pagination.page, pagination.limit, searchOptions]);
 
   const fetchOpenClasses = async () => {
     setLoading(true);
     try {
-      const response = await OpenClassService.getOpenClasses(pagination, searchOptions);
+      const response = await OpenClassRoute.getOpenClasses(pagination, searchOptions);
       setOpenClasses(response.data);
       setTotalPages(response.meta.totalPages);
       setError(null); // Clear any existing error
@@ -61,6 +63,17 @@ const OpenClassComponent: React.FC = () => {
       setError('Không thể tải danh sách lớp mở. Vui lòng thử lại sau.');
       setOpenClasses([]);
       setLoading(false);
+    }
+  };
+
+  // Fetch courses from the OpenClassService
+  const fetchCourses = async () => {
+    try {
+      const response = await OpenClassRoute.getAllCourseAvailable();
+      setCourses(response);
+    } catch (error) {
+      console.error('Error fetching courses:', error);
+      setError('Failed to fetch courses');
     }
   };
 
@@ -89,20 +102,31 @@ const OpenClassComponent: React.FC = () => {
     });
   };
 
+  // Handle course selection change
+  const handleCourseChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedCourseId = e.target.value;
+    const selectedCourse = courses.find(course => course._id === selectedCourseId);
+    setNewClass(prevState => ({
+      ...prevState,
+      ma_mon_hoc: selectedCourse || { _id: '', ma_mon_hoc: '', ten: '' }
+    }));
+  };
+
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await OpenClassService.createOpenClass(newClass);
+      await OpenClassRoute.createOpenClass(ToCreateOpenClassDto(newClass));
       setShowAddModal(false);
       // Reset form
       setNewClass({
         ma_lop: '',
-        ma_mon_hoc: {
-          _id: '',
-          ma_mon_hoc: '',
-          ten: ''
-        },
+        ma_mon_hoc: 
+          {
+            _id: '',
+            ma_mon_hoc: '',
+            ten: ''
+          },
         ten: '',
         si_so: 0,
         nam_hoc: new Date().getFullYear(),
@@ -212,9 +236,9 @@ const OpenClassComponent: React.FC = () => {
                   openClasses.map((openClass) => (
                     <tr key={openClass._id}>
                       <td>{openClass.ma_mon_hoc.ma_mon_hoc}</td>
-                      <td>{openClass.ma_mon_hoc.ten}</td> {/* This would be replaced with actual course name in a real app */}
+                      <td>{openClass.ma_mon_hoc.ten}</td>
                       <td>{openClass.ma_lop}</td>
-                      <td>3</td> {/* This would be dynamic in a real app */}
+                      <td>3</td>
                       <td>{openClass.so_luong_toi_da}</td>
                       <td>{openClass.si_so}</td>
                       <td>{openClass.nam_hoc}</td>
@@ -237,7 +261,6 @@ const OpenClassComponent: React.FC = () => {
                 onClick={() => handlePageChange(Math.max(1, pagination.page! - 1))} 
                 disabled={pagination.page === 1}
               />
-              
               {[...Array(totalPages)].map((_, i) => (
                 <Pagination.Item 
                   key={i + 1} 
@@ -247,7 +270,6 @@ const OpenClassComponent: React.FC = () => {
                   {i + 1}
                 </Pagination.Item>
               ))}
-              
               <Pagination.Next 
                 onClick={() => handlePageChange(Math.min(totalPages, pagination.page! + 1))} 
                 disabled={pagination.page === totalPages}
@@ -282,14 +304,17 @@ const OpenClassComponent: React.FC = () => {
 
             <Form.Group className="mb-3">
               <Form.Label>Mã Môn Học</Form.Label>
-              <Form.Control
-                type="text"
+              <Form.Select
                 name="ma_mon_hoc"
                 value={newClass.ma_mon_hoc._id}
-                onChange={handleNewClassChange}
-                placeholder="Ví dụ: CS101"
+                onChange={handleCourseChange}
                 required
-              />
+              >
+                <option value="">Chọn Môn Học</option>
+                {courses.map(course => (
+                  <option key={course._id} value={course._id}>{course.ten}</option>
+                ))}
+              </Form.Select>
             </Form.Group>
 
             <Row className="mb-3">
@@ -398,4 +423,4 @@ const OpenClassComponent: React.FC = () => {
   );
 };
 
-export default OpenClassComponent; 
+export default OpenClassComponent;
