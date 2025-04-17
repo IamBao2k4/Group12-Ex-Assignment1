@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { OpenClass, PaginationOptions, SearchOptions, PaginatedResponse } from '../models/open_class.model';
 
-import { SERVER_URL } from '../../../../global';
+import { SERVER_URL } from '../../../../../global';
 const API_URL = `${SERVER_URL}/api/v1/open_class`;
 export const OpenClassService = {
   getOpenClasses: async (
