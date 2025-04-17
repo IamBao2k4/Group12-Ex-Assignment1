@@ -54,11 +54,26 @@ const RegisCourse: React.FC<RegisCourseProps> = ({ student }) => {
     }, [student._id, reload]);
 
     const handleCheckboxChange = (courseId: string) => {
+        // Check if the course code is already selected
+        const courseCode = availableCourses.find((course) => course._id === courseId)?.course_details?.ma_mon_hoc || "";
+        const isCourseCodeSelected = selectedCourseCodes.includes(courseCode);
+        const isCourseSelected = selectedCourses.includes(courseId);
+        if (isCourseCodeSelected && !isCourseSelected) {
+            showNotification('error', "This course is already selected!");
+            return;
+        }
+
         setSelectedCourses((prevSelected) =>
             prevSelected.includes(courseId)
                 ? prevSelected.filter((id) => id !== courseId) // Remove if already selected
                 : [...prevSelected, courseId] // Add if not selected
         );
+
+        setSelectedCourseCodes((prevSelected): string[] => {
+            return prevSelected.includes(courseCode)
+                ? prevSelected.filter((code) => code !== courseCode) // Remove if already selected
+                : [...prevSelected, courseCode]; // Add if not selected
+        });
     };
 
     const handleRegisterCourse = async () => {
