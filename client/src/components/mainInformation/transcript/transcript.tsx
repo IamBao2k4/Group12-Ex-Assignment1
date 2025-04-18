@@ -1,5 +1,5 @@
 import { jsPDF } from "jspdf";
-import { autoTable } from "jspdf-autotable";
+import autoTable from "jspdf-autotable";
 import React, { useEffect, useState } from "react";
 import {
     Button,
@@ -126,7 +126,7 @@ const Transcript: React.FC = () => {
         transcript.forEach((transcriptItem) => {
             const transcriptData = [
                 `${transcriptItem.ma_mon_hoc.ma_mon_hoc}`,
-                `${transcriptItem.ma_mon_hoc.ten}`,
+                `${transcriptItem.ma_mon_hoc.ten_mon_hoc}`,
                 `${transcriptItem.ma_mon_hoc.tin_chi}`,
                 `${transcriptItem.diem}`,
             ];
@@ -249,7 +249,7 @@ const Transcript: React.FC = () => {
                                                         .ma_mon_hoc
                                                 }{" "}
                                                 -{" "}
-                                                {transcriptItem.ma_mon_hoc.ten}
+                                                {transcriptItem.ma_mon_hoc.ten_mon_hoc}
                                             </td>
 
                                             <td>
