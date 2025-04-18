@@ -61,7 +61,7 @@ Mỗi module trong server được tổ chức theo mô hình MVC với controll
   - Nội dung file .env :
     - MONGO_URI=
   - Tạo file .env trong folder server
-    - Nội dùng file .env :
+    - Nội dung file .env :
       - NODE_ENV=development
       - MONGO_URI_DEV=
       - MONGO_URI_PROD=
@@ -85,65 +85,87 @@ Mỗi module trong server được tổ chức theo mô hình MVC với controll
 ### Khoa
 
 - Quản lý khoa
-  - ![alt text](image/faculty_dashboard.jpg)
+  - ![Faculty Dashboard](image/faculty_dashboard.jpg)
 - Thêm khoa
-  - ![alt text](image/faculty_add.jpg)
+  - ![Add Faculty](image/faculty_add.jpg)
 - Sửa khoa
-  - ![alt text](image/faculty_edit.jpg)
+  - ![Edit Faculty](image/faculty_edit.jpg)
 
 ### Chương trình
 
 - Quản lý chương trình
-  - ![alt text](image/program_dashboard.jpg)
+  - ![Program Dashboard](image/program_dashboard.jpg)
 - Thêm chương trình
-  - ![alt text](image/program_add.jpg)
+  - ![Add Program](image/program_add.jpg)
 - Sửa chương trình
-  - ![alt text](image/program_edit.jpg)
+  - ![Edit Program](image/program_edit.jpg)
 
 ### Tình trạng
 
 - Quản lý tình trạng
-  - ![alt text](image/status_dashboard.jpg)
+  - ![Status Dashboard](image/status_dashboard.jpg)
 - Thêm tình trạng
-  - ![alt text](image/status_add.jpg)
+  - ![Add Status](image/status_add.jpg)
 - Sửa tình trạng
-  - ![alt text](image/status_edit.jpg)
+  - ![Edit Status](image/status_edit.jpg)
 
 ### Tìm kiếm theo khoa + tên
 
-- ![alt text](image/find_by_faculty_name.jpg)
+- ![Search by Faculty and Name](image/find_by_faculty_name.jpg)
 
 ### Xác thực số điện thoại
 
-- ![alt text](image/phone_validate.jpg)
+- ![Phone Validation](image/phone_validate.jpg)
 
 ### Xác thực email
 
-- ![alt text](image/email_validate_1.jpg)
-- ![alt text](image/email_validate_2.jpg)
+- ![Email Validation Step 1](image/email_validate_1.jpg)
+- ![Email Validation Step 2](image/email_validate_2.jpg)
 
 ### Xác thực mã số sinh viên
 
-- ![alt text](image/student_id_validate.jpg)
+- ![Student ID Validation](image/student_id_validate.jpg)
 
 ### Xác thực tình trạng
 
-- ![alt text](image/status_validate.jpg)
+- ![Status Validation](image/status_validate.jpg)
 
 ### Tạo module
 
 ## Course
 
-- ![alt text](image/module_course.jpg)
+- ![Course Module](image/module_course.jpg)
 
 ## Enrollment
 
-- ![alt text](image/module_enrollment.jpg)
+- ![Enrollment Module](image/module_enrollment.jpg)
 
 ## Grade
 
-- ![alt text](image/module_grade.jpg)
+- ![Grade Module](image/module_grade.jpg)
 
 ## Transcript
 
-- ![alt text](image/module_transcript.jpg)
+- ![Transcript Module](image/module_transcript.jpg)
+
+## Open class
+
+# Open class home
+- ![Open Class Home](image/openClass.jpg)
+
+# Open class add dialog
+- ![Open Class Add Dialog](image/openClass_dialog.jpg)
+
+## Transcript
+
+- ![Transcript](image/transcript.jpg)
+
+## Register Course
+
+# Bước 1
+- Chọn vào biểu tượng chi tiết ở mỗi sinh viên trong student page
+- ![Register Course Step 1](image/regisCourse_1st.jpg)
+
+# Bước 2
+- Kéo xuống cuối trang ta sẽ thấy khu vực đăng ký học phần
+- ![Register Course Step 2](image/regisCourse.jpg)
