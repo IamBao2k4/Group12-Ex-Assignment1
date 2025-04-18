@@ -1,6 +1,7 @@
+
 # Project Name
 
-Student Manager
+**Student Manager**
 
 ## Cấu trúc source code
 
@@ -55,117 +56,113 @@ Mỗi module trong server được tổ chức theo mô hình MVC với controll
 
 ## Hướng dẫn cài đặt & chạy chương trình
 
-- Yêu cầu cần cài đặt mongodb ở máy.
+- Yêu cầu cần cài đặt MongoDB trên máy.
 
-- Tạo file .env trong folder migration
-  - Nội dung file .env :
-    - MONGO_URI=
-  - Tạo file .env trong folder server
-    - Nội dung file .env :
-      - NODE_ENV=development
-      - MONGO_URI_DEV=
-      - MONGO_URI_PROD=
-      - PORT=3001
-- Mở 2 terminal
-  - terminal 1:
-    - cd migration
-    - npm install
-    - node migration.js
-  - terminal 2:
-    - cd server
-    - npm install
-    - npm run start:dev
-  - terminal 3:
-    - cd client
-    - npm install
-    - npm run dev
+- Tạo file `.env` trong thư mục `migration` với nội dung:
+  - `MONGO_URI=`
+
+- Tạo file `.env` trong thư mục `server` với nội dung:
+  - `NODE_ENV=development`
+  - `MONGO_URI_DEV=`
+  - `MONGO_URI_PROD=`
+  - `PORT=3001`
+
+- Mở 3 terminal:
+  - Terminal 1:
+    - `cd migration`
+    - `npm install`
+    - `node migration.js`
+  - Terminal 2:
+    - `cd server`
+    - `npm install`
+    - `npm run start:dev`
+  - Terminal 3:
+    - `cd client`
+    - `npm install`
+    - `npm run dev`
 
 ## Minh chứng chức năng
 
 ### Khoa
 
 - Quản lý khoa
-  - ![Faculty Dashboard](image/faculty_dashboard.jpg)
+  ![Faculty Dashboard](image/faculty_dashboard.jpg)
 - Thêm khoa
-  - ![Add Faculty](image/faculty_add.jpg)
+  ![Add Faculty](image/faculty_add.jpg)
 - Sửa khoa
-  - ![Edit Faculty](image/faculty_edit.jpg)
+  ![Edit Faculty](image/faculty_edit.jpg)
 
 ### Chương trình
 
 - Quản lý chương trình
-  - ![Program Dashboard](image/program_dashboard.jpg)
+  ![Program Dashboard](image/program_dashboard.jpg)
 - Thêm chương trình
-  - ![Add Program](image/program_add.jpg)
+  ![Add Program](image/program_add.jpg)
 - Sửa chương trình
-  - ![Edit Program](image/program_edit.jpg)
+  ![Edit Program](image/program_edit.jpg)
 
 ### Tình trạng
 
 - Quản lý tình trạng
-  - ![Status Dashboard](image/status_dashboard.jpg)
+  ![Status Dashboard](image/status_dashboard.jpg)
 - Thêm tình trạng
-  - ![Add Status](image/status_add.jpg)
+  ![Add Status](image/status_add.jpg)
 - Sửa tình trạng
-  - ![Edit Status](image/status_edit.jpg)
+  ![Edit Status](image/status_edit.jpg)
 
 ### Tìm kiếm theo khoa + tên
 
-- ![Search by Faculty and Name](image/find_by_faculty_name.jpg)
+![Search by Faculty and Name](image/find_by_faculty_name.jpg)
 
 ### Xác thực số điện thoại
 
-- ![Phone Validation](image/phone_validate.jpg)
+![Phone Validation](image/phone_validate.jpg)
 
 ### Xác thực email
 
-- ![Email Validation Step 1](image/email_validate_1.jpg)
-- ![Email Validation Step 2](image/email_validate_2.jpg)
+![Email Validation Step 1](image/email_validate_1.jpg)
+![Email Validation Step 2](image/email_validate_2.jpg)
 
 ### Xác thực mã số sinh viên
 
-- ![Student ID Validation](image/student_id_validate.jpg)
+![Student ID Validation](image/student_id_validate.jpg)
 
 ### Xác thực tình trạng
 
-- ![Status Validation](image/status_validate.jpg)
+![Status Validation](image/status_validate.jpg)
 
 ### Tạo module
 
-## Course
+#### Course
 
-- ![Course Module](image/module_course.jpg)
+![Course Module](image/module_course.jpg)
 
-## Enrollment
+#### Enrollment
 
-- ![Enrollment Module](image/module_enrollment.jpg)
+![Enrollment Module](image/module_enrollment.jpg)
 
-## Grade
+#### Grade
 
-- ![Grade Module](image/module_grade.jpg)
+![Grade Module](image/module_grade.jpg)
 
-## Transcript
+#### Transcript
 
-- ![Transcript Module](image/module_transcript.jpg)
+![Transcript Module](image/module_transcript.jpg)
 
-## Open class
+#### Open class
 
-# Open class home
-- ![Open Class Home](image/openClass.jpg)
+Open class home  
+![Open Class Home](image/openClass.jpg)  
+Open class add dialog  
+![Open Class Add Dialog](image/openClass_dialog.jpg)
 
-# Open class add dialog
-- ![Open Class Add Dialog](image/openClass_dialog.jpg)
+#### Transcript
 
-## Transcript
+![Transcript](image/transcript.jpg)
 
-- ![Transcript](image/transcript.jpg)
+#### Register Course
 
-## Register Course
-
-# Bước 1
-- Chọn vào biểu tượng chi tiết ở mỗi sinh viên trong student page
-- ![Register Course Step 1](image/regisCourse_1st.jpg)
-
-# Bước 2
-- Kéo xuống cuối trang ta sẽ thấy khu vực đăng ký học phần
-- ![Register Course Step 2](image/regisCourse.jpg)
+Bước 1: Chọn vào biểu tượng chi tiết ở mỗi sinh viên trong trang student  
+![Register Course Step 1](image/regisCourse_1st.jpg)  
+Bước 2: Kéo xuống cuối trang để thấy khu vực đăng ký học phần  
+![Register Course Step 2](image/regisCourse.jpg)
