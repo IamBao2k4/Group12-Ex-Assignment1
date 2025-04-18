@@ -7,6 +7,7 @@ import Programs from './components/mainInformation/programs/programs';
 import StudentStatuses from './components/mainInformation/student_statuses/student_statuses';
 import Courses from './components/mainInformation/courses/courses';
 import OpenClassComponent from './components/mainInformation/open_class';
+import Transcript from './components/mainInformation/transcript/transcript';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
@@ -37,6 +38,7 @@ function App() {
             <Route path="/student-statuses" element={<StudentStatuses />} />
             <Route path="/courses" element={<Courses />} />
             <Route path="/open-classes" element={<OpenClassComponent />} />
+            <Route path="/transcript/:studentId" element={<Transcript />} />
           </Routes>
         </div>
       </div>

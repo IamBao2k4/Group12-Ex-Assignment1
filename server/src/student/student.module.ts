@@ -11,6 +11,7 @@ import { EmailDomainValidator } from './validators/is-valid-email-domain.validat
 import { PhoneNumberValidator } from './validators/is-valid-phone-number.validator';
 import { ConfigModule } from '@nestjs/config';
 import { STUDENT_REPOSITORY } from './repositories/student.repository.interface';
+import { TranscriptModule } from 'src/transcript/transcript.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { STUDENT_REPOSITORY } from './repositories/student.repository.interface'
     forwardRef(() => ProgramModule),
     forwardRef(() => StudentStatusModule),
     ConfigModule,
+    TranscriptModule,
   ],
   controllers: [StudentController],
   providers: [
@@ -36,7 +38,7 @@ import { STUDENT_REPOSITORY } from './repositories/student.repository.interface'
       provide: STUDENT_REPOSITORY,
       useClass: StudentRepository,
     },
-    MongooseModule.forFeature([{ name: 'Student', schema: StudentSchema }])
+    MongooseModule.forFeature([{ name: 'Student', schema: StudentSchema }]),
   ],
 })
 export class StudentModule {}

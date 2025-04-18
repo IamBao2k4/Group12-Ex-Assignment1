@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from "react";
-import "./studentItem.css";
-import { Student } from "../models/student";
-import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import ArticleIcon from '@mui/icons-material/Article';
+import EditIcon from "@mui/icons-material/Edit";
+import React, { useEffect, useState } from "react";
+import { Button } from "react-bootstrap";
 import ConfirmationDialog from "../../../common/ConfirmationDialog";
 import { useNotification } from "../../../common/NotificationContext";
-import { Button } from 'react-bootstrap';
+import { Student } from "../models/student";
+import "./studentItem.css";
 
 import { SERVER_URL } from "../../../../../global";
 import { useNavigate } from "react-router-dom";
@@ -29,6 +28,8 @@ const StudentItem: React.FC<StudentItemProps> = ({
     const [status, setStatus] = useState("");
     const [showConfirmation, setShowConfirmation] = useState(false);
     const { showNotification } = useNotification();
+
+    const navigate = useNavigate();
 
     function EditBtnHandler() {
         setChosenStudent(student);
@@ -85,9 +86,8 @@ const StudentItem: React.FC<StudentItemProps> = ({
         }
     }
 
-    const navigate = useNavigate(); 
-    function handleDetailClick() {
-        navigate(`/students/${student._id}`); // Navigate to students/:id
+    function goToTranscriptHandler() {
+        navigate(`/transcripts/${student._id}`);
     }
 
     return (
@@ -99,20 +99,36 @@ const StudentItem: React.FC<StudentItemProps> = ({
                 onConfirm={DeleteStudentHandler}
                 onCancel={() => setShowConfirmation(false)}
             />
-            <tr key={id}>
+            <tr
+                key={id}
+                onClick={goToTranscriptHandler}
+                style={{ cursor: "pointer" }}
+            >
                 <td>{student.ho_ten}</td>
                 <td>{student.ma_so_sinh_vien}</td>
                 <td>{student.ngay_sinh}</td>
                 <td>{status}</td>
                 <td>
-                    <Button variant="outline-primary" size="sm" className="me-2" onClick={EditBtnHandler}>
+                    <Button
+                        variant="outline-primary"
+                        size="sm"
+                        className="me-2"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            EditBtnHandler();
+                        }}
+                    >
                         <EditIcon fontSize="small" />
                     </Button>
-                    <Button variant="outline-danger" size="sm" onClick={deleteConfirmHandler}>
+                    <Button
+                        variant="outline-danger"
+                        size="sm"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            deleteConfirmHandler();
+                        }}
+                    >
                         <DeleteIcon fontSize="small" />
-                    </Button>
-                    <Button variant="outline-info" size="sm" className="ms-2" onClick={handleDetailClick}>
-                        <ArticleIcon fontSize="small" />
                     </Button>
                 </td>
             </tr>

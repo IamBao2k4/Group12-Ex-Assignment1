@@ -13,6 +13,7 @@ import { PaginationOptions } from '../../common/paginator/pagination.interface';
 import { PaginatedResponse } from '../../common/paginator/pagination-response.dto';
 import { isValidObjectId } from 'mongoose';
 import { TranscriptNotFoundException } from '../exceptions/transcript-not-found.exception';
+import { SearchOptions } from '../dtos/search_options.dto';
 
 @Injectable()
 export class TranscriptService {
@@ -112,9 +113,17 @@ export class TranscriptService {
     }
   }
 
-  async findByStudentId(studentId: string): Promise<Transcript[] | null> {
+  async findByStudentId(
+    studentId: string,
+    paginationOpts: PaginationOptions,
+    searchString: SearchOptions,
+  ): Promise<PaginatedResponse<Transcript>> {
     try {
-      return await this.transcriptRepository.findByStudentId(studentId);
+      return await this.transcriptRepository.findByStudentId(
+        studentId,
+        paginationOpts,
+        searchString,
+      );
     } catch (error) {
       this.logger.error(
         `transcript.service.findByStudentId: ${error.message}`,
