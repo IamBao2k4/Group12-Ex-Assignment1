@@ -22,6 +22,14 @@ export class CreateTranscriptDto {
 
   @IsString()
   @IsEmpty()
+  readonly hoc_ky: string;
+
+  @IsString()
+  @IsEmpty()
+  readonly nam_hoc: string;
+
+  @IsString()
+  @IsEmpty()
   readonly trang_thai: string;
 }
 
@@ -37,6 +45,14 @@ export class UpdateTranscriptDto {
   @IsNumber()
   @IsOptional()
   readonly diem?: number;
+
+  @IsString()
+  @IsOptional()
+  readonly hoc_ky?: string;
+
+  @IsString()
+  @IsOptional()
+  readonly nam_hoc?: string;
 
   @IsString()
   @IsOptional()

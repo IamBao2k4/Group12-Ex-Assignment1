@@ -1,25 +1,20 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Query,
+  Controller,
   Delete,
-  Param,
-  Patch,
+  Get,
   Logger,
+  Param,
+  Post,
+  Query,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { TranscriptService } from '../services/transcript.service';
-import {
-  CreateTranscriptDto,
-  UpdateTranscriptDto,
-} from '../dtos/transcript.dto';
-import { PaginationOptions } from '../../common/paginator/pagination.interface';
 import { PaginatedResponse } from '../../common/paginator/pagination-response.dto';
+import { PaginationOptions } from '../../common/paginator/pagination.interface';
+import { CreateTranscriptDto } from '../dtos/transcript.dto';
 import { Transcript } from '../interfaces/transcript.interface';
-import { BaseException } from '../../common/exceptions/base.exception';
+import { TranscriptService } from '../services/transcript.service';
 
 @Controller('transcripts')
 export class TranscriptController {
