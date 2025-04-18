@@ -54,7 +54,7 @@ const Courses = () => {
   }, [fetchFaculties, fetchCourses]);
 
   function DialogHandler(type: string) {
-    const dialog = document.querySelector(".dialog-container") as HTMLElement;
+    const dialog = document.querySelector(".subject-dialog-container") as HTMLElement;
     setDialogType(type);
     dialog.classList.toggle("hidden");
   }
