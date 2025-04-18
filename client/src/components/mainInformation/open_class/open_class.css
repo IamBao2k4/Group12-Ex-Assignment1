@@ -76,3 +76,13 @@
   overflow-y: auto;
   z-index: 1000;
 }
+
+.modal{
+  overflow: hidden !important;
+}
+
+.modal-body {
+  margin: auto !important;
+  max-height: 620px !important;
+  overflow-y: auto;
+}
