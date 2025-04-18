@@ -38,7 +38,7 @@ function App() {
             <Route path="/student-statuses" element={<StudentStatuses />} />
             <Route path="/courses" element={<Courses />} />
             <Route path="/open-classes" element={<OpenClassComponent />} />
-            <Route path="/transcript/:studentId" element={<Transcript />} />
+            <Route path="/transcripts/:studentId" element={<Transcript />} />
           </Routes>
         </div>
       </div>

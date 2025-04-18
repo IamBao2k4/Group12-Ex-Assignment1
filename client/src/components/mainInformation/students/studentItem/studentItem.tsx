@@ -1,5 +1,6 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import ArticleIcon from '@mui/icons-material/Article';
 import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import ConfirmationDialog from "../../../common/ConfirmationDialog";
@@ -90,6 +91,10 @@ const StudentItem: React.FC<StudentItemProps> = ({
         navigate(`/transcripts/${student._id}`);
     }
 
+    function handleDetailClick() {
+        navigate(`/students/${student._id}`);
+    }
+
     return (
         <>
             <ConfirmationDialog
@@ -101,34 +106,23 @@ const StudentItem: React.FC<StudentItemProps> = ({
             />
             <tr
                 key={id}
-                onClick={goToTranscriptHandler}
-                style={{ cursor: "pointer" }}
             >
-                <td>{student.ho_ten}</td>
+                <td
+                    onClick={goToTranscriptHandler}
+                    style={{ cursor: "pointer" }}
+                >{student.ho_ten}</td>
                 <td>{student.ma_so_sinh_vien}</td>
                 <td>{student.ngay_sinh}</td>
                 <td>{status}</td>
                 <td>
-                    <Button
-                        variant="outline-primary"
-                        size="sm"
-                        className="me-2"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            EditBtnHandler();
-                        }}
-                    >
+                    <Button variant="outline-primary" size="sm" className="me-2" onClick={EditBtnHandler}>
                         <EditIcon fontSize="small" />
                     </Button>
-                    <Button
-                        variant="outline-danger"
-                        size="sm"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            deleteConfirmHandler();
-                        }}
-                    >
+                    <Button variant="outline-danger" size="sm" onClick={deleteConfirmHandler}>
                         <DeleteIcon fontSize="small" />
+                    </Button>
+                    <Button variant="outline-info" size="sm" className="ms-2" onClick={handleDetailClick}>
+                        <ArticleIcon fontSize="small" />
                     </Button>
                 </td>
             </tr>
