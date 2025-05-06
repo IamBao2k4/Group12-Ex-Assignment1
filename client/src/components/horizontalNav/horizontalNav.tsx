@@ -11,7 +11,7 @@ const HorizontalNav = () => {
             </p>
             <div className="nav-container">
                 <Link to="/students">
-                    <NavItem name="Student" icon={<FaUser />} />
+                    <NavItem name="Students" icon={<FaUser />} />
                 </Link>
                 <Link to="/courses">
                     <NavItem name="Courses" icon={<FaBook />} />
@@ -20,13 +20,13 @@ const HorizontalNav = () => {
                     <NavItem name="Open Classes" icon={<FaLayerGroup />} />
                 </Link>
                 <Link to="/faculties">
-                    <NavItem name="Faculty" icon={<FaChalkboardTeacher />} />
+                    <NavItem name="Faculties" icon={<FaChalkboardTeacher />} />
                 </Link>
                 <Link to="/programs">
                     <NavItem name="Programs" icon={<FaGraduationCap />} />
                 </Link>
                 <Link to="/student-statuses">
-                    <NavItem name="Student Status" icon={<FaUserCheck />} />
+                    <NavItem name="Student Statuses" icon={<FaUserCheck />} />
                 </Link>
                 <Link to="/instructors">
                     <NavItem name="Instructors" icon={<FaChalkboardTeacher />} />
