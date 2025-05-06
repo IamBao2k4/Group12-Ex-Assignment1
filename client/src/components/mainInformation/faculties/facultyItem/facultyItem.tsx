@@ -1,5 +1,4 @@
 import React from 'react';
-import './facultyItem.css';
 import { Faculty } from '../models/faculty';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';

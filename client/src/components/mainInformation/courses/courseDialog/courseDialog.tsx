@@ -1,145 +1,143 @@
-import React, { useState, useEffect } from "react";
-import "./courseDialog.css";
-import { SERVER_URL } from "../../../../../global";
-
-import { Subject } from "../models/course";
-import { Faculty } from "../../faculties/models/faculty";
+import React, { useState, useEffect } from 'react';
+import './courseDialog.css';
+import { Subject } from '../models/course';
+import { Faculty } from '../../faculties/models/faculty';
+import { useNotification } from '../../../../components/common/NotificationContext';
+import { CoursesRoute } from '../route/courses.route';
 
 interface CourseDialogProps {
-  subject: Subject | null;
-  type: string; // "add" or "edit"
+  type: string;
+  subject: Subject;
   onSuccess: () => void;
 }
 
-const CourseDialog: React.FC<CourseDialogProps> = ({ subject, type, onSuccess }) => {
-  const [maMonHoc, setMaMonHoc] = useState(subject?.ma_mon_hoc || "");
-  const [ten, setTen] = useState(subject?.ten || "");
-  const [tinChi, setTinChi] = useState(subject?.tin_chi || 0);
-  const [faculty, setFaculty] = useState(subject?.khoa || "");
+const CourseDialog: React.FC<CourseDialogProps> = ({ type, subject, onSuccess }) => {
+  const detailDialog = document.querySelector('.dialog-container') as HTMLElement;
+  const { showNotification } = useNotification();
   const [faculties, setFaculties] = useState<Faculty[]>([]);
 
   useEffect(() => {
-    async function fetchFaculties() {
+    const fetchFaculties = async () => {
       try {
-        const response = await fetch(`${SERVER_URL}/api/v1/faculties/all`);
-        const data = await response.json();
-        setFaculties(data);
+        const response = await CoursesRoute.getAllFaculties();
+        setFaculties(response);
       } catch (error) {
-        console.error("Error fetching faculties:", error);
+        console.error('Error fetching faculties:', error);
       }
-    }
+    };
 
     fetchFaculties();
-  }, [type, subject]);
+  }, []);
+
+  function setInnerHTML() {
+    if (!subject) {
+      return <div>Loading...</div>;
+    }
+    const name = document.getElementById('name') as HTMLInputElement;
+    const code = document.getElementById('code') as HTMLInputElement;
+    const credits = document.getElementById('credits') as HTMLInputElement;
+    const faculty = document.getElementById('faculty') as HTMLSelectElement;
+
+    if (!name || !code || !credits || !faculty) {
+      return;
+    }
+
+    if (type === 'edit') {
+      name.value = subject.ten;
+      code.value = subject.ma_mon_hoc;
+      credits.value = subject.tin_chi.toString();
+      faculty.value = subject.khoa.toString();
+    } else {
+      name.value = '';
+      code.value = '';
+      credits.value = '';
+      faculty.value = '';
+    }
+  }
 
   useEffect(() => {
-    if (type === "edit" && subject) {
-      setMaMonHoc(subject.ma_mon_hoc);
-      setTen(subject.ten);
-      setTinChi(subject.tin_chi);
-      setFaculty(subject.khoa);
-    } else {
-      setMaMonHoc("");
-      setTen("");
-      setTinChi(0);
-      setFaculty("");
-    }
-  }, [type, subject]);
+    setInnerHTML();
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
-    const payload = {
-      ma_mon_hoc: maMonHoc,
-      ten,
-      tin_chi: tinChi,
-      khoa: faculty,
+    const form = event.currentTarget;
+    const data = new FormData(form);
+
+    const courseData = {
+      ten: data.get('name') as string,
+      ma_mon_hoc: data.get('code') as string,
+      tin_chi: parseInt(data.get('credits') as string, 10),
+      khoa: data.get('faculty') as string,
     };
 
     try {
-      const response = await fetch(
-        `${SERVER_URL}/api/v1/courses${type === "edit" ? `/${subject?._id}` : ""}`,
-        {
-          method: type === "edit" ? "PATCH" : "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to save subject");
+      if (type === 'add') {
+        await CoursesRoute.createCourse(courseData);
+        showNotification('success', 'Course created successfully!');
+      } else {
+        await CoursesRoute.updateCourse(subject._id.toString(), courseData);
+        showNotification('success', 'Course updated successfully!');
       }
 
+      detailDialog.classList.toggle('hidden');
       onSuccess();
-      closeDialog();
     } catch (error) {
-      console.error("Error saving subject:", error);
+      if (error instanceof Error) {
+        showNotification('error', error.message);
+      } else {
+        showNotification('error', 'Unknown error occurred!');
+      }
     }
   };
 
-  const closeDialog = () => {
-    const dialog = document.querySelector(".subject-dialog-container") as HTMLElement;
-    dialog.classList.add("hidden");
-  };
+  function CancelHandler() {
+    detailDialog.classList.toggle('hidden');
+  }
+
+  if (!faculties || faculties.length === 0) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <div className="subject-dialog-container hidden">
-      <div className="subject-dialog">
-        <h2>{type === "edit" ? "Edit Subject" : "Add Subject"}</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="maMonHoc">Mã môn học</label>
-            <input
-              type="text"
-              id="maMonHoc"
-              value={maMonHoc}
-              onChange={(e) => setMaMonHoc(e.target.value)}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="ten">Tên môn học</label>
-            <input
-              type="text"
-              id="ten"
-              value={ten}
-              onChange={(e) => setTen(e.target.value)}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="tinChi">Số tín chỉ</label>
-            <input
-              type="number"
-              id="tinChi"
-              value={tinChi}
-              onChange={(e) => setTinChi(Number(e.target.value))}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="faculty">Khoa</label>
-            <select
-              id="faculty"
-              value={faculty.toString()}
-              onChange={(e) => setFaculty(e.target.value)}
-              required
-            >
-              <option value="">Chọn khoa</option>
-              {faculties.map((faculty) => (
-                <option key={faculty._id.toString()} value={faculty._id.toString()}>
-                  {faculty.ten_khoa}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="form-actions">
-            <button type="submit">{type === "edit" ? "Save" : "Add"}</button>
-            <button type="button" onClick={closeDialog}>
-              Cancel
-            </button>
-          </div>
-        </form>
+    <div className="dialog-container hidden">
+      <div className="dialog">
+        <h1>Course Details</h1>
+        <div className="dialog-content">
+          <form className="dialog-content-form" onSubmit={handleSubmit}>
+            <div className="dialog-content-form-group">
+              <label htmlFor="name">Name</label>
+              <input type="text" id="name" name="name" />
+            </div>
+            <div className="dialog-content-form-group">
+              <label htmlFor="code">Code</label>
+              <input type="text" id="code" name="code" />
+            </div>
+            <div className="dialog-content-form-group">
+              <label htmlFor="credits">Credits</label>
+              <input type="number" id="credits" name="credits" />
+            </div>
+            <div className="dialog-content-form-group">
+              <label htmlFor="faculty">Faculty</label>
+              <select id="faculty" name="faculty">
+                {faculties.map((faculty) => (
+                  <option key={faculty._id.toString()} value={faculty._id.toString()}>
+                    {faculty.ten_khoa}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="dialog-action">
+              <button className="dialog-action-save" type="submit">
+                {type !== 'add' ? 'Save' : 'Add'}
+              </button>
+              <button className="dialog-action-cancel" type="button" onClick={CancelHandler}>
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

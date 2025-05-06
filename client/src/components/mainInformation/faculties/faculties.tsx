@@ -1,7 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { Faculty } from "./models/faculty";
 import Header from "../header/header";
-import './faculties.css';
 import FacultyItem from "./facultyItem/facultyItem";
 import DetailDialog from "./detailDialog/detailDialog";
 import AddIcon from '@mui/icons-material/Add';

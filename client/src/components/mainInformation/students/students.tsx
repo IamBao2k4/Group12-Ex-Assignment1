@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useCallback } from "react";
-import "./students.css";
 import StudentItem from "./studentItem/studentItem";
 import ProfileDialog from "./profileDialog/profileDialog";
 import { Student } from "./models/student";

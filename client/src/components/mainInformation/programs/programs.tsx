@@ -1,7 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { Program } from "./models/program";
 import Header from "../header/header";
-import './programs.css';
 import ProgramItem from "./programItem/programItem";
 import DetailDialog from "./detailDialog/detailDialog";
 import AddIcon from '@mui/icons-material/Add';

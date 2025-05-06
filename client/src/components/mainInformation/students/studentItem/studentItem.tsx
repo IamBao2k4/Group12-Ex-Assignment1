@@ -6,7 +6,6 @@ import { Button } from "react-bootstrap";
 import ConfirmationDialog from "../../../common/ConfirmationDialog";
 import { useNotification } from "../../../common/NotificationContext";
 import { Student } from "../models/student";
-import "./studentItem.css";
 
 import { SERVER_URL } from "../../../../../global";
 import { useNavigate } from "react-router-dom";

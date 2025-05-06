@@ -1,5 +1,4 @@
 import React from 'react';
-import './programItem.css';
 import { Program } from '../models/program';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
