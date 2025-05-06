@@ -51,7 +51,9 @@ describe('TranscriptController', () => {
         ma_so_sinh_vien: 'SV001',
         ma_mon_hoc: 'MON001',
         diem: 8.5,
-        trang_thai: 'active'
+        trang_thai: 'active',
+        hoc_ky: '2023-1',
+        nam_hoc: "2023"
       };
       
       const expectedResult = {
@@ -72,7 +74,9 @@ describe('TranscriptController', () => {
         ma_so_sinh_vien: 'SV001',
         ma_mon_hoc: 'MON001',
         diem: 8.5,
-        trang_thai: 'active'
+        trang_thai: 'active',
+        hoc_ky: '2023-1',
+        nam_hoc: "2023"
       };
       
       const serviceError = new Error('Service error');
