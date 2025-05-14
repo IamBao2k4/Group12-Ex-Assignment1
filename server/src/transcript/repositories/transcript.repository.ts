@@ -6,7 +6,7 @@ import { ITranscriptRepository } from './transcript.repository.interface';
 import { Pagination } from '../../common/paginator/pagination.class';
 import { PaginationOptions } from '../../common/paginator/pagination.interface';
 import { PaginatedResponse } from '../../common/paginator/pagination-response.dto';
-import { BaseException } from 'src/common/exceptions/base.exception';
+import { BaseException } from '../../common/exceptions/base.exception';
 import { TranscriptNotFoundException } from '../exceptions/transcript-not-found.exception';
 import { SearchOptions } from '../dtos/search_options.dto';
 import { BuildQuery } from './utils';

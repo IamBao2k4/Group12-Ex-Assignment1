@@ -56,7 +56,9 @@ describe('TranscriptService', () => {
         ma_so_sinh_vien: 'SV001',
         ma_mon_hoc: 'MON001',
         diem: 8,
-        trang_thai: 'active'
+        trang_thai: 'active',
+        hoc_ky: '1',
+        nam_hoc: '2023'
       };
       
       const expectedResult = {
@@ -77,7 +79,9 @@ describe('TranscriptService', () => {
         ma_so_sinh_vien: 'SV001',
         ma_mon_hoc: 'MON001',
         diem: 8,
-        trang_thai: 'active'
+        trang_thai: 'active',
+        hoc_ky: '1',
+        nam_hoc: '2023'
       };
       
       const repositoryError = new Error('Repository error');
@@ -208,16 +212,16 @@ describe('TranscriptService', () => {
 
       mockRepository.findByStudentId.mockResolvedValue(transcripts);
 
-      const result = await service.findByStudentId(studentId);
+      const result = await service.findByStudentId(studentId, {}, {});
 
-      expect(mockRepository.findByStudentId).toHaveBeenCalledWith(studentId);
+      expect(mockRepository.findByStudentId).toHaveBeenCalledWith(studentId, {}, {});
       expect(result).toEqual(transcripts);
     });
 
     it('should propagate errors from repository', async () => {
       mockRepository.findByStudentId.mockRejectedValue(new Error('Repository error'));
 
-      await expect(service.findByStudentId('SV001')).rejects.toThrow('Repository error');
+      await expect(service.findByStudentId('SV001', {}, {})).rejects.toThrow('Repository error');
     });
   });
 
