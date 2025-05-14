@@ -6,10 +6,7 @@ export class CreateEnrollmentDto {
   ma_sv: string;
 
   @IsString()
-  ma_mon: string;
-
-  @IsString()
-  ma_lop: string;
+  ma_lop_mo: string;
 
   @IsOptional()
   @Type(() => Date)
@@ -29,11 +26,7 @@ export class UpdateEnrollmentDto {
 
   @IsOptional()
   @IsString()
-  ma_mon?: string;
-
-  @IsOptional()
-  @IsString()
-  ma_lop?: string;
+  ma_lop_mo?: string;
 
   @IsOptional()
   @Type(() => Date)
@@ -53,7 +46,7 @@ export class FindEnrollmentDto {
 
   @IsOptional()
   @IsString()
-  ma_mon?: string;
+  ma_lop_mo?: string;
 
   @IsOptional()
   @IsString()
