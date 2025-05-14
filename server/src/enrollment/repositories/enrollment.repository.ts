@@ -155,4 +155,24 @@ export class EnrollmentRepository implements IEnrollmentRepository {
       throw new EnrollmentUpsertFailedException(error.message);
     }
   }
+
+  async findByStudentId(studentId: string): Promise<Enrollment[]> {
+    try {
+      return await this.enrollmentModel.find({ ma_sv: studentId, deleted_at: null }).exec();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteByCourseId(courseId: string) {
+    try {
+      await this.enrollmentModel.findOneAndDelete(
+        { ma_mon: courseId },
+      );
+      
+    } catch (error) {
+      console.error(`Error occurred while deleting enrollment: ${error.message}`);
+      throw error;
+    }
+  }
 } 

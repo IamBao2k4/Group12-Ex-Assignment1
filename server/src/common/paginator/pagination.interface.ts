@@ -1,5 +1,6 @@
+
 export interface PaginationOptions {
-    searchString?: string;
+    searchString?: any;
 
     page?: number;
 

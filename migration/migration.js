@@ -11,6 +11,8 @@ const FILES_TO_IMPORT = [
   "University.programs.json",
   "University.studentstatuses.json",
   "University.students.json",
+  "University.courses.json",
+  "University.open_classes.json",
 ];
 
 const COLLECTION_MAPPING = {
@@ -18,6 +20,8 @@ const COLLECTION_MAPPING = {
   "University.programs.json": "programs",
   "University.studentstatuses.json": "studentstatuses",
   "University.students.json": "students",
+  "University.courses.json": "courses",
+  "University.open_classes.json": "openclasses",
 };
 
 function transformBSONObjects(obj) {

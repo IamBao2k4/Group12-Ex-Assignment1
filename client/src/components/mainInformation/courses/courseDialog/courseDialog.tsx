@@ -30,7 +30,21 @@ const CourseDialog: React.FC<CourseDialogProps> = ({ subject, type, onSuccess })
     }
 
     fetchFaculties();
-  }, []);
+  }, [type, subject]);
+
+  useEffect(() => {
+    if (type === "edit" && subject) {
+      setMaMonHoc(subject.ma_mon_hoc);
+      setTen(subject.ten);
+      setTinChi(subject.tin_chi);
+      setFaculty(subject.khoa);
+    } else {
+      setMaMonHoc("");
+      setTen("");
+      setTinChi(0);
+      setFaculty("");
+    }
+  }, [type, subject]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,9 +58,9 @@ const CourseDialog: React.FC<CourseDialogProps> = ({ subject, type, onSuccess })
 
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_SERVER_URI}/api/v1/subjects${type === "edit" ? `/${subject?._id}` : ""}`,
+        `${SERVER_URL}/api/v1/courses${type === "edit" ? `/${subject?._id}` : ""}`,
         {
-          method: type === "edit" ? "PUT" : "POST",
+          method: type === "edit" ? "PATCH" : "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         }

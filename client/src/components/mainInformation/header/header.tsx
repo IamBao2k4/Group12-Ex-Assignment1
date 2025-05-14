@@ -2,7 +2,7 @@ import './header.css'
 import SearchIcon from '@mui/icons-material/Search';
 
 interface HeaderProps {
-  searchHandler: (query: string) => void
+  searchHandler: (query: string) => void | null
 }
 
 const Header: React.FC<HeaderProps> = ({ searchHandler }) => {

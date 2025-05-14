@@ -8,6 +8,9 @@ import { PaginationOptions } from '../../common/paginator/pagination.interface';
 import { PaginatedResponse } from '../../common/paginator/pagination-response.dto';
 import { BaseException } from 'src/common/exceptions/base.exception';
 import { TranscriptNotFoundException } from '../exceptions/transcript-not-found.exception';
+import { SearchOptions } from '../dtos/search_options.dto';
+import { BuildQuery } from './utils';
+import { console } from 'inspector';
 
 @Injectable()
 export class TranscriptRepository implements ITranscriptRepository {
@@ -158,30 +161,60 @@ export class TranscriptRepository implements ITranscriptRepository {
     }
   }
 
-  async findByStudentId(studentId: string): Promise<Transcript[] | null> {
+  async findByStudentId(
+    studentId: string,
+    paginationOpts: PaginationOptions,
+    searchString: SearchOptions,
+  ): Promise<PaginatedResponse<Transcript>> {
+    const pagination = new Pagination(paginationOpts);
+    const skip = pagination.Skip();
+    const limit = pagination.Limit();
+    const page = pagination.Page();
+    const query = BuildQuery(searchString);
+    let transcripts: Transcript[] = [];
     try {
-      const transcript = await this.transcriptModel
+      transcripts = await this.transcriptModel
         .find({
           ma_so_sinh_vien: studentId,
-          $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }],
+          ...query,
         })
+        .skip(skip)
+        .limit(limit)
+        .populate('ma_mon_hoc')
+        .populate('ma_so_sinh_vien')
+        .lean()
         .exec();
-
-      if (!transcript) {
-        throw new TranscriptNotFoundException(studentId);
-      }
-
-      return transcript;
     } catch (error) {
-      if (error instanceof TranscriptNotFoundException) {
-        throw error;
-      }
       this.logger.error(
-        `transcript.repository.findByStudentId: Error finding transcript for student ID ${studentId}`,
+        'transcript.repository.findByStudentId: Error fetching transcripts',
         error.stack,
       );
-      throw new BaseException(error, 'FIND_TRANSCRIPT_BY_STUDENT_ID_ERROR');
+      throw new BaseException(error, 'FIND_TRANSCRIPTS_BY_STUDENT_ID_ERROR');
     }
+
+    let total = 0;
+    try {
+      total = await this.transcriptModel.countDocuments({
+        ma_so_sinh_vien: studentId,
+        $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }],
+      });
+    } catch (error) {
+      this.logger.error(
+        'transcript.repository.findByStudentId: Error counting transcripts',
+        error.stack,
+      );
+      throw new BaseException(error, 'COUNT_TRANSCRIPTS_BY_STUDENT_ID_ERROR');
+    }
+
+    const totalPages = pagination.TotalPages(total);
+
+    return new PaginatedResponse<Transcript>(
+      transcripts,
+      page,
+      limit,
+      totalPages,
+      total,
+    );
   }
 
   async findByCourseId(courseId: string): Promise<Transcript[] | null> {

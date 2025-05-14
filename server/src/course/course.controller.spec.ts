@@ -42,11 +42,10 @@ describe('CourseController', () => {
 
   describe('get', () => {
     it('should call service.get with correct parameters', async () => {
-      const query = { limit: 10, offset: 0 };
+      const query = { limit: 10, offset: 0 , page: 1};
       const searchString = 'CS';
-      const page = 1;
-      await controller.get(query, searchString, page);
-      expect(service.get).toHaveBeenCalledWith(query, searchString, page);
+      await controller.get(query, searchString, "true");
+      expect(service.get).toHaveBeenCalledWith(query, searchString, "true");
     });
   });
 

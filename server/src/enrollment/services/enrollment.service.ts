@@ -71,4 +71,22 @@ export class EnrollmentService {
       throw new EnrollmentValidationException('Class ID (ma_lop) is required');
     }
   }
+
+  async getByStudentId(studentId: string): Promise<Enrollment[]> {
+    try {
+      return await this.enrollmentRepository.findByStudentId(studentId);
+    } catch (error) {
+      this.logger.error(`Error fetching enrollments for student ID ${studentId}: ${error.message}`, error.stack);
+      throw error;
+    }
+  }
+
+  async deleteByCourseId(course: string) {
+    try {
+      return await this.enrollmentRepository.deleteByCourseId(course);
+    } catch (error) {
+      this.logger.error(`Error deleting enrollments for course ID ${course}: ${error.message}`, error.stack);
+      throw error;
+    }
+  }
 } 

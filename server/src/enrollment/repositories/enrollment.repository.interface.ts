@@ -13,8 +13,11 @@ export interface IEnrollmentRepository {
   findById(id: string): Promise<Enrollment>;
   findAll(options?: PaginationOptions): Promise<PaginatedResponse<Enrollment>>;
   delete(id: string): Promise<Enrollment>;
-  
+  deleteByCourseId(courseId: string);
+
   // These methods are kept for potential future use but not currently needed
   create(enrollment: CreateEnrollmentDto): Promise<Enrollment>;
   update(id: string, enrollment: UpdateEnrollmentDto): Promise<Enrollment>;
+
+  findByStudentId(studentId: string): Promise<Enrollment[]>;
 } 
