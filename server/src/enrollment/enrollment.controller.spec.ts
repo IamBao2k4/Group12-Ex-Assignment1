@@ -46,8 +46,7 @@ describe('EnrollmentController', () => {
     it('should call service upsert method with enrollment data', async () => {
       const enrollmentData = {
         ma_sv: 'SV001',
-        ma_mon: 'MON001',
-        ma_lop: 'LOP001',
+        ma_lop_mo: 'LOP001',
       };
       const expectedResult = { id: 'some-id', ...enrollmentData };
 
@@ -62,8 +61,7 @@ describe('EnrollmentController', () => {
     it('should propagate EnrollmentValidationException', async () => {
       const enrollmentData = {
         ma_sv: 'SV001',
-        ma_mon: 'MON001',
-        ma_lop: 'LOP001',
+        ma_lop_mo: 'LOP001',
       };
 
       const validationError = new EnrollmentValidationException('Validation failed');
@@ -75,8 +73,7 @@ describe('EnrollmentController', () => {
     it('should wrap unknown errors in HttpException', async () => {
       const enrollmentData = {
         ma_sv: 'SV001',
-        ma_mon: 'MON001',
-        ma_lop: 'LOP001',
+        ma_lop_mo: 'LOP001',
       };
 
       const unknownError = new Error('Unknown error');

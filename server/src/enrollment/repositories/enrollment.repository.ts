@@ -24,8 +24,8 @@ export class EnrollmentRepository implements IEnrollmentRepository {
       return await newEnrollment.save();
     } catch (error) {
       if (error.code === 11000) { // Duplicate key error
-        const { ma_sv, ma_mon, ma_lop } = enrollment;
-        throw new EnrollmentConflictException(ma_sv, ma_mon, ma_lop);
+        const { ma_sv, ma_lop_mo } = enrollment;
+        throw new EnrollmentConflictException(ma_sv, ma_lop_mo, 'Duplicate entry found with a different ID');
       }
       throw error;
     }
@@ -105,12 +105,10 @@ export class EnrollmentRepository implements IEnrollmentRepository {
 
   async upsert(enrollment: CreateEnrollmentDto): Promise<Enrollment> {
     try {
-      const { ma_sv, ma_mon, ma_lop } = enrollment;
-
-      console.log('Upsert Enrollment:', enrollment);
+      const { ma_sv, ma_lop_mo } = enrollment;
       
       // Query filter based on the compound key
-      const filter = { ma_sv, ma_mon, ma_lop, deleted_at: null };
+      const filter = { ma_sv, ma_lop_mo, deleted_at: null };
       
       // Update operation with proper handling of timestamps
       const update = {
@@ -142,11 +140,10 @@ export class EnrollmentRepository implements IEnrollmentRepository {
       return upsertedEnrollment;
     } catch (error) {
       if (error.code === 11000) { // MongoDB duplicate key error
-        const { ma_sv, ma_mon, ma_lop } = enrollment;
+        const { ma_sv, ma_lop_mo } = enrollment;
         throw new EnrollmentConflictException(
           ma_sv, 
-          ma_mon, 
-          ma_lop, 
+          ma_lop_mo, 
           'Duplicate entry found with a different ID'
         );
       }

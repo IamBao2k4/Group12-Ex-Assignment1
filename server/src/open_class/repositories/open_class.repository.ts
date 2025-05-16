@@ -6,15 +6,15 @@ import { IOpenClassRepository } from './open_class.repository.interface';
 import { Pagination } from '../../common/paginator/pagination.class';
 import { PaginationOptions } from '../../common/paginator/pagination.interface';
 import { PaginatedResponse } from '../../common/paginator/pagination-response.dto';
-import { BaseException } from 'src/common/exceptions/base.exception';
+import { BaseException } from '../../common/exceptions/base.exception';
 import { OpenClassNotFoundException } from '../exceptions/class-not-found.exception';
 import { SearchOptions } from '../dtos/search_options.dto';
 import e, { query } from 'express';
 import { BuildQuery } from './utils';
-import { Transcript } from 'src/transcript/interfaces/transcript.interface';
-import { Course } from 'src/course/interfaces/course.interface';
-import { Student } from 'src/student/interfaces/student.interface';
-import { Enrollment } from 'src/enrollment/interfaces/enrollment.interface';
+import { Transcript } from '../../transcript/interfaces/transcript.interface';
+import { Course } from '../../course/interfaces/course.interface';
+import { Student } from '../../student/interfaces/student.interface';
+import { Enrollment } from '../../enrollment/interfaces/enrollment.interface';
 
 @Injectable()
 export class OpenClassRepository implements IOpenClassRepository {

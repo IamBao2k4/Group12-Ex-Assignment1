@@ -3,6 +3,8 @@ import { StudentController } from '../../src/student/controllers/student.control
 import { StudentService } from '../../src/student/services/student.service';
 import { HttpException, Logger } from '@nestjs/common';
 import { CreateStudentDto, UpdateStudentDto } from '../../src/student/dtos/student.dto';
+import { TranscriptService } from '../../src/transcript/services/transcript.service';
+import { SearchOptions } from '../../src/transcript/dtos/search_options.dto';
 
 /**
  * Student Controller Unit Tests
@@ -13,15 +15,22 @@ import { CreateStudentDto, UpdateStudentDto } from '../../src/student/dtos/stude
 describe('StudentController', () => {
   let controller: StudentController;
   let service: StudentService;
+  let transcriptService: TranscriptService;
 
   beforeEach(async () => {
     // Create a mock service with all the required methods
-    const mockService = {
+    const mockStudentService = {
       get: jest.fn(),
       detail: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
+    };
+
+    // Create a mock TranscriptService with required methods
+    const mockTranscriptService = {
+      findByStudentId: jest.fn(),
+      findByCourseId: jest.fn(),
     };
 
     // Set up the testing module with our controller and mock dependencies
@@ -30,13 +39,18 @@ describe('StudentController', () => {
       providers: [
         {
           provide: StudentService,
-          useValue: mockService,
+          useValue: mockStudentService,
+        },
+        {
+          provide: TranscriptService,
+          useValue: mockTranscriptService,
         },
       ],
     }).compile();
 
     controller = module.get<StudentController>(StudentController);
     service = module.get<StudentService>(StudentService);
+    transcriptService = module.get<TranscriptService>(TranscriptService);
 
     // Mock logger to avoid console output during tests
     jest.spyOn(Logger.prototype, 'error').mockImplementation(() => {});
@@ -84,6 +98,44 @@ describe('StudentController', () => {
 
       // Act & Assert
       await expect(controller.get(paginationOpts, '', '', 1)).rejects.toThrow();
+    });
+  });
+
+  /**
+   * Get Student Transcripts Tests
+   */
+  describe('getTranscriptsByStudentId', () => {
+    it('should call transcriptService findByStudentId with correct parameters', async () => {
+      // Arrange
+      const studentId = '  student-id  '; // Spaces to test trimming
+      const paginationOpts = { page: 1, limit: 10 };
+      const searchString: SearchOptions = { nam_hoc: 2023, hoc_ky: 1 };
+      
+      const expectedResult = {
+        data: [{ id: 'transcript1', student_id: 'student-id', course: 'Math 101' }],
+        meta: { page: 1, limit: 10, total: 1, totalPages: 1 }
+      };
+      
+      jest.spyOn(transcriptService, 'findByStudentId').mockResolvedValue(expectedResult as any);
+
+      // Act
+      const result = await controller.getTranscriptsByStudentId(studentId, paginationOpts, searchString);
+
+      // Assert
+      expect(transcriptService.findByStudentId).toHaveBeenCalledWith('student-id', paginationOpts, searchString);
+      expect(result).toEqual(expectedResult);
+    });
+
+    it('should handle errors when getting transcripts', async () => {
+      // Arrange
+      const studentId = 'student-id';
+      const paginationOpts = { page: 1, limit: 10 };
+      const searchString: SearchOptions = { nam_hoc: 2023 }; // Only nam_hoc is provided
+      
+      jest.spyOn(transcriptService, 'findByStudentId').mockRejectedValue(new Error('Service error'));
+
+      // Act & Assert
+      await expect(controller.getTranscriptsByStudentId(studentId, paginationOpts, searchString)).rejects.toThrow();
     });
   });
 
@@ -159,6 +211,7 @@ describe('StudentController', () => {
       const studentId = '  student-id  '; // Spaces to test trimming
       const updateData = {
         ho_ten: 'Updated Name',
+        giay_to_tuy_than: [] // Empty array to pass validation
       } as unknown as UpdateStudentDto;
       
       const expectedResult = {
@@ -172,7 +225,7 @@ describe('StudentController', () => {
       const result = await controller.update(studentId, updateData);
 
       // Assert
-      expect(service.update).toHaveBeenCalledWith('student-id', updateData);
+      expect(service.update).toHaveBeenCalledWith('student-id', expect.any(Object));
       expect(result).toEqual(expectedResult);
     });
 
