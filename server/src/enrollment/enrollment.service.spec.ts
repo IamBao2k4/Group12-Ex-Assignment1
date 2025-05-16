@@ -44,7 +44,8 @@ describe('EnrollmentService', () => {
     it('should call repository upsert with valid data', async () => {
       const enrollmentData = {
         ma_sv: 'SV001',
-        ma_lop_mo: 'LOP001',
+        ma_lop: 'LOP001',
+        ma_mon: 'MON001',
         thoi_gian_dang_ky: new Date(),
       };
 
@@ -65,7 +66,8 @@ describe('EnrollmentService', () => {
     it('should throw EnrollmentValidationException when ma_sv is missing', async () => {
       const enrollmentData = {
         ma_sv: '',
-        ma_lop_mo: 'LOP001',
+        ma_lop: 'LOP001',
+        ma_mon: 'MON001',
       };
 
       await expect(service.upsert(enrollmentData)).rejects.toThrow(EnrollmentValidationException);
@@ -75,7 +77,8 @@ describe('EnrollmentService', () => {
     it('should throw EnrollmentValidationException when ma_mon is missing', async () => {
       const enrollmentData = {
         ma_sv: 'SV001',
-        ma_lop_mo: '',
+        ma_lop: '',
+        ma_mon: 'MON001',
       };
 
       await expect(service.upsert(enrollmentData)).rejects.toThrow(EnrollmentValidationException);
@@ -86,7 +89,8 @@ describe('EnrollmentService', () => {
     it('should propagate errors from repository', async () => {
       const enrollmentData = {
         ma_sv: 'SV001',
-        ma_lop_mo: 'LOP001',
+        ma_lop: 'LOP001',
+        ma_mon: 'MON001',
       };
 
       const error = new Error('Repository error');
