@@ -57,17 +57,17 @@ export class EnrollmentService {
   }
 
   private validateEnrollmentData(data: CreateEnrollmentDto): void {
-    const { ma_sv, ma_lop_mo } = data;
+    const { ma_sv, ma_lop } = data;
     
     if (!ma_sv || !ma_sv.trim()) {
       throw new EnrollmentValidationException('Student ID (ma_sv) is required');
     }
     
-    if (!ma_lop_mo || !ma_lop_mo.trim()) {
-      throw new EnrollmentValidationException('Course ID (ma_lop_mo) is required');
+    if (!ma_lop || !ma_lop.trim()) {
+      throw new EnrollmentValidationException('Course ID (ma_lop) is required');
     }
     
-    if (!ma_lop_mo || !ma_lop_mo.trim()) {
+    if (!ma_lop || !ma_lop.trim()) {
       throw new EnrollmentValidationException('Class ID (ma_lop) is required');
     }
   }

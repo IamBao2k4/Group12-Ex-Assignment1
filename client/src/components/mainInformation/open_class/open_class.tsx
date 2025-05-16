@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { OpenClass, PaginationOptions, SearchOptions, ToCreateOpenClassDto } from './models/open_class.model';
 import { OpenClassRoute } from './route/openClass.route';
 import { Button, Form, Table, Modal, Pagination, Row, Col, Card } from 'react-bootstrap';
-import './open_class.css';
 
 const OpenClassComponent: React.FC = () => {
   // State for classes and courses

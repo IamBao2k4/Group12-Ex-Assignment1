@@ -6,7 +6,10 @@ export class CreateEnrollmentDto {
   ma_sv: string;
 
   @IsString()
-  ma_lop_mo: string;
+  ma_lop: string;
+
+  @IsString()
+  ma_mon: string;
 
   @IsOptional()
   @Type(() => Date)

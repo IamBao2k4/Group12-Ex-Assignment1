@@ -1,7 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { Subject } from "./models/course";
 import Header from "../header/header";
-import './courses.css';
 import CourseItem from "./courseItem/courseItem";
 import CourseDialog from "./courseDialog/courseDialog";
 import AddIcon from '@mui/icons-material/Add';

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "./courseItem.css";
 import { Subject } from "../models/course";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';

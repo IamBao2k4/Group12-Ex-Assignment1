@@ -6,9 +6,9 @@ import { Faculty } from "../faculties/models/faculty";
 import AddIcon from "@mui/icons-material/Add";
 import { Card, Button, Table, Pagination, Form, Row, Col } from 'react-bootstrap';
 import '../../../components/common/DomainStyles.css';
-import { SERVER_URL } from "../../../../global";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import { StudentRoute } from "./route/student.route";
 
 interface StudentsProps {
     searchString: string;
@@ -27,12 +27,12 @@ const Students: React.FC<StudentsProps> = (searchString) => {
     const fetchStudents = useCallback(async () => {
         setLoading(true);
         try {
-            const response = await fetch(
-                `${SERVER_URL}/api/v1/students?searchString=${searchString.searchString}&faculty=${faculty}&page=${currentPage}`
+            const response = await StudentRoute.getStudents(
+                { page: currentPage },
+                { searchString: searchString.searchString, faculty }
             );
-            const data = await response.json();
-            setStudents(data.data);
-            setTotalPages(data.meta.total);
+            setStudents(response.data);
+            setTotalPages(response.meta.total);
             setLoading(false);
         } catch (error) {
             console.error("Error fetching students:", error);
@@ -42,8 +42,7 @@ const Students: React.FC<StudentsProps> = (searchString) => {
 
     const fetchFaculty = useCallback(async () => {
         try {
-            const response = await fetch(`${SERVER_URL}/api/v1/faculties/all`);
-            const data = await response.json();
+            const data = await StudentRoute.getAllFaculties();
             setFaculties(data);
         } catch (error) {
             console.error("Error fetching faculty:", error);
