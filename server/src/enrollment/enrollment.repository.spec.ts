@@ -131,7 +131,8 @@ describe('EnrollmentRepository', () => {
     it('should upsert an enrollment successfully', async () => {
       const enrollmentData = {
         ma_sv: 'SV001',
-        ma_lop_mo: 'LOP001',
+        ma_lop: 'LOP001',
+        ma_mon: 'MON001',
         thoi_gian_dang_ky: new Date(),
       };
 
@@ -142,7 +143,7 @@ describe('EnrollmentRepository', () => {
       const result = await repository.upsert(enrollmentData);
 
       expect(mockEnrollmentModel.findOneAndUpdate).toHaveBeenCalledWith(
-        { ma_sv: 'SV001',  ma_lop_mo: 'LOP001', deleted_at: null },
+        { ma_sv: 'SV001',  ma_lop: 'LOP001', deleted_at: null },
         {
           $set: expect.objectContaining({
             ...enrollmentData,
@@ -160,13 +161,14 @@ describe('EnrollmentRepository', () => {
       );
 
       expect(result.ma_sv).toEqual(enrollmentData.ma_sv);
-      expect(result.ma_lop_mo).toEqual(enrollmentData.ma_lop_mo);
+      expect(result.ma_lop).toEqual(enrollmentData.ma_lop);
     });
 
     it('should throw EnrollmentUpsertFailedException if upsert fails', async () => {
       const enrollmentData = {
         ma_sv: 'SV001',
-        ma_lop_mo: 'LOP001',
+        ma_lop: 'LOP001',
+        ma_mon: 'MON001',
       };
 
       mockEnrollmentModel.findOneAndUpdate.mockReturnValue({
@@ -179,7 +181,8 @@ describe('EnrollmentRepository', () => {
     it('should handle MongoDB duplicate key error (11000)', async () => {
       const enrollmentData = {
         ma_sv: 'SV001',
-        ma_lop_mo: 'LOP001',
+        ma_lop: 'LOP001',
+        ma_mon: 'MON001',
       };
 
       const error = new Error('Duplicate key error');
