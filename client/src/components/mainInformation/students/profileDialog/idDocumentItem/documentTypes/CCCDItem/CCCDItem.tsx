@@ -1,6 +1,7 @@
 import React from "react";
 import { CCCDDocument } from "../../../../models/id-document";
 import "./CCCDItem.css";
+import { useTranslation } from 'react-i18next';
 
 interface CCCDItemProps {
     document: CCCDDocument | null;
@@ -17,11 +18,12 @@ const defaultCCCD: CCCDDocument = {
 };
 
 const CCCDItem: React.FC<CCCDItemProps> = ({ document, setDocument }) => {
+    const { t } = useTranslation();
     if (!document) document = defaultCCCD;
     return (
         <div className="profile-dialog-info-form-cccd">
             <div className="profile-dialog-info-form-group">
-                <label htmlFor="cccd">CCCD</label>
+                <label htmlFor="cccd">{t('idDocument.cccd')}</label>
                 <input
                     type="text"
                     name="cccd"
@@ -34,7 +36,7 @@ const CCCDItem: React.FC<CCCDItemProps> = ({ document, setDocument }) => {
             </div>
 
             <div className="profile-dialog-info-form-group">
-                <label htmlFor="ngay_cap_cccd">Ngày Cấp</label>
+                <label htmlFor="ngay_cap_cccd">{t('idDocument.issueDate')}</label>
                 <input
                     type="date"
                     name="ngay_cap_cccd"
@@ -56,7 +58,7 @@ const CCCDItem: React.FC<CCCDItemProps> = ({ document, setDocument }) => {
             </div>
 
             <div className="profile-dialog-info-form-group">
-                <label htmlFor="noi_cap_cccd">Nơi Cấp</label>
+                <label htmlFor="noi_cap_cccd">{t('idDocument.issuePlace')}</label>
                 <input
                     type="text"
                     name="noi_cap_cccd"
@@ -69,7 +71,7 @@ const CCCDItem: React.FC<CCCDItemProps> = ({ document, setDocument }) => {
             </div>
 
             <div className="profile-dialog-info-form-group">
-                <label htmlFor="ngay_het_han_cccd">Ngày Hết Hạn</label>
+                <label htmlFor="ngay_het_han_cccd">{t('idDocument.expiryDate')}</label>
                 <input
                     type="date"
                     name="ngay_het_han_cccd"
@@ -90,7 +92,7 @@ const CCCDItem: React.FC<CCCDItemProps> = ({ document, setDocument }) => {
                 />
             </div>
 
-            <label style={{ marginTop: "20px" }}>CCCD có gắn chip</label>
+            <label style={{ marginTop: "20px" }}>{t('idDocument.hasChip')}</label>
             <div className="profile-dialog-info-form-cccd-bottom">
                 <label>
                     <input
@@ -102,7 +104,7 @@ const CCCDItem: React.FC<CCCDItemProps> = ({ document, setDocument }) => {
                             setDocument({ ...document, co_gan_chip: true })
                         }
                     />
-                    Có
+                    {t('idDocument.yes')}
                 </label>
                 <label>
                     <input
@@ -114,7 +116,7 @@ const CCCDItem: React.FC<CCCDItemProps> = ({ document, setDocument }) => {
                             setDocument({ ...document, co_gan_chip: false })
                         }
                     />
-                    Không
+                    {t('idDocument.no')}
                 </label>
             </div>
         </div>

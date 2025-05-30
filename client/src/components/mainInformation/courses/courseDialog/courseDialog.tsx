@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./courseDialog.css";
 import { SERVER_URL } from "../../../../../global";
-
+import { useTranslation } from 'react-i18next';
 import { Subject } from "../models/course";
 import { Faculty } from "../../faculties/models/faculty";
 
@@ -12,6 +12,7 @@ interface CourseDialogProps {
 }
 
 const CourseDialog: React.FC<CourseDialogProps> = ({ subject, type, onSuccess }) => {
+  const { t } = useTranslation();
   const [maMonHoc, setMaMonHoc] = useState(subject?.ma_mon_hoc || "");
   const [ten, setTen] = useState(subject?.ten || "");
   const [tinChi, setTinChi] = useState(subject?.tin_chi || 0);
@@ -85,10 +86,10 @@ const CourseDialog: React.FC<CourseDialogProps> = ({ subject, type, onSuccess })
   return (
     <div className="subject-dialog-container hidden">
       <div className="subject-dialog">
-        <h2>{type === "edit" ? "Edit Subject" : "Add Subject"}</h2>
+        <h2>{type === "edit" ? t('common.edit') : t('common.add')} {t('course.title')}</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="maMonHoc">Mã môn học</label>
+            <label htmlFor="maMonHoc">{t('course.courseCode')}</label>
             <input
               type="text"
               id="maMonHoc"
@@ -98,7 +99,7 @@ const CourseDialog: React.FC<CourseDialogProps> = ({ subject, type, onSuccess })
             />
           </div>
           <div className="form-group">
-            <label htmlFor="ten">Tên môn học</label>
+            <label htmlFor="ten">{t('course.courseName')}</label>
             <input
               type="text"
               id="ten"
@@ -108,7 +109,7 @@ const CourseDialog: React.FC<CourseDialogProps> = ({ subject, type, onSuccess })
             />
           </div>
           <div className="form-group">
-            <label htmlFor="tinChi">Số tín chỉ</label>
+            <label htmlFor="tinChi">{t('course.credits')}</label>
             <input
               type="number"
               id="tinChi"
@@ -118,14 +119,14 @@ const CourseDialog: React.FC<CourseDialogProps> = ({ subject, type, onSuccess })
             />
           </div>
           <div className="form-group">
-            <label htmlFor="faculty">Khoa</label>
+            <label htmlFor="faculty">{t('faculty.title')}</label>
             <select
               id="faculty"
               value={faculty.toString()}
               onChange={(e) => setFaculty(e.target.value)}
               required
             >
-              <option value="">Chọn khoa</option>
+              <option value="">{t('common.select')}</option>
               {faculties.map((faculty) => (
                 <option key={faculty._id.toString()} value={faculty._id.toString()}>
                   {faculty.ten_khoa}
@@ -134,9 +135,9 @@ const CourseDialog: React.FC<CourseDialogProps> = ({ subject, type, onSuccess })
             </select>
           </div>
           <div className="form-actions">
-            <button type="submit">{type === "edit" ? "Save" : "Add"}</button>
+            <button type="submit">{type === "edit" ? t('common.save') : t('common.add')}</button>
             <button type="button" onClick={closeDialog}>
-              Cancel
+              {t('common.cancel')}
             </button>
           </div>
         </form>

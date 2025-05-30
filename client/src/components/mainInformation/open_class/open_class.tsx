@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { OpenClass, PaginationOptions, SearchOptions, ToCreateOpenClassDto } from './models/open_class.model';
 import { OpenClassRoute } from './route/openClass.route';
 import { Button, Form, Table, Modal, Pagination, Row, Col, Card } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import './open_class.css';
 
 const OpenClassComponent: React.FC = () => {
+  const { t } = useTranslation();
   // State for classes and courses
   const [openClasses, setOpenClasses] = useState<OpenClass[]>([]);
   const [courses, setCourses] = useState<any[]>([]); // Store fetched courses
@@ -60,7 +62,7 @@ const OpenClassComponent: React.FC = () => {
       setLoading(false);
     } catch (err) {
       console.error('Error fetching open classes:', err);
-      setError('Không thể tải danh sách lớp mở. Vui lòng thử lại sau.');
+      setError(t('class.fetchError', 'Không thể tải danh sách lớp mở. Vui lòng thử lại sau.'));
       setOpenClasses([]);
       setLoading(false);
     }
@@ -73,7 +75,7 @@ const OpenClassComponent: React.FC = () => {
       setCourses(response);
     } catch (error) {
       console.error('Error fetching courses:', error);
-      setError('Failed to fetch courses');
+      setError(t('course.fetchError', 'Failed to fetch courses'));
     }
   };
 
@@ -139,7 +141,7 @@ const OpenClassComponent: React.FC = () => {
       // Refresh data
       fetchOpenClasses();
     } catch (err) {
-      setError('Failed to create new class');
+      setError(t('class.createError', 'Failed to create new class'));
     }
   };
 
@@ -147,20 +149,20 @@ const OpenClassComponent: React.FC = () => {
     <div className="open-class-container mt-4">
       <Card>
         <Card.Header className="bg-primary text-white">
-          <h2>Danh sách lớp mở trong {searchOptions.nam_hoc || 'tất cả năm học'} / HK{searchOptions.hoc_ky || 'tất cả'}</h2>
+          <h2>{t('class.title')} {searchOptions.nam_hoc || t('common.all')} / HK{searchOptions.hoc_ky || t('common.all')}</h2>
         </Card.Header>
         <Card.Body>
           {/* Filter Controls */}
           <Row className="mb-3">
             <Col md={3}>
               <Form.Group>
-                <Form.Label>Năm Học:</Form.Label>
+                <Form.Label>{t('transcript.year')}:</Form.Label>
                 <Form.Select 
                   name="nam_hoc"
                   value={searchOptions.nam_hoc || ''}
                   onChange={handleFilterChange}
                 >
-                  <option value="">Tất cả</option>
+                  <option value="">{t('common.all')}</option>
                   {[2021, 2022, 2023, 2024, 2025].map(year => (
                     <option key={year} value={year}>{year}-{year+1}</option>
                   ))}
@@ -169,13 +171,13 @@ const OpenClassComponent: React.FC = () => {
             </Col>
             <Col md={3}>
               <Form.Group>
-                <Form.Label>Học Kỳ:</Form.Label>
+                <Form.Label>{t('transcript.semester')}:</Form.Label>
                 <Form.Select 
                   name="hoc_ky"
                   value={searchOptions.hoc_ky || ''}
                   onChange={handleFilterChange}
                 >
-                  <option value="">Tất cả</option>
+                  <option value="">{t('common.all')}</option>
                   <option value="1">1</option>
                   <option value="2">2</option>
                   <option value="3">3</option>
@@ -184,22 +186,22 @@ const OpenClassComponent: React.FC = () => {
             </Col>
             <Col md={3}>
               <Form.Group>
-                <Form.Label>Tìm kiếm:</Form.Label>
+                <Form.Label>{t('common.search')}:</Form.Label>
                 <Form.Control
                   type="text"
                   name="keyword"
                   value={searchOptions.keyword || ''}
                   onChange={handleFilterChange}
-                  placeholder="Nhập từ khóa..."
+                  placeholder={t('common.searchPlaceholder', 'Nhập từ khóa...')}
                 />
               </Form.Group>
             </Col>
             <Col md={3} className="d-flex align-items-end">
               <Button variant="primary" onClick={() => fetchOpenClasses()}>
-                Xem
+                {t('common.view', 'Xem')}
               </Button>
               <Button variant="success" className="ms-2" onClick={() => setShowAddModal(true)}>
-                Thêm lớp mới
+                {t('class.add')}
               </Button>
             </Col>
           </Row>
@@ -209,20 +211,20 @@ const OpenClassComponent: React.FC = () => {
             <Table striped bordered hover>
               <thead>
                 <tr>
-                  <th>Mã MH</th>
-                  <th>Tên Môn Học</th>
-                  <th>Lớp</th>
-                  <th>Số TC</th>
-                  <th>Sĩ Số</th>
-                  <th>Đã ĐK</th>
-                  <th>Khóa</th>
-                  <th>Lịch Học</th>
+                  <th>{t('course.courseCode')}</th>
+                  <th>{t('course.courseName')}</th>
+                  <th>{t('class.className')}</th>
+                  <th>{t('course.credits')}</th>
+                  <th>{t('class.capacity')}</th>
+                  <th>{t('class.enrolled')}</th>
+                  <th>{t('class.year', 'Khóa')}</th>
+                  <th>{t('class.schedule')}</th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan={8} className="text-center">Loading...</td>
+                    <td colSpan={8} className="text-center">{t('common.loading')}</td>
                   </tr>
                 ) : error ? (
                   <tr>
@@ -230,7 +232,7 @@ const OpenClassComponent: React.FC = () => {
                   </tr>
                 ) : openClasses.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="text-center">Không tìm thấy lớp học nào</td>
+                    <td colSpan={8} className="text-center">{t('class.notFound')}</td>
                   </tr>
                 ) : (
                   openClasses.map((openClass) => (
@@ -286,31 +288,31 @@ const OpenClassComponent: React.FC = () => {
       {/* Add New Class Modal */}
       <Modal show={showAddModal} onHide={() => setShowAddModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Thêm Lớp Mới</Modal.Title>
+          <Modal.Title>{t('class.add')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
-              <Form.Label>Mã Lớp</Form.Label>
+              <Form.Label>{t('class.classCode')}</Form.Label>
               <Form.Control
                 type="text"
                 name="ma_lop"
                 value={newClass.ma_lop}
                 onChange={handleNewClassChange}
-                placeholder="Ví dụ: 24_001"
+                placeholder={t('class.classCodePlaceholder', 'Ví dụ: 24_001')}
                 required
               />
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Mã Môn Học</Form.Label>
+              <Form.Label>{t('course.courseCode')}</Form.Label>
               <Form.Select
                 name="ma_mon_hoc"
                 value={newClass.ma_mon_hoc._id}
                 onChange={handleCourseChange}
                 required
               >
-                <option value="">Chọn Môn Học</option>
+                <option value="">{t('course.selectCourse', 'Chọn Môn Học')}</option>
                 {courses.map(course => (
                   <option key={course._id} value={course._id}>{course.ten}</option>
                 ))}
@@ -320,7 +322,7 @@ const OpenClassComponent: React.FC = () => {
             <Row className="mb-3">
               <Col>
                 <Form.Group>
-                  <Form.Label>Năm Học</Form.Label>
+                  <Form.Label>{t('transcript.year')}</Form.Label>
                   <Form.Control
                     type="number"
                     name="nam_hoc"
@@ -334,7 +336,7 @@ const OpenClassComponent: React.FC = () => {
               </Col>
               <Col>
                 <Form.Group>
-                  <Form.Label>Học Kỳ</Form.Label>
+                  <Form.Label>{t('transcript.semester')}</Form.Label>
                   <Form.Control
                     type="number"
                     name="hoc_ky"
@@ -349,13 +351,13 @@ const OpenClassComponent: React.FC = () => {
             </Row>
 
             <Form.Group className="mb-3">
-              <Form.Label>Giảng Viên</Form.Label>
+              <Form.Label>{t('class.instructor')}</Form.Label>
               <Form.Control
                 type="text"
                 name="giang_vien"
                 value={newClass.giang_vien}
                 onChange={handleNewClassChange}
-                placeholder="Tên giảng viên"
+                placeholder={t('class.instructorPlaceholder', 'Tên giảng viên')}
                 required
               />
             </Form.Group>
@@ -363,7 +365,7 @@ const OpenClassComponent: React.FC = () => {
             <Row className="mb-3">
               <Col>
                 <Form.Group>
-                  <Form.Label>Sĩ Số Hiện Tại</Form.Label>
+                  <Form.Label>{t('class.currentSize', 'Sĩ Số Hiện Tại')}</Form.Label>
                   <Form.Control
                     type="number"
                     name="si_so"
@@ -376,7 +378,7 @@ const OpenClassComponent: React.FC = () => {
               </Col>
               <Col>
                 <Form.Group>
-                  <Form.Label>Sĩ Số Tối Đa</Form.Label>
+                  <Form.Label>{t('class.maxSize', 'Sĩ Số Tối Đa')}</Form.Label>
                   <Form.Control
                     type="number"
                     name="so_luong_toi_da"
@@ -390,31 +392,31 @@ const OpenClassComponent: React.FC = () => {
             </Row>
 
             <Form.Group className="mb-3">
-              <Form.Label>Lịch Học</Form.Label>
+              <Form.Label>{t('class.schedule')}</Form.Label>
               <Form.Control
                 type="text"
                 name="lich_hoc"
                 value={newClass.lich_hoc}
                 onChange={handleNewClassChange}
-                placeholder="Ví dụ: T2(1-4), T5(6-9)"
+                placeholder={t('class.schedulePlaceholder', 'Ví dụ: T2(1-4), T5(6-9)')}
                 required
               />
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Phòng Học</Form.Label>
+              <Form.Label>{t('class.room')}</Form.Label>
               <Form.Control
                 type="text"
                 name="phong_hoc"
                 value={newClass.phong_hoc}
                 onChange={handleNewClassChange}
-                placeholder="Ví dụ: A102"
+                placeholder={t('class.roomPlaceholder', 'Ví dụ: A102')}
                 required
               />
             </Form.Group>
 
             <Button variant="primary" type="submit">
-              Lưu
+              {t('common.save')}
             </Button>
           </Form>
         </Modal.Body>

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import './detailDialog.css';
+import { useTranslation } from 'react-i18next';
 
 import { SERVER_URL } from '../../../../../global';
 import { useNotification } from '../../../../components/common/NotificationContext';
@@ -15,10 +16,11 @@ interface DetailDialogProps {
 const DetailDialog: React.FC<DetailDialogProps> = ({ type, program, onSuccess }) => {
     const detailDialog = document.querySelector('.dialog-container') as HTMLElement;
     const { showNotification } = useNotification();
+    const { t } = useTranslation();
 
     function setInnerHTML() {
         if (!program) {
-            return <div>Loading...</div>;
+            return <div>{t('common.loading')}</div>;
         }
         const name = document.getElementById('name') as HTMLInputElement;
 
@@ -59,10 +61,10 @@ const DetailDialog: React.FC<DetailDialogProps> = ({ type, program, onSuccess })
                 const responseData = await response.json();
 
                 if (!response.ok) {
-                    throw new Error(responseData.message || 'Có lỗi xảy ra');
+                    throw new Error(responseData.message || t('messages.error'));
                 }
 
-                showNotification('success', 'Program created successfully!');
+                showNotification('success', t('program.createSuccess'));
                 detailDialog.classList.toggle('hidden');
                 onSuccess();
                 return responseData;
@@ -70,7 +72,7 @@ const DetailDialog: React.FC<DetailDialogProps> = ({ type, program, onSuccess })
                 if (error instanceof Error) {
                     showNotification('error', error.message);
                 } else {
-                    showNotification('error', 'Unknown error occurred!');
+                    showNotification('error', t('messages.unknownError'));
                 }
             }
         } else {
@@ -84,10 +86,10 @@ const DetailDialog: React.FC<DetailDialogProps> = ({ type, program, onSuccess })
                 const responseData = await response.json();
 
                 if (!response.ok) {
-                    throw new Error(responseData.message || 'Có lỗi xảy ra');
+                    throw new Error(responseData.message || t('messages.error'));
                 }
 
-                showNotification('success', 'Program updated successfully!');
+                showNotification('success', t('program.updateSuccess'));
                 detailDialog.classList.toggle('hidden');
                 onSuccess();
                 return responseData;
@@ -95,7 +97,7 @@ const DetailDialog: React.FC<DetailDialogProps> = ({ type, program, onSuccess })
                 if (error instanceof Error) {
                     showNotification('error', error.message);
                 } else {
-                    showNotification('error', 'Unknown error occurred!');
+                    showNotification('error', t('messages.unknownError'));
                 }
             }
         }
@@ -108,19 +110,19 @@ const DetailDialog: React.FC<DetailDialogProps> = ({ type, program, onSuccess })
     return (
         <div className="dialog-container hidden">
             <div className="dialog">
-                <h1>Program Details</h1>
+                <h1>{t('program.details')}</h1>
                 <div className="dialog-content">
                     <form className="dialog-content-form" onSubmit={handleSubmit}>
                         <div className="dialog-content-form-group">
-                            <label htmlFor="name">Name</label>
+                            <label htmlFor="name">{t('program.programName')}</label>
                             <input type="text" id="name" name="name" />
                         </div>
                         <div className="dialog-action">
                             <button className="dialog-action-save" type="submit">
-                                {type !== 'add' ? 'Save' : 'Add'}
+                                {type !== 'add' ? t('common.save') : t('common.add')}
                             </button>
                             <button className="dialog-action-cancel" type="button" onClick={CancelHandler}>
-                                Cancel
+                                {t('common.cancel')}
                             </button>
                         </div>
                     </form>

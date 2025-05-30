@@ -7,10 +7,12 @@ import DetailDialog from "./detailDialog/detailDialog";
 import AddIcon from '@mui/icons-material/Add';
 import { Card, Button, Table, Pagination } from 'react-bootstrap';
 import '../../../components/common/DomainStyles.css';
+import { useTranslation } from 'react-i18next';
 
 import { SERVER_URL } from '../../../../global';
 
 const StudentStatuses = () => {
+    const { t } = useTranslation();
     const [studentStatuses, setStudentStatuses] = useState<StudentStatus[]>([]);
     const [totalPages, setTotalPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
@@ -55,9 +57,9 @@ const StudentStatuses = () => {
             <Card>
                 <Card.Header>
                     <div className="d-flex justify-content-between align-items-center">
-                        <h2>Danh sách trạng thái sinh viên</h2>
+                        <h2>{t('studentStatus.title')}</h2>
                         <Button variant="success" onClick={() => DetailHandler('add')}>
-                            <AddIcon /> Thêm trạng thái mới
+                            <AddIcon /> {t('common.add')} {t('nav.studentStatus')}
                         </Button>
                     </div>
                 </Card.Header>
@@ -66,20 +68,20 @@ const StudentStatuses = () => {
                         <Table striped bordered hover>
                             <thead>
                                 <tr>
-                                    <th>Tên trạng thái</th>
-                                    <th>Ngày thêm</th>
-                                    <th>Ngày cập nhật</th>
-                                    <th>Thao tác</th>
+                                    <th>{t('studentStatus.title')}</th>
+                                    <th>{t('common.createdAt', 'Ngày thêm')}</th>
+                                    <th>{t('common.updatedAt', 'Ngày cập nhật')}</th>
+                                    <th>{t('common.action')}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {loading ? (
                                     <tr>
-                                        <td colSpan={4} className="text-center">Đang tải...</td>
+                                        <td colSpan={4} className="text-center">{t('common.loading')}</td>
                                     </tr>
                                 ) : studentStatuses.length === 0 ? (
                                     <tr>
-                                        <td colSpan={4} className="text-center">Không tìm thấy trạng thái nào</td>
+                                        <td colSpan={4} className="text-center">{t('common.notFound')}</td>
                                     </tr>
                                 ) : (
                                     studentStatuses.map((status) => (

@@ -8,10 +8,12 @@ import CourseDialog from "./courseDialog/courseDialog";
 import AddIcon from "@mui/icons-material/Add";
 import { Card, Button, Table, Pagination, Form } from "react-bootstrap";
 import "../../../components/common/DomainStyles.css";
+import { useTranslation } from 'react-i18next';
 
 import { SERVER_URL } from "../../../../global";
 
 const Courses = () => {
+  const { t } = useTranslation();
   const [courses, setCourses] = useState<Subject[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -79,17 +81,17 @@ const Courses = () => {
       <Card>
         <Card.Header>
           <div className="d-flex justify-content-between align-items-center">
-            <h2>Danh sách môn học</h2>
+            <h2>{t('course.title')}</h2>
             <Button variant="success" onClick={() => DialogHandler("add")}>
-              <AddIcon /> Thêm môn học
+              <AddIcon /> {t('course.add')}
             </Button>
           </div>
         </Card.Header>
         <Card.Body>
           <Form.Group className="mb-3">
-            <Form.Label>Khoa:</Form.Label>
+            <Form.Label>{t('faculty.title')}:</Form.Label>
             <Form.Select onChange={handleFacultyChange} value={faculty}>
-              <option value="">Tất cả</option>
+              <option value="">{t('common.all')}</option>
               {faculties.map((faculty) => (
                 <option key={faculty._id.toString()} value={faculty._id.toString()}>
                   {faculty.ten_khoa}
@@ -102,20 +104,20 @@ const Courses = () => {
             <Table striped bordered hover>
               <thead>
                 <tr>
-                  <th>Tên môn học</th>
-                  <th>Mã môn học</th>
-                  <th>Khoa</th>
-                  <th>Thao tác</th>
+                  <th>{t('course.courseName')}</th>
+                  <th>{t('course.courseCode')}</th>
+                  <th>{t('faculty.title')}</th>
+                  <th>{t('common.action')}</th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan={4} className="text-center">Đang tải...</td>
+                    <td colSpan={4} className="text-center">{t('common.loading')}</td>
                   </tr>
                 ) : courses.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="text-center">Không tìm thấy môn học nào</td>
+                    <td colSpan={4} className="text-center">{t('course.notFound')}</td>
                   </tr>
                 ) : (
                   courses.map((course) => (

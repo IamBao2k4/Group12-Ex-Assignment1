@@ -5,12 +5,14 @@ import { OpenClass } from "../../../open_class/models/open_class.model";
 import { Enrollment } from "../models/enrollment.model";
 import { Student } from "../../models/student";
 import { useNotification } from "../../../../../components/common/NotificationContext";
+import { useTranslation } from 'react-i18next';
 
 interface RegisCourseProps {
     student: Student;
 }
 
 const RegisCourse: React.FC<RegisCourseProps> = ({ student }) => {
+    const { t } = useTranslation();
     const [availableCourses, setAvailableCourses] = useState<OpenClass[]>([]);
     const [registeredCourses, setRegisteredCourses] = useState<Enrollment[]>([]);
     const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
@@ -54,25 +56,24 @@ const RegisCourse: React.FC<RegisCourseProps> = ({ student }) => {
     }, [student._id, reload]);
 
     const handleCheckboxChange = (courseId: string) => {
-        // Check if the course code is already selected
         const courseCode = availableCourses.find((course) => course._id === courseId)?.course_details?.ma_mon_hoc || "";
         const isCourseCodeSelected = selectedCourseCodes.includes(courseCode);
         const isCourseSelected = selectedCourses.includes(courseId);
         if (isCourseCodeSelected && !isCourseSelected) {
-            showNotification('error', "This course is already selected!");
+            showNotification('error', t('registration.alreadySelected'));
             return;
         }
 
         setSelectedCourses((prevSelected) =>
             prevSelected.includes(courseId)
-                ? prevSelected.filter((id) => id !== courseId) // Remove if already selected
-                : [...prevSelected, courseId] // Add if not selected
+                ? prevSelected.filter((id) => id !== courseId)
+                : [...prevSelected, courseId]
         );
 
         setSelectedCourseCodes((prevSelected): string[] => {
             return prevSelected.includes(courseCode)
-                ? prevSelected.filter((code) => code !== courseCode) // Remove if already selected
-                : [...prevSelected, courseCode]; // Add if not selected
+                ? prevSelected.filter((code) => code !== courseCode)
+                : [...prevSelected, courseCode];
         });
     };
 
@@ -80,7 +81,6 @@ const RegisCourse: React.FC<RegisCourseProps> = ({ student }) => {
         if (!selectedCourses.length) return;
 
         try {
-            // Prepare the payload to match CreateEnrollmentDto
             selectedCourses.map(async (courseId) => {
                 const course = availableCourses.find((c) => c._id === courseId);
 
@@ -91,14 +91,14 @@ const RegisCourse: React.FC<RegisCourseProps> = ({ student }) => {
                         ma_sv: student._id.toString(),
                         ma_mon: course?.course_details?.ma_mon_hoc || "",
                         ma_lop: course?.ma_lop || "", 
-                    }), // Send the array of enrollment objects
+                    }),
                 });
             });
 
-            showNotification('success', "Registered successfully!");
+            showNotification('success', t('registration.registerSuccess'));
             setReload(!reload);
         } catch (error) {
-            showNotification('error', "Failed to register courses");
+            showNotification('error', t('registration.registerError'));
         }
     };
 
@@ -111,29 +111,29 @@ const RegisCourse: React.FC<RegisCourseProps> = ({ student }) => {
 
             if (!response.ok) throw new Error("Failed to unregister course");
 
-            showNotification('success', "Unregistered successfully!");
+            showNotification('success', t('registration.unregisterSuccess'));
             setReload(!reload);
         } catch (error) {
-            showNotification('error', "Failed to unregister course");
+            showNotification('error', t('registration.unregisterError'));
         }
     };
 
     if (!availableCourses.length && !registeredCourses.length) {
-        return <div className="regis-course-loading">Enrollment loading...</div>;
+        return <div className="regis-course-loading">{t('registration.loading')}</div>;
     }
 
     return (
         <div className="regis-course-container">
             <div className="regis-course-left">
-                <h2>Khóa học khả dụng</h2>
+                <h2>{t('registration.availableCourses')}</h2>
                 <div className="regis-course-checkbox-group">
                     <table className="regis-course-table">
                         <thead>
                             <tr>
-                                <th>Tên khóa học</th>
-                                <th>Mã khóa học</th>
-                                <th>Lịch học</th>
-                                <th>Chọn</th>
+                                <th>{t('registration.courseName')}</th>
+                                <th>{t('registration.courseCode')}</th>
+                                <th>{t('registration.schedule')}</th>
+                                <th>{t('registration.select')}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -161,12 +161,12 @@ const RegisCourse: React.FC<RegisCourseProps> = ({ student }) => {
                     onClick={handleRegisterCourse}
                     disabled={!selectedCourses}
                 >
-                    Đăng ký
+                    {t('registration.register')}
                 </button>
             </div>
             <div className="regis-course-divider"></div>
             <div className="regis-course-right">
-                <h2>Khóa học đã đăng ký</h2>
+                <h2>{t('registration.registeredCourses')}</h2>
                 <ul className="regis-course-list">
                     {registeredCourses.map((course) => (
                         <li key={course._id.toString()} className="regis-course-item">
@@ -177,7 +177,7 @@ const RegisCourse: React.FC<RegisCourseProps> = ({ student }) => {
                                 className="regis-course-unregister-btn"
                                 onClick={() => handleUnregisterCourse(course.ma_mon)}
                             >
-                                Hủy đăng ký
+                                {t('registration.unregister')}
                             </button>
                         </li>
                     ))}

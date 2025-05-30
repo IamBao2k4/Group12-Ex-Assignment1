@@ -6,6 +6,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ConfirmationDialog from '../../../common/ConfirmationDialog';
 import { useNotification } from '../../../common/NotificationContext';
 import { Button } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 
 import { SERVER_URL } from '../../../../../global';
 
@@ -19,6 +20,7 @@ interface ProgramItemProps {
 const ProgramItem: React.FC<ProgramItemProps> = ({ program, DetailHandler, setChosenProgram, onDeleteSuccess }) => {
     const [showConfirmation, setShowConfirmation] = useState(false);
     const { showNotification } = useNotification();
+    const { t } = useTranslation();
 
     function deleteConfirmHandler() {
         setShowConfirmation(true);
@@ -36,14 +38,14 @@ const ProgramItem: React.FC<ProgramItemProps> = ({ program, DetailHandler, setCh
             const data = await response.json();
             
             if (response.ok) {
-                showNotification('success', `Program "${program.name}" deleted successfully`);
+                showNotification('success', t('program.deleteSuccess', { name: program.name }));
                 setShowConfirmation(false);
-                onDeleteSuccess(); // Call the refresh function instead of reloading page
+                onDeleteSuccess();
             } else {
-                showNotification('error', data.message || 'Failed to delete program');
+                showNotification('error', data.message || t('program.deleteError'));
             }
         } catch (error) {
-            showNotification('error', 'Error occurred while deleting program');
+            showNotification('error', t('program.deleteError'));
             console.error('Error deleting program:', error);
         }
     }
@@ -52,8 +54,8 @@ const ProgramItem: React.FC<ProgramItemProps> = ({ program, DetailHandler, setCh
         <>
             <ConfirmationDialog
                 isOpen={showConfirmation}
-                title="Delete Confirmation"
-                message={`Are you sure you want to delete the program "${program.name}"?`}
+                title={t('program.deleteConfirmTitle')}
+                message={t('program.deleteConfirmMessage', { name: program.name })}
                 onConfirm={DeleteHandler}
                 onCancel={() => setShowConfirmation(false)}
             />

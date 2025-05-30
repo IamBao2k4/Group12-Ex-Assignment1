@@ -1,6 +1,7 @@
 import React from "react";
 import { PassportDocument } from "../../../../models/id-document";
 import "./passportItem.css";
+import { useTranslation } from 'react-i18next';
 
 interface PassportItemProps {
     document: PassportDocument | null;
@@ -21,11 +22,12 @@ const PassportItem: React.FC<PassportItemProps> = ({
     document,
     setDocument,
 }) => {
+    const { t } = useTranslation();
     if (!document) document = defaultPassport;
     return (
         <div className="profile-dialog-info-form-hc">
             <div className="profile-dialog-info-form-group">
-                <label htmlFor="hc">Hộ chiếu</label>
+                <label htmlFor="hc">{t('idDocument.passport')}</label>
                 <input
                     type="text"
                     name="hc"
@@ -38,7 +40,7 @@ const PassportItem: React.FC<PassportItemProps> = ({
             </div>
 
             <div className="profile-dialog-info-form-group">
-                <label htmlFor="ngay_cap_hc">Ngày Cấp</label>
+                <label htmlFor="ngay_cap_hc">{t('idDocument.issueDate')}</label>
                 <input
                     type="date"
                     name="ngay_cap_hc"
@@ -60,7 +62,7 @@ const PassportItem: React.FC<PassportItemProps> = ({
             </div>
 
             <div className="profile-dialog-info-form-group">
-                <label htmlFor="noi_cap_hc">Nơi Cấp</label>
+                <label htmlFor="noi_cap_hc">{t('idDocument.issuePlace')}</label>
                 <input
                     type="text"
                     name="noi_cap_hc"
@@ -73,7 +75,7 @@ const PassportItem: React.FC<PassportItemProps> = ({
             </div>
 
             <div className="profile-dialog-info-form-group">
-                <label htmlFor="ngay_het_han_hc">Ngày Hết Hạn</label>
+                <label htmlFor="ngay_het_han_hc">{t('idDocument.expiryDate')}</label>
                 <input
                     type="date"
                     name="ngay_het_han_hc"
@@ -95,7 +97,7 @@ const PassportItem: React.FC<PassportItemProps> = ({
             </div>
 
             <div className="profile-dialog-info-form-group">
-                <label htmlFor="quoc_gia_cap_hc">Quốc Gia Cấp</label>
+                <label htmlFor="quoc_gia_cap_hc">{t('idDocument.issueCountry')}</label>
                 <input
                     type="text"
                     name="quoc_gia_cap_hc"
@@ -111,7 +113,7 @@ const PassportItem: React.FC<PassportItemProps> = ({
             </div>
 
             <div className="profile-dialog-info-form-group">
-                <label htmlFor="ghi_chu_hc">Ghi Chú</label>
+                <label htmlFor="ghi_chu_hc">{t('idDocument.note')}</label>
                 <input
                     type="text"
                     name="ghi_chu_hc"

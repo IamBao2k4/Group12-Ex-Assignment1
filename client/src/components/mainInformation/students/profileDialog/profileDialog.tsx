@@ -14,6 +14,7 @@ import React, { useEffect, useState } from "react";
 import AddressItem from "./addressItem/addressItem";
 import IdDocumentItem from "./idDocumentItem/idDocumentItem";
 import { useNotification } from "../../../../components/common/NotificationContext";
+import { useTranslation } from 'react-i18next';
 
 import { SERVER_URL } from "../../../../../global";
 
@@ -54,6 +55,7 @@ const validatePhone = (phone: string) => {
 };
 
 const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess }) => {
+    const { t } = useTranslation();
     const [faculties, setFaculties] = useState<Faculty[]>([]);
     const [programs, setPrograms] = useState<Program[]>([]);
     const [studentStatuses, setStudentStatuses] = useState<StudentStatus[]>([]);
@@ -227,12 +229,12 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess })
 
             const responseData = await response.json();
             if (!response.ok)
-                throw new Error(responseData.message || "Có lỗi xảy ra");
+                throw new Error(responseData.message || t('messages.error'));
 
             showNotification('success', 
                 type === "add"
-                    ? "Student created successfully!"
-                    : "Student updated successfully!"
+                    ? t('messages.createSuccess')
+                    : t('messages.updateSuccess')
             );
             profileDialog.classList.toggle("hidden");
             onSuccess();
@@ -240,7 +242,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess })
             if (error instanceof Error) {
                 showNotification('error', error.message);
             } else {
-                showNotification('error', 'Unknown error occurred!');
+                showNotification('error', t('messages.unknownError'));
             }
         }
     };
@@ -252,7 +254,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess })
     return (
         <div className="profile-dialog-container hidden">
             <div className="profile-dialog">
-                <h1>Profile</h1>
+                <h1>{t('student.profile')}</h1>
                 <div className="profile-dialog-info">
                     <form
                         className="profile-dialog-info-form"
@@ -260,7 +262,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess })
                     >
                         <div className="profile-dialog-info-form-top">
                             <div className="profile-dialog-info-form-group">
-                                <label htmlFor="ho_ten">Họ tên</label>
+                                <label htmlFor="ho_ten">{t('student.fullName')}</label>
                                 <input
                                     type="text"
                                     id="ho_ten"
@@ -271,7 +273,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess })
                             </div>
                             <div className="profile-dialog-info-form-group">
                                 <label htmlFor="ma_so_sinh_vien">
-                                    Mã số sinh viên
+                                    {t('student.studentId')}
                                 </label>
                                 <input
                                     type="text"
@@ -282,7 +284,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess })
                                 />
                             </div>
                             <div className="profile-dialog-info-form-group">
-                                <label htmlFor="ngay_sinh">Ngày sinh</label>
+                                <label htmlFor="ngay_sinh">{t('student.birthDate')}</label>
                                 <input
                                     type="date"
                                     id="ngay_sinh"
@@ -292,7 +294,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess })
                                 />
                             </div>
                             <div className="profile-dialog-info-form-group">
-                                <label htmlFor="gioi_tinh">Giới tính</label>
+                                <label htmlFor="gioi_tinh">{t('student.gender')}</label>
                                 <input
                                     type="text"
                                     id="gioi_tinh"
@@ -302,7 +304,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess })
                                 />
                             </div>
                             <div className="profile-dialog-info-form-group">
-                                <label htmlFor="khoa">Khoa</label>
+                                <label htmlFor="khoa">{t('nav.faculty')}</label>
                                 <div className="profile-dialog-info-form-select">
                                     <select
                                         name="khoa"
@@ -325,7 +327,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess })
                                 </div>
                             </div>
                             <div className="profile-dialog-info-form-group">
-                                <label htmlFor="khoa_hoc">Khóa</label>
+                                <label htmlFor="khoa_hoc">{t('student.course')}</label>
                                 <input
                                     type="text"
                                     id="khoa_hoc"
@@ -336,7 +338,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess })
                             </div>
                             <div className="profile-dialog-info-form-group">
                                 <label htmlFor="chuong_trinh">
-                                    Chương trình
+                                    {t('nav.programs')}
                                 </label>
                                 <div className="profile-dialog-info-form-select">
                                     <select
@@ -359,7 +361,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess })
                             </div>
                             <div className="profile-dialog-info-form-group">
                                 <label htmlFor="so_dien_thoai">
-                                    Số điện thoại
+                                    {t('student.phone')}
                                 </label>
                                 <input
                                     type="text"
@@ -373,13 +375,13 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess })
                                 />
                                 <div className="profile-dialog-info-form-error profile-dialog-info-form-error-phone">
                                     <i className="fa-solid fa-circle-exclamation"></i>
-                                    <span>Số điện thoại không hợp lệ</span>
+                                    <span>{t('messages.invalidPhone')}</span>
                                 </div>
                             </div>
                         </div>
                         <div className="profile-dialog-info-form-bottom">
                             <div className="profile-dialog-info-form-group">
-                                <label htmlFor="email">Email</label>
+                                <label htmlFor="email">{t('student.email')}</label>
                                 <input
                                     type="text"
                                     id="email"
@@ -392,14 +394,14 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess })
                                 />
                                 <div className="profile-dialog-info-form-error profile-dialog-info-form-error-email">
                                     <i className="fa-solid fa-circle-exclamation"></i>
-                                    <span>Email không hợp lệ</span>
+                                    <span>{t('messages.invalidEmail')}</span>
                                 </div>
                             </div>
                             <div
                                 className="profile-dialog-info-form-group"
                                 style={{ marginTop: "20px" }}
                             >
-                                <label htmlFor="tinh_trang">Tình trạng</label>
+                                <label htmlFor="tinh_trang">{t('student.status')}</label>
                                 <div className="profile-dialog-info-form-select">
                                     <select
                                         name="tinh_trang"
@@ -440,14 +442,14 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess })
                                     className="profile-dialog-action-save"
                                     type="submit"
                                 >
-                                    {type !== "add" ? "Save" : "Add"}
+                                    {type !== "add" ? t('common.save') : t('common.add')}
                                 </button>
                                 <button
                                     className="profile-dialog-action-cancel"
                                     type="button"
                                     onClick={handleCancel}
                                 >
-                                    Cancel
+                                    {t('common.cancel')}
                                 </button>
                             </div>
                         </div>

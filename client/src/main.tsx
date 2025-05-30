@@ -1,13 +1,16 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import React from 'react'
+import ReactDOM from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import { NotificationProvider } from './components/common/NotificationContext'
+import './i18n/config.ts' // Import i18n config
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
     <NotificationProvider>
-      <App />
+      <React.Suspense fallback={<div>Loading...</div>}>
+        <App />
+      </React.Suspense>
     </NotificationProvider>
-  </StrictMode>,
+  </React.StrictMode>,
 )

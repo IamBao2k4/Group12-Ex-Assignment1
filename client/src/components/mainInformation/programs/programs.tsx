@@ -1,63 +1,97 @@
-import { useEffect, useState, useCallback } from "react";
-import { Program } from "./models/program";
-import Header from "../header/header";
-import './programs.css';
-import ProgramItem from "./programItem/programItem";
-import DetailDialog from "./detailDialog/detailDialog";
-import AddIcon from '@mui/icons-material/Add';
-import { Card, Button, Table, Pagination } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Table, Button, Card, Modal, Form } from 'react-bootstrap';
 import '../../../components/common/DomainStyles.css';
-
+import AddIcon from '@mui/icons-material/Add';
 import { SERVER_URL } from '../../../../global';
+import { useTranslation } from 'react-i18next';
 
-const Programs = () => {
+interface Program {
+    _id: string;
+    name: string;
+    ma: string;
+    created_at: string;
+    updated_at: string;
+}
+
+const Programs: React.FC = () => {
+    const { t } = useTranslation();
     const [programs, setPrograms] = useState<Program[]>([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const [type, setType] = useState('');
-    const [chosenProgram, setChosenProgram] = useState<Program | null>(null);
-    const [search, setSearch] = useState('');
-    const [loading, setLoading] = useState(true);
-
-    const fetchPrograms = useCallback(async () => {
-        setLoading(true);
-        try {
-            const response = await fetch(SERVER_URL + `/api/v1/programs?page=${currentPage}&searchString=${search}`,);
-            const data = await response.json();
-            setPrograms(data.data);
-            setTotalPages(data.meta.total);
-            setLoading(false);
-        } catch (error) {
-            console.error('Error fetching programs:', error);
-            setLoading(false);
-        }
-    }, [search, currentPage]);
+    const [showModal, setShowModal] = useState(false);
+    const [editingProgram, setEditingProgram] = useState<Program | null>(null);
+    const [formData, setFormData] = useState<Omit<Program, '_id' | 'created_at' | 'updated_at'>>({
+        name: '',
+        ma: ''
+    });
 
     useEffect(() => {
         fetchPrograms();
-    }, [fetchPrograms]);
+    }, []);
 
-    function DetailHandler(type: string) {
-        const detailDialog = document.querySelector('.dialog-container') as HTMLElement;
-        setType(type);
-        detailDialog.classList.toggle('hidden');
-    }
+    const fetchPrograms = async () => {
+        try {
+            const response = await axios.get(`${SERVER_URL}/api/v1/programs`);
+            console.log('API Response:', response.data);
+            const programsData = Array.isArray(response.data) ? response.data : response.data.data || [];
+            console.log('Processed Programs Data:', programsData);
+            setPrograms(programsData);
+        } catch (error) {
+            console.error('Error fetching programs:', error);
+            setPrograms([]);
+        }
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            if (editingProgram) {
+                await axios.put(`${SERVER_URL}/api/v1/programs/${editingProgram._id}`, formData);
+            } else {
+                await axios.post(`${SERVER_URL}/api/v1/programs`, formData);
+            }
+            fetchPrograms();
+            handleCloseModal();
+        } catch (error) {
+            console.error('Error saving program:', error);
+        }
+    };
+
+    const handleDelete = async (id: string) => {
+        if (window.confirm(t('program.deleteConfirmMessage', { name: programs.find(p => p._id === id)?.name }))) {
+            try {
+                await axios.delete(`${SERVER_URL}/api/v1/programs/${id}`);
+                fetchPrograms();
+            } catch (error) {
+                console.error('Error deleting program:', error);
+            }
+        }
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+        setEditingProgram(null);
+        setFormData({ name: '', ma: '' });
+    };
+
+    const handleEdit = (program: Program) => {
+        setEditingProgram(program);
+        setFormData({
+            name: program.name,
+            ma: program.ma
+        });
+        setShowModal(true);
+    };
+
+    console.log('Current programs state:', programs);
 
     return (
         <div className="domain-container">
-            <DetailDialog 
-                type={type} 
-                program={chosenProgram ?? programs[0]} 
-                onSuccess={fetchPrograms}
-            />
-            <Header searchHandler={setSearch} />
-            
             <Card>
                 <Card.Header>
                     <div className="d-flex justify-content-between align-items-center">
-                        <h2>Danh sách chương trình</h2>
-                        <Button variant="success" onClick={() => DetailHandler('add')}>
-                            <AddIcon /> Thêm chương trình mới
+                        <h2>{t('program.title')}</h2>
+                        <Button variant="success" onClick={() => setShowModal(true)}>
+                            <AddIcon /> {t('program.add')}
                         </Button>
                     </div>
                 </Card.Header>
@@ -66,66 +100,84 @@ const Programs = () => {
                         <Table striped bordered hover>
                             <thead>
                                 <tr>
-                                    <th>Tên chương trình</th>
-                                    <th>Ngày thêm</th>
-                                    <th>Ngày cập nhật</th>
-                                    <th>Thao tác</th>
+                                    <th>{t('program.programName')}</th>
+                                    <th>{t('program.programCode')}</th>
+                                    <th>{t('common.action')}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {loading ? (
+                                {!programs || programs.length === 0 ? (
                                     <tr>
-                                        <td colSpan={4} className="text-center">Đang tải...</td>
-                                    </tr>
-                                ) : programs.length === 0 ? (
-                                    <tr>
-                                        <td colSpan={4} className="text-center">Không tìm thấy chương trình nào</td>
+                                        <td colSpan={3} className="text-center">{t('program.notFound')}</td>
                                     </tr>
                                 ) : (
                                     programs.map((program) => (
-                                        <ProgramItem 
-                                            key={program._id.toString()} 
-                                            program={program} 
-                                            setChosenProgram={setChosenProgram} 
-                                            DetailHandler={DetailHandler}
-                                            onDeleteSuccess={fetchPrograms}
-                                        />
+                                        <tr key={program._id}>
+                                            <td>{program.name}</td>
+                                            <td>{program.ma}</td>
+                                            <td>
+                                                <Button
+                                                    variant="primary"
+                                                    size="sm"
+                                                    className="me-2"
+                                                    onClick={() => handleEdit(program)}
+                                                >
+                                                    {t('common.edit')}
+                                                </Button>
+                                                <Button
+                                                    variant="danger"
+                                                    size="sm"
+                                                    onClick={() => handleDelete(program._id)}
+                                                >
+                                                    {t('common.delete')}
+                                                </Button>
+                                            </td>
+                                        </tr>
                                     ))
                                 )}
                             </tbody>
                         </Table>
                     </div>
-
-                    <div className="d-flex justify-content-center mt-3">
-                        <Pagination>
-                            <Pagination.First onClick={() => setCurrentPage(1)} disabled={currentPage === 1} />
-                            <Pagination.Prev 
-                                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))} 
-                                disabled={currentPage === 1}
-                            />
-                            
-                            {Array.from({ length: totalPages }, (_, i) => (
-                                <Pagination.Item 
-                                    key={i + 1}
-                                    active={i + 1 === currentPage}
-                                    onClick={() => setCurrentPage(i + 1)}
-                                >
-                                    {i + 1}
-                                </Pagination.Item>
-                            ))}
-                            
-                            <Pagination.Next 
-                                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))} 
-                                disabled={currentPage === totalPages}
-                            />
-                            <Pagination.Last 
-                                onClick={() => setCurrentPage(totalPages)} 
-                                disabled={currentPage === totalPages}
-                            />
-                        </Pagination>
-                    </div>
                 </Card.Body>
             </Card>
+
+            <Modal show={showModal} onHide={handleCloseModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>
+                        {editingProgram ? t('common.edit') : t('common.add')} {t('program.title')}
+                    </Modal.Title>
+                </Modal.Header>
+                <Form onSubmit={handleSubmit}>
+                    <Modal.Body>
+                        <Form.Group className="mb-3">
+                            <Form.Label>{t('program.programName')}</Form.Label>
+                            <Form.Control
+                                type="text"
+                                value={formData.name}
+                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                required
+                            />
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Form.Label>{t('program.programCode')}</Form.Label>
+                            <Form.Control
+                                type="text"
+                                value={formData.ma}
+                                onChange={(e) => setFormData({ ...formData, ma: e.target.value })}
+                                required
+                            />
+                        </Form.Group>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleCloseModal}>
+                            {t('common.cancel')}
+                        </Button>
+                        <Button variant="primary" type="submit">
+                            {t('common.save')}
+                        </Button>
+                    </Modal.Footer>
+                </Form>
+            </Modal>
         </div>
     );
 };

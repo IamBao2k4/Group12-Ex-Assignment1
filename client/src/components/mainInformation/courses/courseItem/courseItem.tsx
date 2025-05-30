@@ -7,6 +7,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Button } from 'react-bootstrap';
 import ConfirmationDialog from '../../../common/ConfirmationDialog';
 import { useNotification } from '../../../common/NotificationContext';
+import { useTranslation } from 'react-i18next';
 
 interface CourseItemProps {
     id: string;
@@ -23,6 +24,7 @@ const CourseItem: React.FC<CourseItemProps> = ({
     setChosenSubject,
     onDeleteSuccess,
 }) => {
+    const { t } = useTranslation();
     const [faculty, setFaculty] = useState<string>("");
     const [showConfirmation, setShowConfirmation] = useState(false);
     const { showNotification } = useNotification();
@@ -62,14 +64,14 @@ const CourseItem: React.FC<CourseItemProps> = ({
             const data = await response.json();
             
             if (response.ok) {
-                showNotification('success', `Course "${subject.ten}" deleted successfully`);
+                showNotification('success', t('course.deleteSuccess', { name: subject.ten }));
                 setShowConfirmation(false);
-                onDeleteSuccess(); // Call the refresh function instead of reloading page
+                onDeleteSuccess();
             } else {
-                showNotification('error', data.message || 'Failed to delete course');
+                showNotification('error', data.message || t('course.deleteError'));
             }
         } catch (error) {
-            showNotification('error', 'Error occurred while deleting course');
+            showNotification('error', t('course.deleteError'));
             console.error("Error deleting subject:", error);
         }
     }
@@ -78,8 +80,8 @@ const CourseItem: React.FC<CourseItemProps> = ({
         <>
             <ConfirmationDialog
                 isOpen={showConfirmation}
-                title="Delete Confirmation"
-                message={`Are you sure you want to delete the course "${subject.ten}"?`}
+                title={t('course.deleteConfirmTitle')}
+                message={t('course.deleteConfirmMessage', { name: subject.ten })}
                 onConfirm={handleDelete}
                 onCancel={() => setShowConfirmation(false)}
             />
@@ -88,10 +90,21 @@ const CourseItem: React.FC<CourseItemProps> = ({
                 <td>{subject.ma_mon_hoc}</td>
                 <td>{faculty}</td>
                 <td>
-                    <Button variant="outline-primary" size="sm" className="me-2" onClick={handleEdit}>
+                    <Button 
+                        variant="outline-primary" 
+                        size="sm" 
+                        className="me-2" 
+                        onClick={handleEdit}
+                        title={t('common.edit')}
+                    >
                         <EditIcon fontSize="small" />
                     </Button>
-                    <Button variant="outline-danger" size="sm" onClick={deleteConfirmHandler}>
+                    <Button 
+                        variant="outline-danger" 
+                        size="sm" 
+                        onClick={deleteConfirmHandler}
+                        title={t('common.delete')}
+                    >
                         <DeleteIcon fontSize="small" />
                     </Button>
                 </td>

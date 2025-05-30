@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
 import './detailDialog.css';
-
+import { useTranslation } from 'react-i18next';
 import { Faculty } from '../models/faculty';
 import { useNotification } from '../../../../components/common/NotificationContext';
-
 import { SERVER_URL } from '../../../../../global';
 
 interface DetailDialogProps {
@@ -13,12 +12,13 @@ interface DetailDialogProps {
 }
 
 const DetailDialog: React.FC<DetailDialogProps> = ({ type, faculty, onSuccess }) => {
+    const { t } = useTranslation();
     const detailDialog = document.querySelector('.dialog-container') as HTMLElement;
     const { showNotification } = useNotification();
 
     function setInnerHTML() {
         if (!faculty) {
-            return <div>Loading...</div>;
+            return <div>{t('common.loading')}</div>;
         }
         const name = document.getElementById('name') as HTMLInputElement;
         const code = document.getElementById('code') as HTMLInputElement;
@@ -44,7 +44,6 @@ const DetailDialog: React.FC<DetailDialogProps> = ({ type, faculty, onSuccess })
         event.preventDefault();
 
         const form = event.currentTarget;
-
         const data = new FormData(form);
 
         const facultyData = {
@@ -63,10 +62,10 @@ const DetailDialog: React.FC<DetailDialogProps> = ({ type, faculty, onSuccess })
                 const responseData = await response.json();
 
                 if (!response.ok) {
-                    throw new Error(responseData.message || 'Có lỗi xảy ra');
+                    throw new Error(responseData.message || t('messages.error'));
                 }
 
-                showNotification('success', 'Faculty created successfully!');
+                showNotification('success', t('faculty.createSuccess'));
                 detailDialog.classList.toggle('hidden');
                 onSuccess();
                 return responseData;
@@ -74,7 +73,7 @@ const DetailDialog: React.FC<DetailDialogProps> = ({ type, faculty, onSuccess })
                 if (error instanceof Error) {
                     showNotification('error', error.message);
                 } else {
-                    showNotification('error', 'Unknown error occurred!');
+                    showNotification('error', t('messages.unknownError'));
                 }
             }
         } else {
@@ -88,10 +87,10 @@ const DetailDialog: React.FC<DetailDialogProps> = ({ type, faculty, onSuccess })
                 const responseData = await response.json();
 
                 if (!response.ok) {
-                    throw new Error(responseData.message || 'Có lỗi xảy ra');
+                    throw new Error(responseData.message || t('messages.error'));
                 }
 
-                showNotification('success', 'Faculty updated successfully!');
+                showNotification('success', t('faculty.updateSuccess'));
                 detailDialog.classList.toggle('hidden');
                 onSuccess();
                 return responseData;
@@ -99,7 +98,7 @@ const DetailDialog: React.FC<DetailDialogProps> = ({ type, faculty, onSuccess })
                 if (error instanceof Error) {
                     showNotification('error', error.message);
                 } else {
-                    showNotification('error', 'Unknown error occurred!');
+                    showNotification('error', t('messages.unknownError'));
                 }
             }
         }
@@ -112,23 +111,23 @@ const DetailDialog: React.FC<DetailDialogProps> = ({ type, faculty, onSuccess })
     return (
         <div className="dialog-container hidden">
             <div className="dialog">
-                <h1>Faculty Details</h1>
+                <h1>{t('faculty.title')}</h1>
                 <div className="dialog-content">
                     <form className="dialog-content-form" onSubmit={handleSubmit}>
                         <div className="dialog-content-form-group">
-                            <label htmlFor="name">Name</label>
-                            <input type="text" id="name" name="name" />
+                            <label htmlFor="name">{t('faculty.facultyName')}</label>
+                            <input type="text" id="name" name="name" required />
                         </div>
                         <div className="dialog-content-form-group">
-                            <label htmlFor="code">Code</label>
-                            <input type="text" id="code" name="code" />
+                            <label htmlFor="code">{t('faculty.facultyCode')}</label>
+                            <input type="text" id="code" name="code" required />
                         </div>
                         <div className="dialog-action">
                             <button className="dialog-action-save" type="submit">
-                                {type !== 'add' ? 'Save' : 'Add'}
+                                {type !== 'add' ? t('common.save') : t('common.add')}
                             </button>
                             <button className="dialog-action-cancel" type="button" onClick={CancelHandler}>
-                                Cancel
+                                {t('common.cancel')}
                             </button>
                         </div>
                     </form>

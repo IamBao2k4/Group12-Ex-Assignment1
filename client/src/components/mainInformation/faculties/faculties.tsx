@@ -7,10 +7,12 @@ import DetailDialog from "./detailDialog/detailDialog"
 import AddIcon from '@mui/icons-material/Add'
 import { Card, Button, Form, Table, Pagination, Row, Col } from 'react-bootstrap'
 import '../../../components/common/DomainStyles.css'
+import { useTranslation } from 'react-i18next'
 
 import { SERVER_URL } from '../../../../global'
 
 const Faculties = () => {
+    const { t } = useTranslation();
     const [faculties, setFaculties] = useState<Faculty[]>([])
     const [currentPage, setCurrentPage] = useState(1)
     const [totalPages, setTotalPages] = useState(1)
@@ -63,9 +65,9 @@ const Faculties = () => {
             <Card>
                 <Card.Header>
                     <div className="d-flex justify-content-between align-items-center">
-                        <h2>Danh sách khoa</h2>
+                        <h2>{t('faculty.title')}</h2>
                         <Button variant="success" onClick={() => DetailHandler('add')}>
-                            <AddIcon /> Thêm khoa mới
+                            <AddIcon /> {t('faculty.add')}
                         </Button>
                     </div>
                 </Card.Header>
@@ -74,17 +76,17 @@ const Faculties = () => {
                         <Table striped bordered hover>
                             <thead>
                                 <tr>
-                                    <th>Mã khoa</th>
-                                    <th>Tên khoa</th>
-                                    <th>Ngày thêm</th>
-                                    <th>Ngày cập nhật</th>
-                                    <th>Thao tác</th>
+                                    <th>{t('faculty.facultyCode', 'Mã khoa')}</th>
+                                    <th>{t('faculty.facultyName')}</th>
+                                    <th>{t('common.createdAt', 'Ngày thêm')}</th>
+                                    <th>{t('common.updatedAt', 'Ngày cập nhật')}</th>
+                                    <th>{t('common.action')}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {faculties.length === 0 ? (
                                     <tr>
-                                        <td colSpan={5} className="text-center">Không tìm thấy khoa nào</td>
+                                        <td colSpan={5} className="text-center">{t('faculty.notFound')}</td>
                                     </tr>
                                 ) : (
                                     faculties.map((faculty) => (
