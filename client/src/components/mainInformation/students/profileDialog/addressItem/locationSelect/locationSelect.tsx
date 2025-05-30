@@ -4,6 +4,7 @@ import { District } from '../../../models/district';
 import { Province } from '../../../models/province';
 import { Ward } from '../../../models/ward';
 import "./locationSelect.css"
+import { useTranslation } from 'react-i18next';
 
 interface LocationSelectProps {
     label: string;
@@ -18,7 +19,7 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
     initialAddress,
     type
 }) => {
-
+    const { t } = useTranslation();
     const [provinces, setProvinces] = React.useState<Province[]>([]);
     const [selectedProvince, setSelectedProvinceCode] = useState<number | null>(
         null
@@ -132,7 +133,7 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
                 phuong_xa: ward,
                 quan_huyen: district,
                 tinh_thanh_pho: province,
-                quoc_gia: "Việt Nam",
+                quoc_gia: t('address.country'),
             });
         } else {
             onAddressChange({
@@ -140,7 +141,7 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
                 phuong_xa: "",
                 quan_huyen: "",
                 tinh_thanh_pho: "",
-                quoc_gia: "Việt Nam",
+                quoc_gia: t('address.country'),
             });
         }
     }, [
@@ -153,7 +154,7 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
     return (
         <div className="location-select">
             <h2>{label}</h2>
-            <label htmlFor="">Tỉnh, huyện</label>
+            <label htmlFor="">{t('address.provinceDistrict')}</label>
 
             <div className="location-select-group">
                 <select
@@ -162,7 +163,7 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
                     onChange={handleProvinceChange}
                     value={type === "edit"? (selectedProvince || "") : ""}
                 >
-                    <option value="">-- Chọn tỉnh --</option>
+                    <option value="">{t('address.selectProvince')}</option>
                     {provinces.map((province) => (
                         <option key={province.code} value={province.code}>
                             {province.name}
@@ -175,7 +176,7 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
                     onChange={handleDistrictChange}
                     value={type === "edit"? (selectedDistrict || "") : ""}
                 >
-                    <option value="">-- Chọn quận --</option>
+                    <option value="">{t('address.selectDistrict')}</option>
                     {districts.map((district) => (
                         <option key={district.code} value={district.code}>
                             {district.name}
@@ -184,7 +185,7 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
                 </select>
             </div>
 
-            <label htmlFor="">Phường/Xã, Số Nhà, Đường</label>
+            <label htmlFor="">{t('address.wardStreet')}</label>
 
             <div className="location-select-group">
                 <select
@@ -193,7 +194,7 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
                     onChange={handleWardChange}
                     value={type === "edit"? (selectedWard || "") : ""}
                 >
-                    <option value="">-- Chọn phường --</option>
+                    <option value="">{t('address.selectWard')}</option>
                     {wards.map((ward) => (
                         <option key={ward.code} value={ward.code}>
                             {ward.name}
@@ -205,7 +206,7 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
                     type="text"
                     id="detail"
                     name="detail"
-                    placeholder="Số nhà, đường..."
+                    placeholder={t('address.streetNumber')}
                     onChange={handleDetailChange}
                     value={type === "edit"? (detail || "") : ""}
                 />

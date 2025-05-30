@@ -9,12 +9,14 @@ import '../../../components/common/DomainStyles.css';
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { StudentRoute } from "./route/student.route";
+import { useTranslation } from 'react-i18next';
 
 interface StudentsProps {
     searchString: string;
 }
 
 const Students: React.FC<StudentsProps> = (searchString) => {
+    const { t } = useTranslation();
     const [students, setStudents] = useState<Student[]>([]);
     const [profileType, setProfileType] = useState("add");
     const [currentPage, setCurrentPage] = useState(1);
@@ -83,14 +85,14 @@ const Students: React.FC<StudentsProps> = (searchString) => {
 
     const handleExport = (fileType: "csv" | "xlsx") => {
         if (students.length === 0) {
-            alert("Không có dữ liệu để xuất!");
+            alert(t('messages.noData'));
             return;
         }
 
         const ws = XLSX.utils.json_to_sheet(students);
 
         const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Students");
+        XLSX.utils.book_append_sheet(wb, ws, t('student.title'));
 
         if (fileType === "xlsx") {
             const excelBuffer = XLSX.write(wb, {
@@ -100,9 +102,9 @@ const Students: React.FC<StudentsProps> = (searchString) => {
             const data = new Blob([excelBuffer], {
                 type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             });
-            saveAs(data, "students.xlsx");
+            saveAs(data, `students_${t('common.exportExcel')}.xlsx`);
         } else {
-            XLSX.writeFile(wb, "students.csv");
+            XLSX.writeFile(wb, `students_${t('common.exportCSV')}.csv`);
         }
     };
 
@@ -117,7 +119,7 @@ const Students: React.FC<StudentsProps> = (searchString) => {
             <Card>
                 <Card.Header>
                     <div className="d-flex justify-content-between align-items-center">
-                        <h2>Danh sách sinh viên</h2>
+                        <h2>{t('student.title')}</h2>
                         <div className="d-flex">
                             <input
                                 type="file"
@@ -131,10 +133,10 @@ const Students: React.FC<StudentsProps> = (searchString) => {
                                 className="mx-2"
                                 onClick={() => document.getElementById("fileInput")?.click()}
                             >
-                                Import File
+                                {t('common.import')}
                             </Button>
                             <Button variant="success" onClick={() => ProfileHandler("add")}>
-                                <AddIcon /> Thêm sinh viên mới
+                                <AddIcon /> {t('student.add')}
                             </Button>
                         </div>
                     </div>
@@ -144,12 +146,12 @@ const Students: React.FC<StudentsProps> = (searchString) => {
                         <Row>
                             <Col md={4}>
                                 <Form.Group>
-                                    <Form.Label>Khoa:</Form.Label>
+                                    <Form.Label>{t('nav.faculty')}:</Form.Label>
                                     <Form.Select 
                                         onChange={(e) => setFaculty(e.target.value)}
                                         value={faculty}
                                     >
-                                        <option value="">Tất cả</option>
+                                        <option value="">{t('common.all')}</option>
                                         {faculties.map((faculty) => (
                                             <option
                                                 key={faculty._id.toString()}
@@ -168,21 +170,21 @@ const Students: React.FC<StudentsProps> = (searchString) => {
                         <Table striped bordered hover>
                             <thead>
                                 <tr>
-                                    <th>Họ tên</th>
-                                    <th>Mã số sinh viên</th>
-                                    <th>Ngày sinh</th>
-                                    <th>Tình trạng</th>
-                                    <th>Thao tác</th>
+                                    <th>{t('student.fullName')}</th>
+                                    <th>{t('student.studentId')}</th>
+                                    <th>{t('student.birthDate')}</th>
+                                    <th>{t('student.status')}</th>
+                                    <th>{t('common.action', 'Thao tác')}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {loading ? (
                                     <tr>
-                                        <td colSpan={5} className="text-center">Đang tải...</td>
+                                        <td colSpan={5} className="text-center">{t('common.loading')}</td>
                                     </tr>
                                 ) : students.length === 0 ? (
                                     <tr>
-                                        <td colSpan={5} className="text-center">Không tìm thấy sinh viên nào</td>
+                                        <td colSpan={5} className="text-center">{t('student.notFound')}</td>
                                     </tr>
                                 ) : (
                                     students.map((student) => (
@@ -203,10 +205,10 @@ const Students: React.FC<StudentsProps> = (searchString) => {
                     <div className="d-flex justify-content-between align-items-center mt-3">
                         <div>
                             <Button variant="outline-primary" onClick={() => handleExport("csv")} className="me-2">
-                                Export CSV
+                                {t('common.exportCSV')}
                             </Button>
                             <Button variant="outline-primary" onClick={() => handleExport("xlsx")}>
-                                Export Excel
+                                {t('common.exportExcel')}
                             </Button>
                         </div>
                         

@@ -3,62 +3,116 @@ import { Subject } from "../models/course";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Button } from 'react-bootstrap';
-import { CoursesRoute } from "../route/courses.route";
+import ConfirmationDialog from '../../../common/ConfirmationDialog';
+import { useNotification } from '../../../common/NotificationContext';
+import { useTranslation } from 'react-i18next';
+import { SERVER_URL } from "../../../../../global";
 
 interface CourseItemProps {
-  subject: Subject;
-  DialogHandler: (type: string) => void;
-  setChosenSubject: (subject: Subject) => void;
-  setShowConfirmation: (show: boolean) => void;
+    subject: Subject;
+    DialogHandler: (type: string) => void;
+    setChosenSubject: (subject: Subject) => void;
+    onDeleteSuccess: () => void;
 }
 
 const CourseItem: React.FC<CourseItemProps> = ({
-  subject,
-  DialogHandler,
-  setChosenSubject,
-  setShowConfirmation
+    subject,
+    DialogHandler,
+    setChosenSubject,
+    onDeleteSuccess
 }) => {
-  const [faculty, setFaculty] = useState<string>("");
+    const { t } = useTranslation();
+    const [faculty, setFaculty] = useState<string>("");
+    const [showConfirmation, setShowConfirmation] = useState(false);
+    const { showNotification } = useNotification();
 
-  useEffect(() => {
-    const fetchFaculty = async () => {
-      try {
-        const data = await CoursesRoute.getFacultyById(subject.khoa.toString());
-        setFaculty(data.ten_khoa);
-      } catch (error) {
-        console.error("Error fetching faculty:", error);
-      }
+    useEffect(() => {
+        const fetchFaculty = async () => {
+            try {
+                const response = await fetch(SERVER_URL + `/api/v1/faculties/${subject.khoa}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+                const data = await response.json();
+                setFaculty(data.ten_khoa);
+            } catch (error) {
+                console.error("Error fetching faculty:", error);
+            }
+        };
+
+        fetchFaculty();
+    }, [subject.khoa]);
+
+    const handleEdit = () => {
+        setChosenSubject(subject);
+        DialogHandler("edit");
     };
 
-    fetchFaculty();
-  }, [subject.khoa]);
+    function deleteConfirmHandler() {
+        setShowConfirmation(true);
+    }
 
-  const handleEdit = () => {
-    setChosenSubject(subject);
-    DialogHandler("edit");
-  };
+    async function handleDelete() {
+        try {
+            const response = await fetch(SERVER_URL + `/api/v1/courses/${subject._id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                showNotification('success', t('course.deleteSuccess', { name: subject.ten }));
+                setShowConfirmation(false);
+                onDeleteSuccess();
+            } else {
+                showNotification('error', data.message || t('course.deleteError'));
+            }
+        } catch (error) {
+            showNotification('error', t('course.deleteError'));
+            console.error("Error deleting subject:", error);
+        }
+    }
 
-  function deleteConfirmHandler() {
-    setShowConfirmation(true);
-  }
-
-  return (
-    <>
-      <tr>
-        <td>{subject.ten}</td>
-        <td>{subject.ma_mon_hoc}</td>
-        <td>{faculty}</td>
-        <td>
-          <Button variant="outline-primary" size="sm" className="me-2" onClick={handleEdit}>
-            <EditIcon fontSize="small" />
-          </Button>
-          <Button variant="outline-danger" size="sm" onClick={deleteConfirmHandler}>
-            <DeleteIcon fontSize="small" />
-          </Button>
-        </td>
-      </tr>
-    </>
-  );
+    return (
+        <>
+            <ConfirmationDialog
+                isOpen={showConfirmation}
+                title={t('course.deleteConfirmTitle')}
+                message={t('course.deleteConfirmMessage', { name: subject.ten })}
+                onConfirm={handleDelete}
+                onCancel={() => setShowConfirmation(false)}
+            />
+            <tr>
+                <td>{subject.ten}</td>
+                <td>{subject.ma_mon_hoc}</td>
+                <td>{faculty}</td>
+                <td>
+                    <Button 
+                        variant="outline-primary" 
+                        size="sm" 
+                        className="me-2" 
+                        onClick={handleEdit}
+                        title={t('common.edit')}
+                    >
+                        <EditIcon fontSize="small" />
+                    </Button>
+                    <Button 
+                        variant="outline-danger" 
+                        size="sm" 
+                        onClick={deleteConfirmHandler}
+                        title={t('common.delete')}
+                    >
+                        <DeleteIcon fontSize="small" />
+                    </Button>
+                </td>
+            </tr>
+        </>
+    );
 };
 
 export default CourseItem;

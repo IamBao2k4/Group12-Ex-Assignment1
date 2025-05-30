@@ -3,6 +3,7 @@ import { Address } from "../../models/address";
 import { Student } from "../../models/student";
 import LocationSelect from "./locationSelect/locationSelect";
 import "./addressItem.css"
+import { useTranslation } from 'react-i18next';
 
 interface AddressItemProps {
     student: Student;
@@ -19,6 +20,7 @@ const defaultAddress: Address = {
 };
 
 const AddressItem: React.FC<AddressItemProps> = ({ student, setAddresses, type }) => {
+    const { t } = useTranslation();
     const [permanentAddress, setPermanentAddress] = useState<Address>(defaultAddress);
     const [temporaryAddress, setTemporaryAddress] = useState<Address>(defaultAddress);
 
@@ -29,19 +31,19 @@ const AddressItem: React.FC<AddressItemProps> = ({ student, setAddresses, type }
     return (
         <div>
             <LocationSelect
-                label="Địa chỉ thường trú"
+                label={t('student.permanentAddress')}
                 onAddressChange={(addr: Address) => {setPermanentAddress(addr)}}
                 initialAddress={student?.dia_chi_thuong_tru}
                 type={type}
             />
 
-            <label style={{ marginBottom: "10px", fontWeight: "700" }}>Địa chỉ thường trú</label>
+            <label style={{ marginBottom: "10px", fontWeight: "700" }}>{t('student.permanentAddress')}</label>
 
             <input
                 type="text"
                 id="permanent-address"
                 readOnly
-                placeholder="Địa chỉ thường trú"
+                placeholder={t('student.permanentAddress')}
                 className="address-item-input"
                 value={ type === "edit"?
                     (permanentAddress
@@ -54,19 +56,19 @@ const AddressItem: React.FC<AddressItemProps> = ({ student, setAddresses, type }
             <div className="location-select-divider"></div>
 
             <LocationSelect
-                label="Địa chỉ tạm trú"
+                label={t('student.temporaryAddress')}
                 onAddressChange={(addr: Address) => setTemporaryAddress(addr)}
                 initialAddress={student?.dia_chi_tam_tru}
                 type={type}
             />
 
-            <label style={{ marginBottom: "10px", fontWeight: "700" }}>Địa chỉ tạm trú</label>
+            <label style={{ marginBottom: "10px", fontWeight: "700" }}>{t('student.temporaryAddress')}</label>
 
             <input
                 type="text"
                 id="temporary-address"
                 readOnly
-                placeholder="Địa chỉ tạm trú"
+                placeholder={t('student.temporaryAddress')}
                 className="address-item-input"
                 value={ type === "edit"?
                     (temporaryAddress

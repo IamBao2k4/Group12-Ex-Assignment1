@@ -1,6 +1,7 @@
 import React from "react";
 import { CMNDDocument } from "../../../../models/id-document";
 import "./CMNDItem.css";
+import { useTranslation } from 'react-i18next';
 
 interface CMNDItemProps {
     document: CMNDDocument | null;
@@ -16,11 +17,12 @@ const defaultCMND: CMNDDocument = {
 };
 
 const CMNDItem: React.FC<CMNDItemProps> = ({ document, setDocument }) => {
+    const { t } = useTranslation();
     if (!document) document = defaultCMND;
     return (
         <div className="profile-dialog-info-form-cmnd">
             <div className="profile-dialog-info-form-group">
-                <label htmlFor="cmnd">CMND</label>
+                <label htmlFor="cmnd">{t('idDocument.cmnd')}</label>
                 <input
                     type="text"
                     name="cmnd"
@@ -33,7 +35,7 @@ const CMNDItem: React.FC<CMNDItemProps> = ({ document, setDocument }) => {
             </div>
 
             <div className="profile-dialog-info-form-group">
-                <label htmlFor="ngay_cap_cmnd">Ngày Cấp</label>
+                <label htmlFor="ngay_cap_cmnd">{t('idDocument.issueDate')}</label>
                 <input
                     type="date"
                     name="ngay_cap_cmnd"
@@ -55,7 +57,7 @@ const CMNDItem: React.FC<CMNDItemProps> = ({ document, setDocument }) => {
             </div>
 
             <div className="profile-dialog-info-form-group">
-                <label htmlFor="noi_cap_cmnd">Nơi Cấp</label>
+                <label htmlFor="noi_cap_cmnd">{t('idDocument.issuePlace')}</label>
                 <input
                     type="text"
                     name="noi_cap_cmnd"
@@ -68,7 +70,7 @@ const CMNDItem: React.FC<CMNDItemProps> = ({ document, setDocument }) => {
             </div>
 
             <div className="profile-dialog-info-form-group">
-                <label htmlFor="ngay_het_han_cmnd">Ngày Hết Hạn</label>
+                <label htmlFor="ngay_het_han_cmnd">{t('idDocument.expiryDate')}</label>
                 <input
                     type="date"
                     name="ngay_het_han_cmnd"

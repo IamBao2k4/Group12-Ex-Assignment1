@@ -6,7 +6,8 @@ import { Button } from "react-bootstrap";
 import ConfirmationDialog from "../../../common/ConfirmationDialog";
 import { useNotification } from "../../../common/NotificationContext";
 import { Student } from "../models/student";
-
+import "./studentItem.css";
+import { useTranslation } from 'react-i18next';
 import { SERVER_URL } from "../../../../../global";
 import { useNavigate } from "react-router-dom";
 
@@ -25,10 +26,10 @@ const StudentItem: React.FC<StudentItemProps> = ({
     setChosenStudent,
     onDeleteSuccess,
 }) => {
+    const { t } = useTranslation();
     const [status, setStatus] = useState("");
     const [showConfirmation, setShowConfirmation] = useState(false);
     const { showNotification } = useNotification();
-
     const navigate = useNavigate();
 
     function EditBtnHandler() {
@@ -70,18 +71,18 @@ const StudentItem: React.FC<StudentItemProps> = ({
             if (response.ok) {
                 showNotification(
                     "success",
-                    `Student "${student.ho_ten}" deleted successfully`
+                    t('student.deleteSuccess', { name: student.ho_ten })
                 );
                 setShowConfirmation(false);
-                onDeleteSuccess(); // Call the refresh function instead of reloading page
+                onDeleteSuccess();
             } else {
                 showNotification(
                     "error",
-                    data.message || "Failed to delete student"
+                    data.message || t('student.deleteError')
                 );
             }
         } catch (error) {
-            showNotification("error", "Error occurred while deleting student");
+            showNotification("error", t('student.deleteError'));
             console.error("Error deleting student:", error);
         }
     }
@@ -98,29 +99,43 @@ const StudentItem: React.FC<StudentItemProps> = ({
         <>
             <ConfirmationDialog
                 isOpen={showConfirmation}
-                title="Delete Confirmation"
-                message={`Are you sure you want to delete the student "${student.ho_ten}"?`}
+                title={t('student.deleteConfirmTitle')}
+                message={t('student.deleteConfirmMessage', { name: student.ho_ten })}
                 onConfirm={DeleteStudentHandler}
                 onCancel={() => setShowConfirmation(false)}
             />
-            <tr
-                key={id}
-            >
-                <td
-                    onClick={goToTranscriptHandler}
-                    style={{ cursor: "pointer" }}
-                >{student.ho_ten}</td>
+            <tr key={id}>
+                <td onClick={goToTranscriptHandler} style={{ cursor: "pointer" }}>
+                    {student.ho_ten}
+                </td>
                 <td>{student.ma_so_sinh_vien}</td>
                 <td>{student.ngay_sinh}</td>
                 <td>{status}</td>
                 <td>
-                    <Button variant="outline-primary" size="sm" className="me-2" onClick={EditBtnHandler}>
+                    <Button 
+                        variant="outline-primary" 
+                        size="sm" 
+                        className="me-2" 
+                        onClick={EditBtnHandler}
+                        title={t('common.edit')}
+                    >
                         <EditIcon fontSize="small" />
                     </Button>
-                    <Button variant="outline-danger" size="sm" onClick={deleteConfirmHandler}>
+                    <Button 
+                        variant="outline-danger" 
+                        size="sm" 
+                        onClick={deleteConfirmHandler}
+                        title={t('common.delete')}
+                    >
                         <DeleteIcon fontSize="small" />
                     </Button>
-                    <Button variant="outline-info" size="sm" className="ms-2" onClick={handleDetailClick}>
+                    <Button 
+                        variant="outline-info" 
+                        size="sm" 
+                        className="ms-2" 
+                        onClick={handleDetailClick}
+                        title={t('common.view')}
+                    >
                         <ArticleIcon fontSize="small" />
                     </Button>
                 </td>

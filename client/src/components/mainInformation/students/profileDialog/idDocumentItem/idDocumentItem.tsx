@@ -5,6 +5,7 @@ import CMNDItem from './documentTypes/CMNDItem/CMNDItem';
 import CCCDItem from './documentTypes/CCCDItem/CCCDItem';
 import PassportItem from './documentTypes/passportItem/passportItem';
 import "./idDocumentItem.css"
+import { useTranslation } from 'react-i18next';
 
 interface IdDocumentItemProps {
     student: Student;
@@ -13,6 +14,7 @@ interface IdDocumentItemProps {
 }
 
 const IdDocumentItem: React.FC<IdDocumentItemProps> = ({ student, setDocuments, type }) => {
+    const { t } = useTranslation();
     const [selected, setSelected] = useState("");
 
     const getGiayTo = (type: string): IDDocument | undefined => {
@@ -59,7 +61,7 @@ const IdDocumentItem: React.FC<IdDocumentItemProps> = ({ student, setDocuments, 
     return (
         <div className="profile-dialog-info-form-group">
             <label style={{ marginTop: "20px" }}>
-                Giấy tờ chứng minh nhân thân của sinh viên
+                {t('student.idDocument')}
             </label>
             <div className="profile-dialog-info-form-radio">
                 <label>
@@ -70,7 +72,7 @@ const IdDocumentItem: React.FC<IdDocumentItemProps> = ({ student, setDocuments, 
                         onChange={(e) => setSelected(e.target.value)}
                         defaultChecked={type === "edit"}
                     />
-                    CMND
+                    {t('idDocument.cmnd')}
                 </label>
 
                 <label>
@@ -80,7 +82,7 @@ const IdDocumentItem: React.FC<IdDocumentItemProps> = ({ student, setDocuments, 
                         value="CCCD"
                         onChange={(e) => setSelected(e.target.value)}
                     />
-                    CCCD
+                    {t('idDocument.cccd')}
                 </label>
 
                 <label>
@@ -90,7 +92,7 @@ const IdDocumentItem: React.FC<IdDocumentItemProps> = ({ student, setDocuments, 
                         value="passport"
                         onChange={(e) => setSelected(e.target.value)}
                     />
-                    Hộ chiếu
+                    {t('idDocument.passport')}
                 </label>
             </div>
 

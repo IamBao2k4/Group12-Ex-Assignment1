@@ -13,8 +13,10 @@ import {
 import { useParams } from "react-router-dom";
 import { PaginationOptions, TranscriptModel } from "./models/transcript.model";
 import { transcriptRoute } from "./route/transcript.route";
+import { useTranslation } from 'react-i18next';
 
 const Transcript: React.FC = () => {
+    const { t } = useTranslation();
     const { studentId } = useParams();
     const [transcript, setTranscript] = React.useState<TranscriptModel[]>([]);
     const [loading, setLoading] = React.useState<boolean>(true);
@@ -50,7 +52,7 @@ const Transcript: React.FC = () => {
             setLoading(false);
         } catch (error) {
             console.error("Error fetching transcript:", error);
-            setError("Lỗi khi tải bảng điểm. Vui lòng thử lại sau.");
+            setError(t('transcript.error'));
             setTranscript([]);
             setLoading(false);
         }
@@ -146,20 +148,20 @@ const Transcript: React.FC = () => {
         <div className="transcript-container mt-4">
             <Card>
                 <Card.Header className="bg-primary text-white">
-                    <h2>Kết quả học tập</h2>
+                    <h2>{t('transcript.title')}</h2>
                 </Card.Header>
                 <Card.Body>
                     <div className="d-flex align-items-end mb-3">
                         <Row className="flex-grow-1">
                             <Col md={3}>
                                 <Form.Group>
-                                    <Form.Label>Năm học:</Form.Label>
+                                    <Form.Label>{t('transcript.year')}:</Form.Label>
                                     <Form.Select
                                         name="nam_hoc"
                                         value={searchOptions.nam_hoc || ""}
                                         onChange={handleFilterChange}
                                     >
-                                        <option value="">Tất cả</option>
+                                        <option value="">{t('common.all')}</option>
                                         {[2021, 2022, 2023, 2024, 2025].map(
                                             (year) => (
                                                 <option
@@ -178,13 +180,13 @@ const Transcript: React.FC = () => {
 
                             <Col md={3}>
                                 <Form.Group>
-                                    <Form.Label>Học kỳ:</Form.Label>
+                                    <Form.Label>{t('transcript.semester')}:</Form.Label>
                                     <Form.Select
                                         name="hoc_ky"
                                         value={searchOptions.hoc_ky || ""}
                                         onChange={handleFilterChange}
                                     >
-                                        <option value="">Tất cả</option>
+                                        <option value="">{t('common.all')}</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
                                         <option value="3">3</option>
@@ -198,7 +200,7 @@ const Transcript: React.FC = () => {
                             className="align-self-end"
                             onClick={exportToPDF}
                         >
-                            Export PDF
+                            {t('common.exportPDF')}
                         </Button>
                     </div>
 
@@ -207,16 +209,16 @@ const Transcript: React.FC = () => {
                             <thead>
                                 <tr>
                                     <th>NH/HK</th>
-                                    <th>Môn học</th>
-                                    <th>Số TC</th>
-                                    <th>Điểm</th>
+                                    <th>{t('transcript.courseName')}</th>
+                                    <th>{t('transcript.credits')}</th>
+                                    <th>{t('transcript.grade')}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {loading ? (
                                     <tr>
                                         <td colSpan={8} className="text-center">
-                                            Loading...
+                                            {t('common.loading')}
                                         </td>
                                     </tr>
                                 ) : error ? (
@@ -231,8 +233,7 @@ const Transcript: React.FC = () => {
                                 ) : transcript.length === 0 ? (
                                     <tr>
                                         <td colSpan={8} className="text-center">
-                                            Không tìm thấy bảng điểm của sinh
-                                            viên
+                                            {t('transcript.notFound')}
                                         </td>
                                     </tr>
                                 ) : (

@@ -1,172 +1,181 @@
-import { useEffect, useState, useCallback } from "react";
-import { Program } from "./models/program";
-import Header from "../header/header";
-import ProgramItem from "./programItem/programItem";
-import DetailDialog from "./detailDialog/detailDialog";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Table, Button, Card, Modal, Form } from 'react-bootstrap';
+import '../../../components/common/DomainStyles.css';
 import AddIcon from '@mui/icons-material/Add';
-import { Card, Button, Table, Pagination } from 'react-bootstrap';
-import ConfirmationDialog from '../../common/ConfirmationDialog';
-import { useNotification } from '../../common/NotificationContext';
-import { ProgramsRoute } from "./route/programs.route";
+import { SERVER_URL } from '../../../../global';
+import { useTranslation } from 'react-i18next';
 
-const Programs = () => {
-  const [programs, setPrograms] = useState<Program[]>([]);
-  const [totalPages, setTotalPages] = useState(1);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [showConfirmation, setShowConfirmation] = useState(false);
-  const [type, setType] = useState('');
-  const [chosenProgram, setChosenProgram] = useState<Program>(programs[0]);
-  const [search, setSearch] = useState('');
-  const [loading, setLoading] = useState(true);
-  const { showNotification } = useNotification();
+interface Program {
+    _id: string;
+    name: string;
+    ma: string;
+    created_at: string;
+    updated_at: string;
+}
 
-  const fetchPrograms = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await ProgramsRoute.getPrograms({ page: currentPage, limit: 10 }, { searchString: search });
-      setPrograms(response.data);
-      setTotalPages(response.meta.total);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching programs:', error);
-      setLoading(false);
-    }
-  }, [currentPage, search]);
+const Programs: React.FC = () => {
+    const { t } = useTranslation();
+    const [programs, setPrograms] = useState<Program[]>([]);
+    const [showModal, setShowModal] = useState(false);
+    const [editingProgram, setEditingProgram] = useState<Program | null>(null);
+    const [formData, setFormData] = useState<Omit<Program, '_id' | 'created_at' | 'updated_at'>>({
+        name: '',
+        ma: ''
+    });
 
-  useEffect(() => {
-    fetchPrograms();
-  }, [fetchPrograms]);
+    useEffect(() => {
+        fetchPrograms();
+    }, []);
 
-  useEffect(() => {
-    setChosenProgram(programs[0]);
-  }, [programs]);
+    const fetchPrograms = async () => {
+        try {
+            const response = await axios.get(`${SERVER_URL}/api/v1/programs`);
+            const programsData = Array.isArray(response.data) ? response.data : response.data.data || [];
+            setPrograms(programsData);
+        } catch (error) {
+            console.error('Error fetching programs:', error);
+            setPrograms([]);
+        }
+    };
 
-  function DetailHandler(type: string) {
-    const detailDialog = document.querySelector('.dialog-container') as HTMLElement;
-    setType(type);
-    detailDialog.classList.toggle('hidden');
-  }
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            if (editingProgram) {
+                await axios.put(`${SERVER_URL}/api/v1/programs/${editingProgram._id}`, formData);
+            } else {
+                await axios.post(`${SERVER_URL}/api/v1/programs`, formData);
+            }
+            fetchPrograms();
+            handleCloseModal();
+        } catch (error) {
+            console.error('Error saving program:', error);
+        }
+    };
 
-  async function DeleteHandler() {
-    try {
-      await ProgramsRoute.deleteProgram(chosenProgram._id.toString());
-      showNotification('success', `Program "${chosenProgram.name}" deleted successfully`);
-      setShowConfirmation(false);
-      fetchPrograms();
-    } catch (error) {
-      showNotification('error', 'Error occurred while deleting program');
-      console.error('Error deleting program:', error);
-    }
-  }
+    const handleDelete = async (id: string) => {
+        if (window.confirm(t('program.deleteConfirmMessage', { name: programs.find(p => p._id === id)?.name }))) {
+            try {
+                await axios.delete(`${SERVER_URL}/api/v1/programs/${id}`);
+                fetchPrograms();
+            } catch (error) {
+                console.error('Error deleting program:', error);
+            }
+        }
+    };
 
-  if (programs.length === 0 || chosenProgram === undefined) {
+    const handleCloseModal = () => {
+        setShowModal(false);
+        setEditingProgram(null);
+        setFormData({ name: '', ma: '' });
+    };
+
+    const handleEdit = (program: Program) => {
+        setEditingProgram(program);
+        setFormData({
+            name: program.name,
+            ma: program.ma
+        });
+        setShowModal(true);
+    };
+
     return (
-      <div className="domain-container">
-        <Header searchHandler={setSearch} />
-        <Card>
-          <Card.Header>
-            <h2>Danh sách chương trình</h2>
-          </Card.Header>
-          <Card.Body>
-            <div className="text-center">Không tìm thấy chương trình nào</div>
-          </Card.Body>
-        </Card>
-      </div>
+        <div className="domain-container">
+            <Card>
+                <Card.Header>
+                    <div className="d-flex justify-content-between align-items-center">
+                        <h2>{t('program.title')}</h2>
+                        <Button variant="success" onClick={() => setShowModal(true)}>
+                            <AddIcon /> {t('program.add')}
+                        </Button>
+                    </div>
+                </Card.Header>
+                <Card.Body>
+                    <div className="table-responsive">
+                        <Table striped bordered hover>
+                            <thead>
+                                <tr>
+                                    <th>{t('program.programName')}</th>
+                                    <th>{t('program.programCode')}</th>
+                                    <th>{t('common.action')}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {!programs || programs.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={3} className="text-center">{t('program.notFound')}</td>
+                                    </tr>
+                                ) : (
+                                    programs.map((program) => (
+                                        <tr key={program._id}>
+                                            <td>{program.name}</td>
+                                            <td>{program.ma}</td>
+                                            <td>
+                                                <Button
+                                                    variant="primary"
+                                                    size="sm"
+                                                    className="me-2"
+                                                    onClick={() => handleEdit(program)}
+                                                >
+                                                    {t('common.edit')}
+                                                </Button>
+                                                <Button
+                                                    variant="danger"
+                                                    size="sm"
+                                                    onClick={() => handleDelete(program._id)}
+                                                >
+                                                    {t('common.delete')}
+                                                </Button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </Table>
+                    </div>
+                </Card.Body>
+            </Card>
+
+            <Modal show={showModal} onHide={handleCloseModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>
+                        {editingProgram ? t('common.edit') : t('common.add')} {t('program.title')}
+                    </Modal.Title>
+                </Modal.Header>
+                <Form onSubmit={handleSubmit}>
+                    <Modal.Body>
+                        <Form.Group className="mb-3">
+                            <Form.Label>{t('program.programName')}</Form.Label>
+                            <Form.Control
+                                type="text"
+                                value={formData.name}
+                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                required
+                            />
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Form.Label>{t('program.programCode')}</Form.Label>
+                            <Form.Control
+                                type="text"
+                                value={formData.ma}
+                                onChange={(e) => setFormData({ ...formData, ma: e.target.value })}
+                                required
+                            />
+                        </Form.Group>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleCloseModal}>
+                            {t('common.cancel')}
+                        </Button>
+                        <Button variant="primary" type="submit">
+                            {t('common.save')}
+                        </Button>
+                    </Modal.Footer>
+                </Form>
+            </Modal>
+        </div>
     );
-  }
-
-  return (
-    <div className="domain-container">
-      <ConfirmationDialog
-        isOpen={showConfirmation}
-        title="Delete Confirmation"
-        message={`Are you sure you want to delete the program "${chosenProgram.name}"?`}
-        onConfirm={DeleteHandler}
-        onCancel={() => setShowConfirmation(false)}
-      />
-      <DetailDialog 
-        type={type} 
-        program={chosenProgram ?? programs[0]} 
-        onSuccess={fetchPrograms}
-      />
-      <Header searchHandler={setSearch} />
-      
-      <Card>
-        <Card.Header>
-          <div className="d-flex justify-content-between align-items-center">
-            <h2>Danh sách chương trình</h2>
-            <Button variant="success" onClick={() => DetailHandler('add')}>
-              <AddIcon /> Thêm chương trình mới
-            </Button>
-          </div>
-        </Card.Header>
-        <Card.Body>
-          <div className="table-responsive">
-            <Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>Tên chương trình</th>
-                  <th>Ngày thêm</th>
-                  <th>Ngày cập nhật</th>
-                  <th>Thao tác</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  <tr>
-                    <td colSpan={4} className="text-center">Đang tải...</td>
-                  </tr>
-                ) : programs.length === 0 ? (
-                  <tr>
-                    <td colSpan={4} className="text-center">Không tìm thấy chương trình nào</td>
-                  </tr>
-                ) : (
-                  programs.map((program) => (
-                    <ProgramItem 
-                      key={program._id.toString()} 
-                      program={program} 
-                      setChosenProgram={setChosenProgram} 
-                      DetailHandler={DetailHandler}
-                      setShowConfirmation={setShowConfirmation}
-                    />
-                  ))
-                )}
-              </tbody>
-            </Table>
-          </div>
-
-          <div className="d-flex justify-content-center mt-3">
-            <Pagination>
-              <Pagination.First onClick={() => setCurrentPage(1)} disabled={currentPage === 1} />
-              <Pagination.Prev 
-                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))} 
-                disabled={currentPage === 1}
-              />
-              
-              {Array.from({ length: totalPages }, (_, i) => (
-                <Pagination.Item 
-                  key={i + 1}
-                  active={i + 1 === currentPage}
-                  onClick={() => setCurrentPage(i + 1)}
-                >
-                  {i + 1}
-                </Pagination.Item>
-              ))}
-              
-              <Pagination.Next 
-                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))} 
-                disabled={currentPage === totalPages}
-              />
-              <Pagination.Last 
-                onClick={() => setCurrentPage(totalPages)} 
-                disabled={currentPage === totalPages}
-              />
-            </Pagination>
-          </div>
-        </Card.Body>
-      </Card>
-    </div>
-  );
 };
 
 export default Programs;

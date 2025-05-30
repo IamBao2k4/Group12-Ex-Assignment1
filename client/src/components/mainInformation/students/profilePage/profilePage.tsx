@@ -17,7 +17,8 @@ import RegisCourse from "./regisCourese/regisCourse";
 import { useNotification } from "../../../../components/common/NotificationContext";
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import { SERVER_URL } from "../../../../../global";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 const validateEmail = (email: string) => {
     const emailError = document.querySelector(
@@ -50,13 +51,17 @@ const validatePhone = (phone: string) => {
 };
 
 const ProfilePage = () => {
+    const { t } = useTranslation();
+    const navigate = useNavigate();
     const [faculties, setFaculties] = useState<Faculty[]>([]);
     const [programs, setPrograms] = useState<Program[]>([]);
     const [studentStatuses, setStudentStatuses] = useState<StudentStatus[]>([]);
     const { showNotification } = useNotification();
     const type = "edit";
     const id = useParams<{ id: string }>().id;
-    const [student, setStudent] = useState<Student>();
+    const [student, setStudent] = useState<Student | null>(null);
+    const [editedStudent, setEditedStudent] = useState<Student | null>(null);
+    const [isEditing, setIsEditing] = useState(false);
 
     useEffect(() => {
         const fetchStudent = async () => {
@@ -67,6 +72,7 @@ const ProfilePage = () => {
                 if (!response.ok) throw new Error("Error fetching student data");
                 const data = await response.json();
                 setStudent(data);
+                setEditedStudent(data);
             } catch (error) {
                 console.error("Error fetching student:", error);
             }
@@ -75,8 +81,7 @@ const ProfilePage = () => {
         if (type === "edit" && id) {
             fetchStudent();
         }
-    }
-        , []);
+    }, [id, type]);
 
     const defaultAddress: Address = {
         chi_tiet: "",
@@ -209,6 +214,15 @@ const ProfilePage = () => {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        if (editedStudent) {
+            const updatedStudent = { ...editedStudent };
+            (updatedStudent as any)[name] = value;
+            setEditedStudent(updatedStudent as Student);
+        }
+    };
+
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
@@ -252,18 +266,59 @@ const ProfilePage = () => {
         }
     };
 
-    const handleCancel = () => {
-        window.history.back();
+    const handleSave = async () => {
+        if (!editedStudent) return;
+
+        if (!validatePhone(editedStudent.so_dien_thoai || '')) {
+            showNotification('error', t('profile.invalidPhone'));
+            return;
+        }
+
+        if (!validateEmail(editedStudent.email || '')) {
+            showNotification('error', t('profile.invalidEmail'));
+            return;
+        }
+
+        try {
+            const response = await fetch(`${SERVER_URL}/api/v1/students/${student?._id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(editedStudent),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to update student");
+            }
+
+            showNotification('success', t('profile.updateSuccess'));
+            setIsEditing(false);
+        } catch (error) {
+            showNotification('error', t('profile.updateError'));
+        }
     };
 
-    if (!student)
+    const handleCancel = () => {
+        if (student) {
+            setEditedStudent(student);
+        }
+        setIsEditing(false);
+    };
+
+    const handleBack = () => {
+        navigate('/students');
+    };
+
+    if (!student) {
         return (
             <div className="profile-page-container hidden">
                 <div className="profile-page">
-                    <h1>Loading...</h1>
+                    <h1>{t('profile.loading')}</h1>
                 </div>
             </div>
         );
+    }
 
     return (
         <div className="profile-page-container">
@@ -271,11 +326,27 @@ const ProfilePage = () => {
                 <div className="profile-page-header">
                     <button
                         className="profile-page-header-back"
-                        onClick={handleCancel}
+                        onClick={handleBack}
                     >
                         <ArrowLeftIcon fontSize="large"/>
                     </button>
-                    <h1>Thông tin sinh viên</h1>
+                    <h1>{t('profile.title')}</h1>
+                    <div className="profile-page-actions">
+                        {isEditing ? (
+                            <>
+                                <button className="profile-page-save-btn" onClick={handleSave}>
+                                    {t('common.save')}
+                                </button>
+                                <button className="profile-page-cancel-btn" onClick={handleCancel}>
+                                    {t('common.cancel')}
+                                </button>
+                            </>
+                        ) : (
+                            <button className="profile-page-edit-btn" onClick={() => setIsEditing(true)}>
+                                {t('common.edit')}
+                            </button>
+                        )}
+                    </div>
                 </div>
                 <div className="profile-page-info">
                     <form
@@ -284,55 +355,58 @@ const ProfilePage = () => {
                     >
                         <div className="profile-page-info-form-top">
                             <div className="profile-page-info-form-group">
-                                <label htmlFor="ho_ten">Họ tên</label>
+                                <label htmlFor="ho_ten">{t('profile.fullName')}</label>
                                 <input
                                     type="text"
                                     id="ho_ten"
                                     name="ho_ten"
                                     value={formData.ho_ten}
                                     onChange={handleChange}
+                                    disabled={!isEditing}
                                 />
                             </div>
                             <div className="profile-page-info-form-group">
-                                <label htmlFor="ma_so_sinh_vien">
-                                    Mã số sinh viên
-                                </label>
+                                <label htmlFor="ma_so_sinh_vien">{t('profile.studentId')}</label>
                                 <input
                                     type="text"
                                     id="ma_so_sinh_vien"
                                     name="ma_so_sinh_vien"
                                     value={formData.ma_so_sinh_vien}
                                     onChange={handleChange}
+                                    disabled={!isEditing}
                                 />
                             </div>
                             <div className="profile-page-info-form-group">
-                                <label htmlFor="ngay_sinh">Ngày sinh</label>
+                                <label htmlFor="ngay_sinh">{t('profile.birthDate')}</label>
                                 <input
                                     type="date"
                                     id="ngay_sinh"
                                     name="ngay_sinh"
                                     value={formData.ngay_sinh}
                                     onChange={handleChange}
+                                    disabled={!isEditing}
                                 />
                             </div>
                             <div className="profile-page-info-form-group">
-                                <label htmlFor="gioi_tinh">Giới tính</label>
+                                <label htmlFor="gioi_tinh">{t('profile.gender')}</label>
                                 <input
                                     type="text"
                                     id="gioi_tinh"
                                     name="gioi_tinh"
                                     value={formData.gioi_tinh}
                                     onChange={handleChange}
+                                    disabled={!isEditing}
                                 />
                             </div>
                             <div className="profile-page-info-form-group">
-                                <label htmlFor="khoa">Khoa</label>
+                                <label htmlFor="khoa">{t('profile.faculty')}</label>
                                 <div className="profile-page-info-form-select">
                                     <select
                                         name="khoa"
                                         id="khoa"
                                         value={formData.khoa}
                                         onChange={handleChange}
+                                        disabled={!isEditing}
                                     >
                                         {faculties.map((faculty, index) => (
                                             <option
@@ -349,25 +423,25 @@ const ProfilePage = () => {
                                 </div>
                             </div>
                             <div className="profile-page-info-form-group">
-                                <label htmlFor="khoa_hoc">Khóa</label>
+                                <label htmlFor="khoa_hoc">{t('profile.course')}</label>
                                 <input
                                     type="text"
                                     id="khoa_hoc"
                                     name="khoa_hoc"
                                     value={formData.khoa_hoc}
                                     onChange={handleChange}
+                                    disabled={!isEditing}
                                 />
                             </div>
                             <div className="profile-page-info-form-group">
-                                <label htmlFor="chuong_trinh">
-                                    Chương trình
-                                </label>
+                                <label htmlFor="chuong_trinh">{t('profile.program')}</label>
                                 <div className="profile-page-info-form-select">
                                     <select
                                         name="chuong_trinh"
                                         id="chuong_trinh"
                                         value={formData.chuong_trinh}
                                         onChange={handleChange}
+                                        disabled={!isEditing}
                                     >
                                         {programs.map((program) => (
                                             <option
@@ -382,9 +456,7 @@ const ProfilePage = () => {
                                 </div>
                             </div>
                             <div className="profile-page-info-form-group">
-                                <label htmlFor="so_dien_thoai">
-                                    Số điện thoại
-                                </label>
+                                <label htmlFor="so_dien_thoai">{t('profile.phone')}</label>
                                 <input
                                     type="text"
                                     id="so_dien_thoai"
@@ -394,16 +466,17 @@ const ProfilePage = () => {
                                     }
                                     value={formData.so_dien_thoai}
                                     onChange={handleChange}
+                                    disabled={!isEditing}
                                 />
                                 <div className="profile-page-info-form-error profile-page-info-form-error-phone">
                                     <i className="fa-solid fa-circle-exclamation"></i>
-                                    <span>Số điện thoại không hợp lệ</span>
+                                    <span>{t('profile.invalidPhone')}</span>
                                 </div>
                             </div>
                         </div>
                         <div className="profile-page-info-form-bottom">
                             <div className="profile-page-info-form-group">
-                                <label htmlFor="email">Email</label>
+                                <label htmlFor="email">{t('profile.email')}</label>
                                 <input
                                     type="text"
                                     id="email"
@@ -413,23 +486,25 @@ const ProfilePage = () => {
                                     }
                                     value={formData.email}
                                     onChange={handleChange}
+                                    disabled={!isEditing}
                                 />
                                 <div className="profile-page-info-form-error profile-page-info-form-error-email">
                                     <i className="fa-solid fa-circle-exclamation"></i>
-                                    <span>Email không hợp lệ</span>
+                                    <span>{t('profile.invalidEmail')}</span>
                                 </div>
                             </div>
                             <div
                                 className="profile-page-info-form-group"
                                 style={{ marginTop: "20px" }}
                             >
-                                <label htmlFor="tinh_trang">Tình trạng</label>
+                                <label htmlFor="tinh_trang">{t('profile.status')}</label>
                                 <div className="profile-page-info-form-select">
                                     <select
                                         name="tinh_trang"
                                         id="tinh_trang"
                                         value={formData.tinh_trang}
                                         onChange={handleChange}
+                                        disabled={!isEditing}
                                     >
                                         {studentStatuses.map(
                                             (studentStatus) => (
@@ -464,14 +539,14 @@ const ProfilePage = () => {
                                     className="profile-page-action-save"
                                     type="submit"
                                 >
-                                    Save
+                                    {t('profile.save')}
                                 </button>
                                 <button
                                     className="profile-page-action-cancel"
                                     type="button"
                                     onClick={handleCancel}
                                 >
-                                    Cancel
+                                    {t('profile.cancel')}
                                 </button>
                             </div>
                         </div>
