@@ -1,0 +1,78 @@
+.faculty-item {
+    transition: background-color 0.2s;
+}
+
+.faculty-item:hover {
+    background-color: #f8f9fa;
+}
+
+.faculty-item td {
+    vertical-align: middle;
+}
+
+.faculty-code {
+    font-family: monospace;
+    color: #666;
+    font-weight: 500;
+}
+
+.faculty-name {
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.faculty-date {
+    color: #6c757d;
+    font-size: 0.9em;
+}
+
+.faculty-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.faculty-actions button {
+    padding: 4px 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.edit-button {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.edit-button:hover {
+    background-color: #e0a800;
+}
+
+.delete-button {
+    background-color: #dc3545;
+    color: white;
+}
+
+.delete-button:hover {
+    background-color: #c82333;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .faculty-actions {
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .faculty-date {
+        display: none;
+    }
+    
+    .faculty-name {
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+} 

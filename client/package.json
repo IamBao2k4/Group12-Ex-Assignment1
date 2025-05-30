@@ -37,9 +37,9 @@
     "xlsx": "^0.18.5"
   },
   "scripts": {
-    "build": "tsc",
-    "start": "node dist/server.js",
-    "dev": "concurrently \"vite\" ",
+    "build": "vite build",
+    "start": "vite",
+    "dev": "vite",
     "lint": "eslint .",
     "preview": "vite preview"
   },

@@ -52,7 +52,7 @@ const DetailDialog: React.FC<DetailDialogProps> = ({ type, program, onSuccess })
         };
 
         try {
-            if (type === 'add') {
+        if (type === 'add') {
                 const response = await fetch(SERVER_URL + `/api/v1/programs`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -68,7 +68,7 @@ const DetailDialog: React.FC<DetailDialogProps> = ({ type, program, onSuccess })
                 showNotification('success', t('program.createSuccess'));
                 detailDialog.classList.toggle('hidden');
                 onSuccess();
-            } else {
+        } else {
                 const response = await fetch(SERVER_URL + `/api/v1/programs/${program._id}`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
@@ -85,10 +85,10 @@ const DetailDialog: React.FC<DetailDialogProps> = ({ type, program, onSuccess })
                 detailDialog.classList.toggle('hidden');
                 onSuccess();
             }
-        } catch (error) {
-            if (error instanceof Error) {
-                showNotification('error', error.message);
-            } else {
+            } catch (error) {
+                if (error instanceof Error) {
+                    showNotification('error', error.message);
+                } else {
                 showNotification('error', t('messages.unknownError'));
             }
         }

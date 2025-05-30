@@ -28,6 +28,11 @@ const CourseItem: React.FC<CourseItemProps> = ({
 
     useEffect(() => {
         const fetchFaculty = async () => {
+            if (!subject.khoa) {
+                setFaculty(t('common.notAssigned', 'Chưa phân công'));
+                return;
+            }
+
             try {
                 const response = await fetch(SERVER_URL + `/api/v1/faculties/${subject.khoa}`, {
                     method: "GET",
@@ -35,15 +40,35 @@ const CourseItem: React.FC<CourseItemProps> = ({
                         "Content-Type": "application/json",
                     },
                 });
-                const data = await response.json();
-                setFaculty(data.ten_khoa);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const text = await response.text();
+                
+                if (!text) {
+                    console.warn('Empty response from faculty API');
+                    setFaculty(t('common.unknown', 'Không xác định'));
+                    return;
+                }
+
+                const data = JSON.parse(text);
+                
+                if (data && data.ten_khoa) {
+                    setFaculty(data.ten_khoa);
+                } else {
+                    console.warn('Faculty data missing ten_khoa field:', data);
+                    setFaculty(t('common.unknown', 'Không xác định'));
+                }
             } catch (error) {
                 console.error("Error fetching faculty:", error);
+                setFaculty(t('common.error', 'Lỗi'));
             }
         };
 
         fetchFaculty();
-    }, [subject.khoa]);
+    }, [subject.khoa, t]);
 
     const handleEdit = () => {
         setChosenSubject(subject);
@@ -90,6 +115,7 @@ const CourseItem: React.FC<CourseItemProps> = ({
             <tr>
                 <td>{subject.ten}</td>
                 <td>{subject.ma_mon_hoc}</td>
+                <td>{subject.tin_chi}</td>
                 <td>{faculty}</td>
                 <td>
                     <Button 

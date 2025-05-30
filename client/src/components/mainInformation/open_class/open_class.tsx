@@ -65,7 +65,7 @@ const OpenClassComponent: React.FC = () => {
       setLoading(false);
     } catch (err) {
       console.error('Error fetching open classes:', err);
-      setError(t('class.fetchError', 'Không thể tải danh sách lớp mở. Vui lòng thử lại sau.'));
+      setError(t('openClass.fetchError'));
       setOpenClasses([]);
       setLoading(false);
     }
@@ -78,7 +78,7 @@ const OpenClassComponent: React.FC = () => {
       setCourses(response);
     } catch (error) {
       console.error('Error fetching courses:', error);
-      setError(t('course.fetchError', 'Failed to fetch courses'));
+      setError(t('course.fetchError'));
     }
   };
 
@@ -222,13 +222,13 @@ const OpenClassComponent: React.FC = () => {
                   name="keyword"
                   value={searchOptions.keyword || ''}
                   onChange={handleFilterChange}
-                  placeholder={t('common.searchPlaceholder', 'Nhập từ khóa...')}
+                  placeholder={t('common.searchPlaceholder')}
                 />
               </Form.Group>
             </Col>
             <Col md={3} className="d-flex align-items-end">
               <Button variant="primary" onClick={() => fetchOpenClasses()}>
-                {t('common.view', 'Xem')}
+                {t('common.view')}
               </Button>
             </Col>
           </Row>
@@ -350,7 +350,7 @@ const OpenClassComponent: React.FC = () => {
                 name="ma_lop"
                 value={newClass.ma_lop}
                 onChange={handleNewClassChange}
-                placeholder={t('openClass.classCodePlaceholder', 'Ví dụ: 24_001')}
+                placeholder={t('openClass.classCodePlaceholder')}
                 required
               />
             </Form.Group>
@@ -362,7 +362,7 @@ const OpenClassComponent: React.FC = () => {
                 name="ten"
                 value={newClass.ten}
                 onChange={handleNewClassChange}
-                placeholder={t('openClass.classNamePlaceholder', 'Ví dụ: Lớp 24_001')}
+                placeholder={t('openClass.classNamePlaceholder')}
                 required
               />
             </Form.Group>
@@ -375,7 +375,7 @@ const OpenClassComponent: React.FC = () => {
                 onChange={handleCourseChange}
                 required
               >
-                <option value="">{t('course.selectCourse', 'Chọn Môn Học')}</option>
+                <option value="">{t('course.selectCourse')}</option>
                 {courses.map(course => (
                   <option key={course._id} value={course._id}>{course.ten}</option>
                 ))}
@@ -400,7 +400,7 @@ const OpenClassComponent: React.FC = () => {
                 name="giang_vien"
                 value={newClass.giang_vien}
                 onChange={handleNewClassChange}
-                placeholder={t('openClass.instructorPlaceholder', 'Tên giảng viên')}
+                placeholder={t('openClass.instructorPlaceholder')}
                 required
               />
             </Form.Group>
@@ -424,7 +424,7 @@ const OpenClassComponent: React.FC = () => {
                 name="lich_hoc"
                 value={newClass.lich_hoc}
                 onChange={handleNewClassChange}
-                placeholder={t('openClass.schedulePlaceholder', 'Ví dụ: T2(1-4), T5(6-9)')}
+                placeholder={t('openClass.schedulePlaceholder')}
                 required
               />
             </Form.Group>
@@ -436,7 +436,7 @@ const OpenClassComponent: React.FC = () => {
                 name="phong_hoc"
                 value={newClass.phong_hoc}
                 onChange={handleNewClassChange}
-                placeholder={t('openClass.locationPlaceholder', 'Ví dụ: A102')}
+                placeholder={t('openClass.locationPlaceholder')}
                 required
               />
             </Form.Group>

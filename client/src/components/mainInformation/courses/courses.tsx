@@ -8,11 +8,10 @@ import { Card, Button, Table, Pagination, Form } from "react-bootstrap";
 import "../../../components/common/DomainStyles.css";
 import { useTranslation } from 'react-i18next';
 import { CoursesRoute } from "./route/courses.route";
-import mongoose from "mongoose";
 
 interface SearchParams {
     searchString?: string;
-    faculty?: mongoose.Types.ObjectId;
+    faculty?: string;
 }
 
 const Courses = () => {
@@ -26,6 +25,7 @@ const Courses = () => {
     const [loading, setLoading] = useState(true);
     const [faculty, setFaculty] = useState<string>("");
     const [faculties, setFaculties] = useState<any[]>([]);
+    const [facultiesLoading, setFacultiesLoading] = useState(false);
 
     const fetchCourses = useCallback(async () => {
         setLoading(true);
@@ -35,7 +35,7 @@ const Courses = () => {
             };
             
             if (faculty) {
-                searchParams.faculty = new mongoose.Types.ObjectId(faculty);
+                searchParams.faculty = faculty;
             }
 
             const response = await CoursesRoute.getCourses(
@@ -47,16 +47,29 @@ const Courses = () => {
             setLoading(false);
         } catch (error) {
             console.error('Error fetching courses:', error);
+            setCourses([]);
             setLoading(false);
         }
     }, [currentPage, search, faculty]);
 
     const fetchFaculties = useCallback(async () => {
+        setFacultiesLoading(true);
         try {
             const response = await CoursesRoute.getAllFaculties();
-            setFaculties(response);
+            // Ensure response is an array
+            if (Array.isArray(response)) {
+                setFaculties(response);
+            } else if (response && typeof response === 'object' && 'data' in response && Array.isArray((response as any).data)) {
+                setFaculties((response as any).data);
+            } else {
+                console.warn('Unexpected faculties response structure:', response);
+                setFaculties([]);
+            }
         } catch (error) {
             console.error('Error fetching faculties:', error);
+            setFaculties([]);
+        } finally {
+            setFacultiesLoading(false);
         }
     }, []);
 
@@ -100,9 +113,15 @@ const Courses = () => {
                 <Card.Body>
                     <Form.Group className="mb-3">
                         <Form.Label>{t('faculty.title')}:</Form.Label>
-                        <Form.Select onChange={handleFacultyChange} value={faculty}>
-                            <option value="">{t('common.all')}</option>
-                            {faculties.map((faculty) => (
+                        <Form.Select 
+                            onChange={handleFacultyChange} 
+                            value={faculty}
+                            disabled={facultiesLoading}
+                        >
+                            <option value="">
+                                {facultiesLoading ? t('common.loading') : t('common.all')}
+                            </option>
+                            {Array.isArray(faculties) && faculties.map((faculty) => (
                                 <option key={faculty._id.toString()} value={faculty._id.toString()}>
                                     {faculty.ten_khoa}
                                 </option>

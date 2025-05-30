@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { Subject } from "../models/course";
 import { Faculty } from "../../faculties/models/faculty";
 import { useNotification } from '../../../common/NotificationContext';
-import mongoose from "mongoose";
 
 interface CourseDialogProps {
     type: string;
@@ -20,22 +19,50 @@ const CourseDialog: React.FC<CourseDialogProps> = ({ subject, type, onSuccess })
     const [tinChi, setTinChi] = useState(subject?.tin_chi || 0);
     const [faculty, setFaculty] = useState<string>(subject?.khoa?.toString() || "");
     const [faculties, setFaculties] = useState<Faculty[]>([]);
+    const [loading, setLoading] = useState(false);
     const { showNotification } = useNotification();
     const detailDialog = document.querySelector('.dialog-container') as HTMLElement;
 
     useEffect(() => {
         const fetchFaculties = async () => {
             try {
-                const response = await fetch(SERVER_URL + '/api/v1/faculties');
-                const data = await response.json();
-                setFaculties(data);
+                setLoading(true);
+                const response = await fetch(SERVER_URL + '/api/v1/faculties/all');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const text = await response.text();
+                
+                if (!text) {
+                    console.warn('Empty response from faculties API');
+                    setFaculties([]);
+                    return;
+                }
+                
+                const data = JSON.parse(text);
+                
+                // Ensure data is an array
+                if (Array.isArray(data)) {
+                    setFaculties(data);
+                } else if (data && Array.isArray(data.data)) {
+                    setFaculties(data.data);
+                } else {
+                    console.warn('Unexpected faculties data structure:', data);
+                    setFaculties([]);
+                }
             } catch (error) {
                 console.error('Error fetching faculties:', error);
+                setFaculties([]);
+                showNotification('error', t('messages.error'));
+            } finally {
+                setLoading(false);
             }
         };
 
         fetchFaculties();
-    }, []);
+    }, [t, showNotification]);
 
     useEffect(() => {
         if (type === 'edit' && subject) {
@@ -58,7 +85,7 @@ const CourseDialog: React.FC<CourseDialogProps> = ({ subject, type, onSuccess })
             ma_mon_hoc: maMonHoc,
             ten: ten,
             tin_chi: tinChi,
-            khoa: faculty ? new mongoose.Types.ObjectId(faculty) : undefined
+            khoa: faculty || undefined
         };
 
         try {
@@ -75,7 +102,7 @@ const CourseDialog: React.FC<CourseDialogProps> = ({ subject, type, onSuccess })
                     throw new Error(responseData.message || t('messages.error'));
                 }
 
-                showNotification('success', t('course.createSuccess'));
+                showNotification('success', t('messages.saveSuccess'));
                 detailDialog.classList.toggle('hidden');
                 onSuccess();
             } else {
@@ -91,7 +118,7 @@ const CourseDialog: React.FC<CourseDialogProps> = ({ subject, type, onSuccess })
                     throw new Error(responseData.message || t('messages.error'));
                 }
 
-                showNotification('success', t('course.updateSuccess'));
+                showNotification('success', t('messages.saveSuccess'));
                 detailDialog.classList.toggle('hidden');
                 onSuccess();
             }
@@ -153,9 +180,10 @@ const CourseDialog: React.FC<CourseDialogProps> = ({ subject, type, onSuccess })
                                 value={faculty}
                                 onChange={(e) => setFaculty(e.target.value)}
                                 required
+                                disabled={loading}
                             >
-                                <option value="">{t('common.select')}</option>
-                                {faculties.map((faculty) => (
+                                <option value="">{loading ? t('common.loading') : t('common.select')}</option>
+                                {Array.isArray(faculties) && faculties.map((faculty) => (
                                     <option key={faculty._id.toString()} value={faculty._id.toString()}>
                                         {faculty.ten_khoa}
                                     </option>

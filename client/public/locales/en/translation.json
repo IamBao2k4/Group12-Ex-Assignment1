@@ -1,7 +1,7 @@
 {
     "common": {
-        "search": "Search",
-        "add": "Add New",
+        "search": "Search...",
+        "add": "Add",
         "edit": "Edit",
         "delete": "Delete",
         "save": "Save",
@@ -20,8 +20,19 @@
         "exportCSV": "Export CSV",
         "action": "Action",
         "all": "All",
-        "createdAt": "Created Date",
-        "updatedAt": "Updated Date"
+        "createdAt": "Created At",
+        "updatedAt": "Updated At",
+        "back": "Back",
+        "yes": "Yes",
+        "no": "No",
+        "select": "Select",
+        "refresh": "Refresh",
+        "filter": "Filter",
+        "reset": "Reset",
+        "apply": "Apply",
+        "notAssigned": "Not Assigned",
+        "unknown": "Unknown",
+        "searchPlaceholder": "Enter keywords..."
     },
     "nav": {
         "title": "Student Manager",
@@ -77,10 +88,14 @@
         "register": "Register",
         "unregister": "Unregister",
         "notFound": "No courses found",
-        "deleteConfirmTitle": "Delete Confirmation",
-        "deleteConfirmMessage": "Are you sure you want to delete the course \"{{name}}\"?",
-        "deleteSuccess": "Course \"{{name}}\" deleted successfully",
-        "deleteError": "Failed to delete course"
+        "deleteConfirmTitle": "Confirm Delete",
+        "deleteConfirmMessage": "Are you sure you want to delete course \"{{name}}\"?",
+        "deleteSuccess": "Successfully deleted course \"{{name}}\"",
+        "deleteError": "Unable to delete course",
+        "createSuccess": "Course created successfully",
+        "updateSuccess": "Course updated successfully",
+        "selectCourse": "Select Course",
+        "fetchError": "Unable to load course list"
     },
     "class": {
         "title": "Class List",
@@ -92,7 +107,34 @@
         "room": "Room",
         "capacity": "Capacity",
         "enrolled": "Enrolled",
-        "notFound": "No classes found"
+        "notFound": "No classes found",
+        "fetchError": "Unable to load open class list. Please try again later.",
+        "createError": "Unable to create new class"
+    },
+    "openClass": {
+        "title": "Open Class List",
+        "add": "Add Open Class",
+        "classCode": "Class Code",
+        "className": "Class Name",
+        "courseCode": "Course Code",
+        "courseName": "Course Name",
+        "instructor": "Instructor",
+        "capacity": "Max Capacity",
+        "schedule": "Schedule",
+        "location": "Location",
+        "notFound": "No open classes found",
+        "classCodePlaceholder": "Example: 24_001",
+        "classNamePlaceholder": "Example: Class 24_001",
+        "instructorPlaceholder": "Instructor name",
+        "schedulePlaceholder": "Example: Mon(1-4), Thu(6-9)",
+        "locationPlaceholder": "Example: A102",
+        "deleteConfirmTitle": "Confirm Delete",
+        "deleteConfirmMessage": "Are you sure you want to delete class \"{{name}}\"?",
+        "deleteSuccess": "Successfully deleted class \"{{name}}\"",
+        "deleteError": "Unable to delete class",
+        "createSuccess": "Open class created successfully",
+        "updateSuccess": "Open class updated successfully",
+        "fetchError": "Unable to load open class list"
     },
     "faculty": {
         "title": "Faculty List",

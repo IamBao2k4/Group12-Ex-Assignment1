@@ -1,0 +1,145 @@
+.faculties-container {
+    padding: 20px;
+}
+
+.faculties-header {
+    margin-bottom: 20px;
+}
+
+.faculties-table {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.faculties-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.faculty-row {
+    transition: background-color 0.2s;
+}
+
+.faculty-row:hover {
+    background-color: #f5f5f5;
+}
+
+.faculty-name {
+    font-weight: 500;
+}
+
+.faculty-code {
+    color: #666;
+}
+
+.faculty-date {
+    color: #888;
+    font-size: 0.9em;
+}
+
+/* Dialog Styles */
+.dialog-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.dialog-container.hidden {
+    display: none;
+}
+
+.dialog {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+}
+
+.dialog h1 {
+    margin-bottom: 20px;
+    font-size: 1.5em;
+}
+
+.dialog-content {
+    margin-bottom: 20px;
+}
+
+.dialog-content-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.dialog-content-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.dialog-content-form-group label {
+    font-weight: 500;
+}
+
+.dialog-content-form-group input,
+.dialog-content-form-group select {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.dialog-action {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.dialog-action button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.dialog-action-save {
+    background-color: #007bff;
+    color: white;
+}
+
+.dialog-action-save:hover {
+    background-color: #0056b3;
+}
+
+.dialog-action-cancel {
+    background-color: #6c757d;
+    color: white;
+}
+
+.dialog-action-cancel:hover {
+    background-color: #545b62;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .dialog {
+        width: 95%;
+        margin: 10px;
+    }
+    
+    .faculties-actions {
+        flex-direction: column;
+    }
+    
+    .faculty-date {
+        display: none;
+    }
+} 
