@@ -1,5 +1,6 @@
 import { IsDate, IsNotEmpty, IsOptional, IsString } from "class-validator";
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { FacultyNameDto } from "./facultyName.dto";
 
 export class FacultyDto {
     @ApiProperty({ description: 'Faculty code', example: 'CNTT' })
@@ -10,7 +11,7 @@ export class FacultyDto {
     @ApiProperty({ description: 'Faculty name', example: 'Công Nghệ Thông Tin' })
     @IsString()
     @IsNotEmpty()
-    readonly ten_khoa: string;
+    readonly ten_khoa: FacultyNameDto;
 
     @ApiPropertyOptional({ description: 'Deletion date', example: '2023-01-01T00:00:00.000Z' })
     @IsDate()
@@ -27,7 +28,7 @@ export class UpdateFacultyDto {
     @ApiPropertyOptional({ description: 'Faculty name', example: 'Công Nghệ Thông Tin' })
     @IsString()
     @IsOptional()
-    readonly ten_khoa?: string;
+    readonly ten_khoa?: FacultyNameDto;
 }
 
 export class CreateFacultyDto {
@@ -39,5 +40,5 @@ export class CreateFacultyDto {
     @ApiProperty({ description: 'Faculty name', example: 'Công Nghệ Thông Tin' })
     @IsString()
     @IsNotEmpty()
-    readonly ten_khoa: string;
+    readonly ten_khoa: FacultyNameDto;
 }

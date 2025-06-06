@@ -1,8 +1,13 @@
 import mongoose, { Document } from 'mongoose';
 
+export interface Status {
+    en: string;
+    vn: string;
+}
+
 export interface StudentStatus extends Document {
     _id: mongoose.Types.ObjectId;
-    tinh_trang: string;
+    tinh_trang: Status;
     created_at?: Date;
     updated_at?: Date;
     deleted_at?: Date;

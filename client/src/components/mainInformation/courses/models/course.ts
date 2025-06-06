@@ -1,9 +1,14 @@
 import mongoose, { Document } from "mongoose";
 
-export interface Subject extends Document {
+interface CourseName {
+    en: string; // English name
+    vn: string; // Vietnamese name
+}
+
+export interface Course extends Document {
     _id: mongoose.Schema.Types.ObjectId;
     ma_mon_hoc: string; // Subject code
-    ten: string; // Subject name
+    ten: CourseName; // Subject name
     tin_chi: number; // Credits
     khoa: mongoose.Types.ObjectId; // Reference to Faculty
     mon_tien_quyet: mongoose.Types.ObjectId[]; // Prerequisite subjects

@@ -2,11 +2,16 @@ import * as mongoose from 'mongoose';
 import { AddressSchema } from './address.schema';
 import { IDDocumentSchema } from './id-document.schema';
 
+const GenderSchema = new mongoose.Schema({
+  en: { type: String, required: true },
+  vn: { type: String, required: true }
+});
+
 export const StudentSchema = new mongoose.Schema({
   ma_so_sinh_vien: { type: String, required: true },
   ho_ten: { type: String, required: true },
   ngay_sinh: { type: String, required: true },
-  gioi_tinh: { type: String, required: true },
+  gioi_tinh: { type: GenderSchema, required: true },
   khoa: { type: mongoose.Schema.Types.ObjectId, ref: 'Faculty', required: true },
   khoa_hoc: { type: String, required: true },
   chuong_trinh: { type: mongoose.Schema.Types.ObjectId, ref: 'Program', required: true },

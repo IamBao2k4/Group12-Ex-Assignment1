@@ -1,11 +1,12 @@
 import { Document, Types } from 'mongoose'; 
+import { CourseName } from '../../course/interfaces/course.interface';
 // danh sách lớp mở
 export interface OpenClass extends Document {
   ma_lop: string;
   ma_mon_hoc: string;
   course_details?: {
     ma_mon_hoc: string;
-    ten: string;
+    ten: CourseName;
     _id: string;
   }; // Add course_details here
   si_so: number; // Sĩ số lớp học phần

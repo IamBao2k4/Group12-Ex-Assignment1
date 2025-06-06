@@ -1,7 +1,12 @@
 import * as mongoose from 'mongoose';
 
+const statusSchema = new mongoose.Schema({
+  en: { type: String, required: true },
+  vn: { type: String, required: true }
+});
+
 export const StudentStatusSchema = new mongoose.Schema({
-  tinh_trang: { type: String, required: true },
+  tinh_trang: { type: statusSchema, required: true },
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now },
   deleted_at: { type: Date, required: false }

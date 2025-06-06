@@ -16,7 +16,7 @@ interface StudentsProps {
 }
 
 const Students: React.FC<StudentsProps> = (searchString) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [students, setStudents] = useState<Student[]>([]);
     const [profileType, setProfileType] = useState("add");
     const [currentPage, setCurrentPage] = useState(1);
@@ -157,7 +157,7 @@ const Students: React.FC<StudentsProps> = (searchString) => {
                                                 key={faculty._id.toString()}
                                                 value={faculty._id.toString()}
                                             >
-                                                {faculty.ten_khoa}
+                                                {i18n.language === 'en' ? faculty.ten_khoa.en : faculty.ten_khoa.vn}
                                             </option>
                                         ))}
                                     </Form.Select>

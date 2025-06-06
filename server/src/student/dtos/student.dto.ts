@@ -16,6 +16,7 @@ import mongoose from 'mongoose';
 import { Type } from 'class-transformer';
 import { AddressDto } from './address.dto';
 import { IDDocumentDto } from './id-document.dto';
+import { GenderDto } from './gender.dto';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateStudentDto {
@@ -37,7 +38,7 @@ export class CreateStudentDto {
   @ApiProperty({ description: 'Gender', example: 'Nam', enum: ['Nam', 'Nữ', 'Khác'] })
   @IsNotEmpty({ message: 'Gender is required' })
   @IsString()
-  gioi_tinh: string;
+  gioi_tinh: GenderDto;
 
   @ApiProperty({ description: 'Faculty ID (MongoDB ObjectId)', example: '60d6ec9d1c9d440000d7dcf5' })
   @IsMongoId({ message: 'Faculty ID must be a valid ID' })
@@ -126,7 +127,7 @@ export class UpdateStudentDto {
   @ApiPropertyOptional({ description: 'Gender', example: 'Nam', enum: ['Nam', 'Nữ', 'Khác'] })
   @IsOptional()
   @IsString()
-  readonly gioi_tinh?: string;
+  readonly gioi_tinh?: GenderDto;
 
   @ApiPropertyOptional({ description: 'Faculty ID (MongoDB ObjectId)', example: '60d6ec9d1c9d440000d7dcf5' })
   @IsOptional()
@@ -212,7 +213,7 @@ export class FindStudentDto {
   @ApiPropertyOptional({ description: 'Gender', example: 'Nam', enum: ['Nam', 'Nữ', 'Khác'] })
   @IsOptional()
   @IsString()
-  readonly gioi_tinh?: string;
+  readonly gioi_tinh?: GenderDto;
 
   @ApiPropertyOptional({ description: 'Faculty ID', example: '60d6ec9d1c9d440000d7dcf5' })
   @IsOptional()

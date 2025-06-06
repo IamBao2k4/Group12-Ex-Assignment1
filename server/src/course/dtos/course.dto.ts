@@ -1,5 +1,6 @@
 import { IsString, IsNotEmpty, IsOptional, IsNumber, IsArray, IsBoolean } from "class-validator";
 import { ObjectId } from "mongoose";
+import { CourseNameDto } from "./courseName.dto";
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateCourseDto {
@@ -11,7 +12,7 @@ export class CreateCourseDto {
     @ApiProperty({ description: 'Course name', example: 'Introduction to Programming' })
     @IsString()
     @IsNotEmpty()
-    readonly ten: string; // Course name
+    readonly ten: CourseNameDto; // Course name
 
     @ApiProperty({ description: 'Number of credits', example: 3 })
     @IsNumber()
@@ -43,7 +44,7 @@ export class UpdateCourseDto {
     @ApiPropertyOptional({ description: 'Course name', example: 'Introduction to Programming' })
     @IsString()
     @IsOptional()
-    readonly ten?: string; // Course name
+    readonly ten?: CourseNameDto; // Course name
 
     @ApiPropertyOptional({ description: 'Number of credits', example: 3 })
     @IsNumber()

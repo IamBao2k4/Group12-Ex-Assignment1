@@ -173,8 +173,8 @@ export class StudentService {
         return false;
       }
       
-      const currentStatusName = currentStatus.tinh_trang;
-      const newStatusName = newStatus.tinh_trang;
+      const currentStatusName = currentStatus.tinh_trang.vn;
+      const newStatusName = newStatus.tinh_trang.vn;
       
       if (!STATUS_TRANSITIONS[currentStatusName]) {
         return true;
@@ -349,8 +349,8 @@ export class StudentService {
         const currentStatusObj = await this.studentStatusService.detail(statusBefore);
         const newStatusObj = await this.studentStatusService.detail(newStatusId);
         
-        const fromStatusName = currentStatusObj?.tinh_trang || statusBefore;
-        const toStatusName = newStatusObj?.tinh_trang || newStatusId;
+        const fromStatusName = currentStatusObj?.tinh_trang.vn || statusBefore;
+        const toStatusName = newStatusObj?.tinh_trang.vn || newStatusId;
         
         throw new InvalidStatusTransitionException(fromStatusName, toStatusName);
       }

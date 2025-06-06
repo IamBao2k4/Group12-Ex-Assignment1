@@ -1,7 +1,12 @@
 import { Document } from 'mongoose';
 
+interface Status{
+  en: string;
+  vn: string;
+}
+
 export interface StudentStatus extends Document {
-  tinh_trang: string;
+  tinh_trang: Status;
   created_at?: Date;
   updated_at?: Date;
   deleted_at?: Date;

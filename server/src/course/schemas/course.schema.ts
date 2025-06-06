@@ -1,9 +1,14 @@
 import * as mongoose from 'mongoose';
 
+const CourseNameSchema = new mongoose.Schema({
+  en: { type: String, required: true }, // English name
+  vn: { type: String, required: true }  // Vietnamese name
+});
+
 export const CourseSchema = new mongoose.Schema(
   {
     ma_mon_hoc: { type: String, required: true, unique: true }, // Course code
-    ten: { type: String, required: true }, // Course name
+    ten: { type: CourseNameSchema, required: true }, // Course name
     tin_chi: { type: Number, required: true }, // Credits
     khoa: { type: mongoose.Schema.Types.ObjectId, ref: 'Faculty', required: true }, // Reference to Faculty
     mon_tien_quyet: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }], // Prerequisite courses

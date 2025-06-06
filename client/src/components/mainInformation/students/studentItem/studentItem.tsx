@@ -6,6 +6,7 @@ import { Button } from "react-bootstrap";
 import ConfirmationDialog from "../../../common/ConfirmationDialog";
 import { useNotification } from "../../../common/NotificationContext";
 import { Student } from "../models/student";
+import { Status } from "../../student_statuses/models/student_status"
 import "./studentItem.css";
 import { useTranslation } from 'react-i18next';
 import { SERVER_URL } from "../../../../../global";
@@ -26,8 +27,8 @@ const StudentItem: React.FC<StudentItemProps> = ({
     setChosenStudent,
     onDeleteSuccess,
 }) => {
-    const { t } = useTranslation();
-    const [status, setStatus] = useState("");
+    const { t, i18n } = useTranslation();
+    const [status, setStatus] = useState<Status>();
     const [showConfirmation, setShowConfirmation] = useState(false);
     const { showNotification } = useNotification();
     const navigate = useNavigate();
@@ -110,7 +111,7 @@ const StudentItem: React.FC<StudentItemProps> = ({
                 </td>
                 <td>{student.ma_so_sinh_vien}</td>
                 <td>{student.ngay_sinh}</td>
-                <td>{status}</td>
+                <td>{i18n.language === "en"? status?.en: status?.vn}</td>
                 <td>
                     <Button 
                         variant="outline-primary" 
