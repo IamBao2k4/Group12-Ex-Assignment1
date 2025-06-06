@@ -2,22 +2,23 @@ import React, { useState, useEffect } from "react";
 import "./courseDialog.css";
 import { SERVER_URL } from "../../../../../global";
 import { useTranslation } from 'react-i18next';
-import { Subject } from "../models/course";
+import { Course } from "../models/course";
 import { Faculty } from "../../faculties/models/faculty";
 import { useNotification } from '../../../common/NotificationContext';
+import { CourseName } from "../models/course";
 
 interface CourseDialogProps {
     type: string;
-    subject: Subject;
+    course: Course;
     onSuccess: () => void;
 }
 
-const CourseDialog: React.FC<CourseDialogProps> = ({ subject, type, onSuccess }) => {
-    const { t } = useTranslation();
-    const [maMonHoc, setMaMonHoc] = useState(subject?.ma_mon_hoc || "");
-    const [ten, setTen] = useState(subject?.ten || "");
-    const [tinChi, setTinChi] = useState(subject?.tin_chi || 0);
-    const [faculty, setFaculty] = useState<string>(subject?.khoa?.toString() || "");
+const CourseDialog: React.FC<CourseDialogProps> = ({ course, type, onSuccess }) => {
+    const { t, i18n } = useTranslation();
+    const [maMonHoc, setMaMonHoc] = useState(course?.ma_mon_hoc || "");
+    const [ten, setTen] = useState<CourseName>(course?.ten || { vn: "", en: "" });
+    const [tinChi, setTinChi] = useState(course?.tin_chi || 0);
+    const [faculty, setFaculty] = useState<string>(course?.khoa?.toString() || "");
     const [faculties, setFaculties] = useState<Faculty[]>([]);
     const [loading, setLoading] = useState(false);
     const { showNotification } = useNotification();
@@ -65,18 +66,18 @@ const CourseDialog: React.FC<CourseDialogProps> = ({ subject, type, onSuccess })
     }, [t, showNotification]);
 
     useEffect(() => {
-        if (type === 'edit' && subject) {
-            setMaMonHoc(subject.ma_mon_hoc);
-            setTen(subject.ten);
-            setTinChi(subject.tin_chi);
-            setFaculty(subject.khoa?.toString() || "");
+        if (type === 'edit' && course) {
+            setMaMonHoc(course.ma_mon_hoc);
+            setTen(course.ten);
+            setTinChi(course.tin_chi);
+            setFaculty(course.khoa?.toString() || "");
         } else {
             setMaMonHoc("");
-            setTen("");
+            setTen({ vn: "", en: "" });
             setTinChi(0);
             setFaculty("");
         }
-    }, [type, subject]);
+    }, [type, course]);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -106,7 +107,7 @@ const CourseDialog: React.FC<CourseDialogProps> = ({ subject, type, onSuccess })
                 detailDialog.classList.toggle('hidden');
                 onSuccess();
             } else {
-                const response = await fetch(SERVER_URL + `/api/v1/courses/${subject._id}`, {
+                const response = await fetch(SERVER_URL + `/api/v1/courses/${course._id}`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(courseData),
@@ -156,8 +157,8 @@ const CourseDialog: React.FC<CourseDialogProps> = ({ subject, type, onSuccess })
                             <input
                                 type="text"
                                 id="ten"
-                                value={ten}
-                                onChange={(e) => setTen(e.target.value)}
+                                value={i18n.language === "en" ? ten.en : ten.vn}
+                                onChange={(e) => setTen(i18n.language === "en" ? { ...ten, en: e.target.value } : { ...ten, vn: e.target.value })}
                                 required
                             />
                         </div>
@@ -185,7 +186,7 @@ const CourseDialog: React.FC<CourseDialogProps> = ({ subject, type, onSuccess })
                                 <option value="">{loading ? t('common.loading') : t('common.select')}</option>
                                 {Array.isArray(faculties) && faculties.map((faculty) => (
                                     <option key={faculty._id.toString()} value={faculty._id.toString()}>
-                                        {faculty.ten_khoa}
+                                        {i18n.language === "en" ? faculty.ten_khoa.en : faculty.ten_khoa.vn}
                                     </option>
                                 ))}
                             </select>

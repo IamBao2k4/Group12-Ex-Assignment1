@@ -93,11 +93,13 @@ const Courses = () => {
         setCurrentPage(1);
     };
 
+    console.log("courses:",courses)
+
     return (
         <div className="domain-container">
             <CourseDialog 
                 type={type} 
-                subject={chosenCourse ?? courses[0]} 
+                course={chosenCourse ?? courses[0]} 
                 onSuccess={fetchCourses}
             />
             <Header searchHandler={setSearch} />
