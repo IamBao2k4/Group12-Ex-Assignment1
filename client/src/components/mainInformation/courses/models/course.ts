@@ -1,6 +1,6 @@
 import mongoose, { Document } from "mongoose";
 
-interface CourseName {
+export interface CourseName {
     en: string; // English name
     vn: string; // Vietnamese name
 }

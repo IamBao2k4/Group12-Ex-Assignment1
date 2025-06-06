@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { OpenClass, PaginationOptions, SearchOptions, PaginatedResponse, CreateOpenClassDto } from '../models/open_class.model';
-import {Subject} from '../../courses/models/course';
+import {Course} from '../../courses/models/course';
 import { SERVER_URL } from '../../../../../global';
 const API_URL = `${SERVER_URL}/api/v1/open_class`;
 export const OpenClassRoute = {
@@ -80,7 +80,7 @@ export const OpenClassRoute = {
     }
   },
 
-  getAllCourseAvailable: async (): Promise<Subject[]> => {
+  getAllCourseAvailable: async (): Promise<Course[]> => {
     try {
       const response = await axios.get(`${SERVER_URL}/api/v1/courses/all-available`);
       return response.data;
@@ -89,7 +89,7 @@ export const OpenClassRoute = {
       throw error;
     }
   },
-  getAllCourseAvailablePaging: async (pagination: PaginationOptions): Promise<PaginatedResponse<Subject>> => {
+  getAllCourseAvailablePaging: async (pagination: PaginationOptions): Promise<PaginatedResponse<Course>> => {
     try {
       const response = await axios.get(`${SERVER_URL}/api/v1/courses/`, {
         params: {

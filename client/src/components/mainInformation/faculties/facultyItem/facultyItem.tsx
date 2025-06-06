@@ -17,7 +17,7 @@ interface FacultyItemProps {
 }
 
 const FacultyItem: React.FC<FacultyItemProps> = ({ faculty, DetailHandler, setChosenFaculty, onDeleteSuccess }) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [showConfirmation, setShowConfirmation] = useState(false);
     const { showNotification } = useNotification();
 
@@ -60,7 +60,7 @@ const FacultyItem: React.FC<FacultyItemProps> = ({ faculty, DetailHandler, setCh
             />
             <tr>
                 <td>{faculty.ma_khoa}</td>
-                <td>{faculty.ten_khoa}</td>
+                <td>{ i18n.language === "en"? faculty.ten_khoa.en : faculty.ten_khoa.vn }</td>
                 <td>{faculty.created_at?.toString().split("T")[0]}</td>
                 <td>{faculty.updated_at?.toString().split("T")[0]}</td>
                 <td>

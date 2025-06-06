@@ -18,7 +18,7 @@ interface ProgramItemProps {
 const ProgramItem: React.FC<ProgramItemProps> = ({ program, DetailHandler, setChosenProgram, onDeleteSuccess }) => {
     const [showConfirmation, setShowConfirmation] = useState(false);
     const { showNotification } = useNotification();
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
 
     function deleteConfirmHandler() {
         setShowConfirmation(true);
@@ -53,12 +53,12 @@ const ProgramItem: React.FC<ProgramItemProps> = ({ program, DetailHandler, setCh
             <ConfirmationDialog
                 isOpen={showConfirmation}
                 title={t('program.deleteConfirmTitle')}
-                message={t('program.deleteConfirmMessage', { name: program.name })}
+                message={t('program.deleteConfirmMessage', { name: i18n.language === "en"? program.name.en : program.name.vn })}
                 onConfirm={DeleteHandler}
                 onCancel={() => setShowConfirmation(false)}
             />
             <tr>
-                <td>{program.name}</td>
+                <td>{i18n.language === "en"? program.name.en : program.name.vn}</td>
                 <td>{program.created_at?.toString().split("T")[0]}</td>
                 <td>{program.updated_at?.toString().split("T")[0]}</td>
                 <td>

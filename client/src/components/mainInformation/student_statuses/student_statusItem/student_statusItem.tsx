@@ -17,6 +17,7 @@ interface StudentStatusItemProps {
 }
 
 const StudentStatusItem: React.FC<StudentStatusItemProps> = ({ studentStatus, DetailHandler, setChosenStudentStatus, onDeleteSuccess }) => {
+    const { i18n } = useTranslation();
     const [showConfirmation, setShowConfirmation] = useState(false);
     const { showNotification } = useNotification();
     const { t } = useTranslation();
@@ -59,7 +60,7 @@ const StudentStatusItem: React.FC<StudentStatusItemProps> = ({ studentStatus, De
                 onCancel={() => setShowConfirmation(false)}
             />
             <tr>
-                <td>{studentStatus.tinh_trang}</td>
+                <td>{i18n.language === "en" ? studentStatus.tinh_trang.en : studentStatus.tinh_trang.vn}</td>
                 <td>{studentStatus.created_at?.toString().split("T")[0]}</td>
                 <td>{studentStatus.updated_at?.toString().split("T")[0]}</td>
                 <td>

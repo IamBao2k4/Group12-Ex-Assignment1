@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { SERVER_URL } from '../../../../../global';
 import { PaginationOptions, PaginatedResponse } from '../../open_class/models/open_class.model';
-import { Subject } from '../models/course';
+import { Course } from '../models/course';
 import { Faculty } from '../../faculties/models/faculty';
 
 const API_URL = `${SERVER_URL}/api/v1/courses`;
@@ -11,7 +11,7 @@ export const CoursesRoute = {
   getCourses: async (
     pagination: PaginationOptions,
     searchOptions: { searchString?: string }
-  ): Promise<PaginatedResponse<Subject>> => {
+  ): Promise<PaginatedResponse<Course>> => {
     try {
       const response = await axios.get(API_URL, {
         params: {

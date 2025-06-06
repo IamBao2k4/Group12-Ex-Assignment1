@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { Subject } from "./models/course";
+import { Course } from "./models/course";
 import Header from "../header/header";
 import CourseItem from "./courseItem/courseItem";
 import CourseDialog from "./courseDialog/courseDialog";
@@ -8,6 +8,7 @@ import { Card, Button, Table, Pagination, Form } from "react-bootstrap";
 import "../../../components/common/DomainStyles.css";
 import { useTranslation } from 'react-i18next';
 import { CoursesRoute } from "./route/courses.route";
+import { Faculty } from "../faculties/models/faculty";
 
 interface SearchParams {
     searchString?: string;
@@ -15,16 +16,16 @@ interface SearchParams {
 }
 
 const Courses = () => {
-    const { t } = useTranslation();
-    const [courses, setCourses] = useState<Subject[]>([]);
+    const { t, i18n } = useTranslation();
+    const [courses, setCourses] = useState<Course[]>([]);
     const [totalPages, setTotalPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
     const [type, setType] = useState('');
-    const [chosenCourse, setChosenCourse] = useState<Subject | null>(null);
+    const [chosenCourse, setChosenCourse] = useState<Course | null>(null);
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(true);
     const [faculty, setFaculty] = useState<string>("");
-    const [faculties, setFaculties] = useState<any[]>([]);
+    const [faculties, setFaculties] = useState<Faculty[]>([]);
     const [facultiesLoading, setFacultiesLoading] = useState(false);
 
     const fetchCourses = useCallback(async () => {
@@ -123,7 +124,7 @@ const Courses = () => {
                             </option>
                             {Array.isArray(faculties) && faculties.map((faculty) => (
                                 <option key={faculty._id.toString()} value={faculty._id.toString()}>
-                                    {faculty.ten_khoa}
+                                    {i18n.language === "en" ? faculty.ten_khoa.en : faculty.ten_khoa.vn}
                                 </option>
                             ))}
                         </Form.Select>
@@ -153,7 +154,7 @@ const Courses = () => {
                                     courses.map((course) => (
                                         <CourseItem 
                                             key={course._id.toString()} 
-                                            subject={course} 
+                                            course={course} 
                                             setChosenSubject={setChosenCourse} 
                                             DialogHandler={DetailHandler}
                                             onDeleteSuccess={fetchCourses}

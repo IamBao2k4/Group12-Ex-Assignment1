@@ -5,8 +5,9 @@ import '../../../components/common/DomainStyles.css';
 import AddIcon from '@mui/icons-material/Add';
 import { SERVER_URL } from '../../../../global';
 import { useTranslation } from 'react-i18next';
+import { Program } from './models/program';
 
-interface Program {
+interface ProgramForm {
     _id: string;
     name: string;
     ma: string;
@@ -15,11 +16,11 @@ interface Program {
 }
 
 const Programs: React.FC = () => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [programs, setPrograms] = useState<Program[]>([]);
     const [showModal, setShowModal] = useState(false);
     const [editingProgram, setEditingProgram] = useState<Program | null>(null);
-    const [formData, setFormData] = useState<Omit<Program, '_id' | 'created_at' | 'updated_at'>>({
+    const [formData, setFormData] = useState<Omit<ProgramForm, '_id' | 'created_at' | 'updated_at'>>({
         name: '',
         ma: ''
     });
@@ -55,7 +56,7 @@ const Programs: React.FC = () => {
     };
 
     const handleDelete = async (id: string) => {
-        if (window.confirm(t('program.deleteConfirmMessage', { name: programs.find(p => p._id === id)?.name }))) {
+        if (window.confirm(t('program.deleteConfirmMessage', { name: programs.find(p => p._id.toString() === id)?.name }))) {
             try {
                 await axios.delete(`${SERVER_URL}/api/v1/programs/${id}`);
                 fetchPrograms();
@@ -74,7 +75,7 @@ const Programs: React.FC = () => {
     const handleEdit = (program: Program) => {
         setEditingProgram(program);
         setFormData({
-            name: program.name,
+            name: i18n.language === 'en' ? program.name.en : program.name.vn,
             ma: program.ma
         });
         setShowModal(true);
@@ -108,8 +109,8 @@ const Programs: React.FC = () => {
                                     </tr>
                                 ) : (
                                     programs.map((program) => (
-                                        <tr key={program._id}>
-                                            <td>{program.name}</td>
+                                        <tr key={program._id.toString()}>
+                                            <td>{ i18n.language === "en"? program.name.en : program.name.vn }</td>
                                             <td>{program.ma}</td>
                                             <td>
                                                 <Button
@@ -123,8 +124,7 @@ const Programs: React.FC = () => {
                                                 <Button
                                                     variant="danger"
                                                     size="sm"
-                                                    onClick={() => handleDelete(program._id)}
-                                                >
+                                                    onClick={() => handleDelete(program._id.toString())}>
                                                     {t('common.delete')}
                                                 </Button>
                                             </td>

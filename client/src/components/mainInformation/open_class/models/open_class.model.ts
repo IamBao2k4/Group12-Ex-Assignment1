@@ -1,10 +1,12 @@
+import {CourseName} from "../../courses/models/course"
+
 export interface OpenClass {
   _id?: string;
   ma_lop: string;
   ma_mon_hoc: CourseType,
   course_details?: {
     ma_mon_hoc: string;
-    ten: string;
+    ten: CourseName;
     _id: string;
   };
   ten: string;
@@ -44,9 +46,9 @@ export function ToCreateOpenClassDto(openClass: OpenClass): CreateOpenClassDto {
 }
 
 export type CourseType = {
-_id: string;
-ma_mon_hoc: string;
-ten: string;
+  _id: string;
+  ma_mon_hoc: string;
+  ten: CourseName;
 }
 
 export interface PaginationOptions {

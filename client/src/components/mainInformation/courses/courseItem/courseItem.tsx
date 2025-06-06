@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Subject } from "../models/course";
+import { Course } from "../models/course";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Button } from 'react-bootstrap';
@@ -9,32 +9,32 @@ import { useTranslation } from 'react-i18next';
 import { SERVER_URL } from "../../../../../global";
 
 interface CourseItemProps {
-    subject: Subject;
+    course: Course;
     DialogHandler: (type: string) => void;
-    setChosenSubject: (subject: Subject) => void;
+    setChosenSubject: (course: Course) => void;
     onDeleteSuccess: () => void;
 }
 
 const CourseItem: React.FC<CourseItemProps> = ({
-    subject,
+    course,
     DialogHandler,
     setChosenSubject,
     onDeleteSuccess
 }) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [faculty, setFaculty] = useState<string>("");
     const [showConfirmation, setShowConfirmation] = useState(false);
     const { showNotification } = useNotification();
 
     useEffect(() => {
         const fetchFaculty = async () => {
-            if (!subject.khoa) {
+            if (!course.khoa) {
                 setFaculty(t('common.notAssigned', 'Chưa phân công'));
                 return;
             }
 
             try {
-                const response = await fetch(SERVER_URL + `/api/v1/faculties/${subject.khoa}`, {
+                const response = await fetch(SERVER_URL + `/api/v1/faculties/${course.khoa}`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -56,7 +56,7 @@ const CourseItem: React.FC<CourseItemProps> = ({
                 const data = JSON.parse(text);
                 
                 if (data && data.ten_khoa) {
-                    setFaculty(data.ten_khoa);
+                    setFaculty(i18n.language === "en" ? data.ten_khoa.en : data.ten_khoa.vn);
                 } else {
                     console.warn('Faculty data missing ten_khoa field:', data);
                     setFaculty(t('common.unknown', 'Không xác định'));
@@ -68,10 +68,10 @@ const CourseItem: React.FC<CourseItemProps> = ({
         };
 
         fetchFaculty();
-    }, [subject.khoa, t]);
+    }, [course.khoa, t]);
 
     const handleEdit = () => {
-        setChosenSubject(subject);
+        setChosenSubject(course);
         DialogHandler("edit");
     };
 
@@ -81,7 +81,7 @@ const CourseItem: React.FC<CourseItemProps> = ({
 
     async function handleDelete() {
         try {
-            const response = await fetch(SERVER_URL + `/api/v1/courses/${subject._id}`, {
+            const response = await fetch(SERVER_URL + `/api/v1/courses/${course._id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'
@@ -91,7 +91,7 @@ const CourseItem: React.FC<CourseItemProps> = ({
             const data = await response.json();
             
             if (response.ok) {
-                showNotification('success', t('course.deleteSuccess', { name: subject.ten }));
+                showNotification('success', t('course.deleteSuccess', { name: course.ten.en }));
                 setShowConfirmation(false);
                 onDeleteSuccess();
             } else {
@@ -99,7 +99,7 @@ const CourseItem: React.FC<CourseItemProps> = ({
             }
         } catch (error) {
             showNotification('error', t('course.deleteError'));
-            console.error("Error deleting subject:", error);
+            console.error("Error deleting course:", error);
         }
     }
 
@@ -108,14 +108,14 @@ const CourseItem: React.FC<CourseItemProps> = ({
             <ConfirmationDialog
                 isOpen={showConfirmation}
                 title={t('course.deleteConfirmTitle')}
-                message={t('course.deleteConfirmMessage', { name: subject.ten })}
+                message={t('course.deleteConfirmMessage', { name: course.ten.en })}
                 onConfirm={handleDelete}
                 onCancel={() => setShowConfirmation(false)}
             />
             <tr>
-                <td>{subject.ten}</td>
-                <td>{subject.ma_mon_hoc}</td>
-                <td>{subject.tin_chi}</td>
+                <td>{i18n.language === "en"? course.ten.en : course.ten.vn}</td>
+                <td>{course.ma_mon_hoc}</td>
+                <td>{course.tin_chi}</td>
                 <td>{faculty}</td>
                 <td>
                     <Button 
