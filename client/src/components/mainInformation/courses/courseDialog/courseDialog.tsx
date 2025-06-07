@@ -6,6 +6,7 @@ import { Course } from "../models/course";
 import { Faculty } from "../../faculties/models/faculty";
 import { useNotification } from '../../../common/NotificationContext';
 import { CourseName } from "../models/course";
+import { GoogleTranslateService } from '../../../../middleware/gg-trans'
 
 interface CourseDialogProps {
     type: string;
@@ -82,9 +83,13 @@ const CourseDialog: React.FC<CourseDialogProps> = ({ course, type, onSuccess }) 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
+        const nameData = i18n.language === "en" ? 
+        { en: ten.en, vi: (await GoogleTranslateService.translateText(ten.en, 'vi')).translatedText } 
+        : { en: (await GoogleTranslateService.translateText(ten.vi, 'en')).translatedText, vi: ten.vi };
+
         const courseData = {
             ma_mon_hoc: maMonHoc,
-            ten: ten,
+            ten: nameData,
             tin_chi: tinChi,
             khoa: faculty || undefined
         };
