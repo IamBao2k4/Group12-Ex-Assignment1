@@ -5,6 +5,7 @@ import { useNotification } from '../../../../components/common/NotificationConte
 import { StudentStatusesRoute } from '../route/student_statuses.route';
 import { StudentStatus } from '../models/student_status';
 import { useTranslation } from 'react-i18next';
+import { GoogleTranslateService } from '../../../../middleware/gg-trans';
 
 interface DetailDialogProps {
   type: string;
@@ -44,8 +45,12 @@ const DetailDialog: React.FC<DetailDialogProps> = ({ type, studentStatus, onSucc
     const form = event.currentTarget;
     const data = new FormData(form);
 
+    const status = i18n.language === 'en'
+      ? { en: data.get('name') as string, vi: (await GoogleTranslateService.translateText(data.get('name') as string, 'vi')).translatedText }
+      : { en: (await GoogleTranslateService.translateText(data.get('name') as string, 'en')).translatedText, vi: data.get('name') as string };
+
     const studentStatusData = {
-      tinh_trang: data.get('name') as string,
+      tinh_trang: status,
     };
 
     try {

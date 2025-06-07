@@ -25,7 +25,7 @@ export const StudentStatusesRoute = {
     }
   },
 
-  createStudentStatus: async (studentStatusData: { tinh_trang: string }): Promise<void> => {
+  createStudentStatus: async (studentStatusData: { tinh_trang: {en: string, vi: string} }): Promise<void> => {
     try {
       await axios.post(API_URL, studentStatusData, {
         headers: { 'Content-Type': 'application/json' },
@@ -36,7 +36,7 @@ export const StudentStatusesRoute = {
     }
   },
 
-  updateStudentStatus: async (id: string, studentStatusData: { tinh_trang: string }): Promise<void> => {
+  updateStudentStatus: async (id: string, studentStatusData: { tinh_trang: {en: string, vi: string} }): Promise<void> => {
     try {
       await axios.patch(`${API_URL}/${id}`, studentStatusData, {
         headers: { 'Content-Type': 'application/json' },
