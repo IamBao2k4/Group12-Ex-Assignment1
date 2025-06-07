@@ -4,7 +4,7 @@ import mongoose, { Document } from 'mongoose';
 
 interface Gender {
   en: string;
-  vn: string;
+  vi: string;
 }
 
 export interface Student extends Document {

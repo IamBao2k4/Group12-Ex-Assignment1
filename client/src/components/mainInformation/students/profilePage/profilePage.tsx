@@ -25,7 +25,7 @@ const validateEmail = (email: string) => {
         ".profile-page-info-form-error-email"
     ) as HTMLElement | null;
 
-    const allowedDomain = "student.university.edu.vn";
+    const allowedDomain = "student.university.edu.vi";
     const emailRegex = new RegExp(`^[a-zA-Z0-9._%+-]+@${allowedDomain}$`);
 
     if (!emailRegex.test(email)) {
@@ -162,7 +162,7 @@ const ProfilePage = () => {
                 ho_ten: student.ho_ten || "",
                 ma_so_sinh_vien: student.ma_so_sinh_vien || "",
                 ngay_sinh: student.ngay_sinh || "",
-                gioi_tinh: i18n.language === "en"? student.gioi_tinh.en : student.gioi_tinh.vn || "",
+                gioi_tinh: i18n.language === "en"? student.gioi_tinh.en : student.gioi_tinh.vi || "",
                 khoa: student.khoa?.toString() || "",
                 khoa_hoc: student.khoa_hoc || "",
                 chuong_trinh: student.chuong_trinh?.toString() || "",
@@ -414,7 +414,7 @@ const ProfilePage = () => {
                                                 value={faculty._id.toString()}
                                                 defaultChecked={index === 0}
                                             >
-                                                {i18n.language === 'en' ? faculty.ten_khoa.en : faculty.ten_khoa.vn}
+                                                {i18n.language === 'en' ? faculty.ten_khoa.en : faculty.ten_khoa.vi}
                                             </option>
                                         ))}
                                     </select>
@@ -448,7 +448,7 @@ const ProfilePage = () => {
                                                 key={program._id.toString()}
                                                 value={program._id.toString()}
                                             >
-                                                {i18n.language === 'en' ? program.name.en : program.name.vn}
+                                                {i18n.language === 'en' ? program.name.en : program.name.vi}
                                             </option>
                                         ))}
                                     </select>
@@ -512,7 +512,7 @@ const ProfilePage = () => {
                                                     key={studentStatus._id.toString()}
                                                     value={studentStatus._id.toString()}
                                                 >
-                                                    {i18n.language === 'en' ? studentStatus.tinh_trang.en : studentStatus.tinh_trang.vn}
+                                                    {i18n.language === 'en' ? studentStatus.tinh_trang.en : studentStatus.tinh_trang.vi}
                                                 </option>
                                             )
                                         )}

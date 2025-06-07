@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose';
 
 const statusSchema = new mongoose.Schema({
   en: { type: String, required: true },
-  vn: { type: String, required: true }
+  vi: { type: String, required: true }
 });
 
 export const StudentStatusSchema = new mongoose.Schema({

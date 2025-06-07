@@ -7,5 +7,5 @@ export class GenderDto {
 
   @IsString()
   @IsNotEmpty()
-  vn: string;
+  vi: string;
 }

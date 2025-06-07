@@ -75,7 +75,7 @@ const Programs: React.FC = () => {
     const handleEdit = (program: Program) => {
         setEditingProgram(program);
         setFormData({
-            name: i18n.language === 'en' ? program.name.en : program.name.vn,
+            name: i18n.language === 'en' ? program.name.en : program.name.vi,
             ma: program.ma
         });
         setShowModal(true);
@@ -110,7 +110,7 @@ const Programs: React.FC = () => {
                                 ) : (
                                     programs.map((program) => (
                                         <tr key={program._id.toString()}>
-                                            <td>{ i18n.language === "en"? program.name.en : program.name.vn }</td>
+                                            <td>{ i18n.language === "en"? program.name.en : program.name.vi }</td>
                                             <td>{program.ma}</td>
                                             <td>
                                                 <Button

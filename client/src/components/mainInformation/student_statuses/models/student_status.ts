@@ -2,7 +2,7 @@ import mongoose, { Document } from 'mongoose';
 
 export interface Status {
     en: string;
-    vn: string;
+    vi: string;
 }
 
 export interface StudentStatus extends Document {

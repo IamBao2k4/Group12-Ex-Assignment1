@@ -17,6 +17,7 @@ import { useNotification } from "../../../../components/common/NotificationConte
 import { useTranslation } from 'react-i18next';
 
 import { SERVER_URL } from "../../../../../global";
+import { GoogleTranslateService } from "../../../../middleware/gg-trans";
 
 interface StudentItemProps {
     type: string;
@@ -29,7 +30,7 @@ const validateEmail = (email: string) => {
         ".profile-dialog-info-form-error-email"
     ) as HTMLElement | null;
 
-    const allowedDomain = "student.university.edu.vn";
+    const allowedDomain = "student.university.edu.vi";
     const emailRegex = new RegExp(`^[a-zA-Z0-9._%+-]+@${allowedDomain}$`);
 
     if (!emailRegex.test(email)) {
@@ -144,7 +145,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess })
                 ho_ten: student.ho_ten || "",
                 ma_so_sinh_vien: student.ma_so_sinh_vien || "",
                 ngay_sinh: student.ngay_sinh || "",
-                gioi_tinh: i18n.language === "en"? student.gioi_tinh.en : student.gioi_tinh.vn || "",
+                gioi_tinh: i18n.language === "en"? student.gioi_tinh.en : student.gioi_tinh.vi || "",
                 khoa: student.khoa?.toString() || "",
                 khoa_hoc: student.khoa_hoc || "",
                 chuong_trinh: student.chuong_trinh?.toString() || "",
@@ -206,6 +207,16 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess })
             return;
 
         try {
+            const gender = formData.gioi_tinh.toLowerCase();
+            const genderData = i18n.language === 'en' ?
+            {
+                en: formData.gioi_tinh,
+                vi: GoogleTranslateService.translateText(formData.gioi_tinh, 'vi')
+            }
+            : {
+                vi: formData.gioi_tinh,
+                en: GoogleTranslateService.translateText(formData.gioi_tinh, 'en')
+            };
             const method = type === "add" ? "POST" : "PATCH";
             const url =
                 type === "add"
@@ -318,7 +329,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess })
                                                 value={faculty._id.toString()}
                                                 defaultChecked={index === 0}
                                             >
-                                                {i18n.language === 'en' ? faculty.ten_khoa.en : faculty.ten_khoa.vn}
+                                                {i18n.language === 'en' ? faculty.ten_khoa.en : faculty.ten_khoa.vi}
                                             </option>
                                         ))}
                                     </select>
@@ -352,7 +363,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess })
                                                 key={program._id.toString()}
                                                 value={program._id.toString()}
                                             >
-                                                {i18n.language === 'en' ? program.name.en : program.name.vn}
+                                                {i18n.language === 'en' ? program.name.en : program.name.vi}
                                             </option>
                                         ))}
                                     </select>
@@ -415,7 +426,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess })
                                                     key={studentStatus._id.toString()}
                                                     value={studentStatus._id.toString()}
                                                 >
-                                                    {i18n.language === 'en' ? studentStatus.tinh_trang.en : studentStatus.tinh_trang.vn}
+                                                    {i18n.language === 'en' ? studentStatus.tinh_trang.en : studentStatus.tinh_trang.vi}
                                                 </option>
                                             )
                                         )}

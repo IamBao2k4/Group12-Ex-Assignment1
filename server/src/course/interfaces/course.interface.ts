@@ -2,7 +2,7 @@ import { Document, ObjectId } from "mongoose";
 
 export interface CourseName {
     en: string; // English name
-    vn: string; // Vietnamese name
+    vi: string; // Vietnamese name
 }
 
 export interface Course extends Document {

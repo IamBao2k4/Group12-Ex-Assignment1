@@ -1,7 +1,6 @@
-import React from 'react';
 import './horizontalNav.css';
 import NavItem from './navigation/navItem/navItem';
-import { FaUser, FaBook, FaChalkboardTeacher, FaBuilding, FaChartBar, FaCog, FaGraduationCap, FaUserCheck, FaLayerGroup } from 'react-icons/fa';
+import { FaUser, FaBook, FaChalkboardTeacher, FaGraduationCap, FaUserCheck, FaLayerGroup } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '../common/LanguageSwitcher';
@@ -32,18 +31,6 @@ const HorizontalNav = () => {
                 </Link>
                 <Link to="/student-statuses" style={{ textDecoration: 'none', color: 'black', width: '100%' }}>
                     <NavItem name={t('nav.studentStatus')} icon={<FaUserCheck />} />
-                </Link>
-                <Link to="/instructors" style={{ textDecoration: 'none', color: 'black', width: '100%' }}>
-                    <NavItem name={t('nav.instructors')} icon={<FaChalkboardTeacher />} />
-                </Link>
-                <Link to="/departments" style={{ textDecoration: 'none', color: 'black', width: '100%' }}>
-                    <NavItem name={t('nav.departments')} icon={<FaBuilding />} />
-                </Link>
-                <Link to="/reports" style={{ textDecoration: 'none', color: 'black', width: '100%' }}>
-                    <NavItem name={t('nav.reports')} icon={<FaChartBar />} />
-                </Link>
-                <Link to="/settings" style={{ textDecoration: 'none', color: 'black', width: '100%' }}>
-                    <NavItem name={t('nav.settings')} icon={<FaCog />} />
                 </Link>
             </div>
             <div className="language-switcher-container">

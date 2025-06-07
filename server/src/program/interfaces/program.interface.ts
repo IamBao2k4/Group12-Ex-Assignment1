@@ -2,7 +2,7 @@ import { Document } from 'mongoose';
 
 interface ProgramName {
   en: string;
-  vn: string;
+  vi: string;
 }
 
 export interface Program extends Document {

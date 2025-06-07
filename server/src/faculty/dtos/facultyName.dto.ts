@@ -7,5 +7,5 @@ export class FacultyNameDto {
 
   @IsString()
   @IsNotEmpty()
-  vn: string;
+  vi: string;
 }

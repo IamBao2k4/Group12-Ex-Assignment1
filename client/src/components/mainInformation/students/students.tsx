@@ -157,7 +157,7 @@ const Students: React.FC<StudentsProps> = (searchString) => {
                                                 key={faculty._id.toString()}
                                                 value={faculty._id.toString()}
                                             >
-                                                {i18n.language === 'en' ? faculty.ten_khoa.en : faculty.ten_khoa.vn}
+                                                {i18n.language === 'en' ? faculty.ten_khoa.en : faculty.ten_khoa.vi}
                                             </option>
                                         ))}
                                     </Form.Select>

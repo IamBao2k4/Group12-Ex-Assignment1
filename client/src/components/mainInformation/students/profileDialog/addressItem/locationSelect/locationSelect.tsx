@@ -39,7 +39,7 @@ const LocationSelect: React.FC<LocationSelectProps> = ({
         const fetchProvinces = async () => {
             try {
                 const response = await fetch(
-                    "https://provinces.open-api.vn/api/?depth=3"
+                    "https://provinces.open-api.vi/api/?depth=3"
                 );
 
                 const data = await response.json();

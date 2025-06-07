@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose';
 
 const CourseNameSchema = new mongoose.Schema({
   en: { type: String, required: true }, // English name
-  vn: { type: String, required: true }  // Vietnamese name
+  vi: { type: String, required: true }  // Vietnamese name
 });
 
 export const CourseSchema = new mongoose.Schema(

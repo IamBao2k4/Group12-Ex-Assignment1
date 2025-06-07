@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose';
 
 const tenKhoaSchema = new mongoose.Schema({
   en: { type: String, required: true },
-  vn: { type: String, required: true }
+  vi: { type: String, required: true }
 });
 
 export const FacultySchema = new mongoose.Schema({

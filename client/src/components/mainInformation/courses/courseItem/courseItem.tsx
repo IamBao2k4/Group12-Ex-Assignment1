@@ -56,7 +56,7 @@ const CourseItem: React.FC<CourseItemProps> = ({
                 const data = JSON.parse(text);
                 
                 if (data && data.ten_khoa) {
-                    setFaculty(i18n.language === "en" ? data.ten_khoa.en : data.ten_khoa.vn);
+                    setFaculty(i18n.language === "en" ? data.ten_khoa.en : data.ten_khoa.vi);
                 } else {
                     console.warn('Faculty data missing ten_khoa field:', data);
                     setFaculty(t('common.unknown', 'Không xác định'));
@@ -113,7 +113,7 @@ const CourseItem: React.FC<CourseItemProps> = ({
                 onCancel={() => setShowConfirmation(false)}
             />
             <tr>
-                <td>{i18n.language === "en"? course.ten.en : course.ten.vn}</td>
+                <td>{i18n.language === "en"? course.ten.en : course.ten.vi}</td>
                 <td>{course.ma_mon_hoc}</td>
                 <td>{course.tin_chi}</td>
                 <td>{faculty}</td>

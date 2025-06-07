@@ -16,7 +16,7 @@ interface CourseDialogProps {
 const CourseDialog: React.FC<CourseDialogProps> = ({ course, type, onSuccess }) => {
     const { t, i18n } = useTranslation();
     const [maMonHoc, setMaMonHoc] = useState(course?.ma_mon_hoc || "");
-    const [ten, setTen] = useState<CourseName>(course?.ten || { vn: "", en: "" });
+    const [ten, setTen] = useState<CourseName>(course?.ten || { vi: "", en: "" });
     const [tinChi, setTinChi] = useState(course?.tin_chi || 0);
     const [faculty, setFaculty] = useState<string>(course?.khoa?.toString() || "");
     const [faculties, setFaculties] = useState<Faculty[]>([]);
@@ -73,7 +73,7 @@ const CourseDialog: React.FC<CourseDialogProps> = ({ course, type, onSuccess }) 
             setFaculty(course.khoa?.toString() || "");
         } else {
             setMaMonHoc("");
-            setTen({ vn: "", en: "" });
+            setTen({ vi: "", en: "" });
             setTinChi(0);
             setFaculty("");
         }
@@ -157,8 +157,8 @@ const CourseDialog: React.FC<CourseDialogProps> = ({ course, type, onSuccess }) 
                             <input
                                 type="text"
                                 id="ten"
-                                value={i18n.language === "en" ? ten.en : ten.vn}
-                                onChange={(e) => setTen(i18n.language === "en" ? { ...ten, en: e.target.value } : { ...ten, vn: e.target.value })}
+                                value={i18n.language === "en" ? ten.en : ten.vi}
+                                onChange={(e) => setTen(i18n.language === "en" ? { ...ten, en: e.target.value } : { ...ten, vi: e.target.value })}
                                 required
                             />
                         </div>
@@ -186,7 +186,7 @@ const CourseDialog: React.FC<CourseDialogProps> = ({ course, type, onSuccess }) 
                                 <option value="">{loading ? t('common.loading') : t('common.select')}</option>
                                 {Array.isArray(faculties) && faculties.map((faculty) => (
                                     <option key={faculty._id.toString()} value={faculty._id.toString()}>
-                                        {i18n.language === "en" ? faculty.ten_khoa.en : faculty.ten_khoa.vn}
+                                        {i18n.language === "en" ? faculty.ten_khoa.en : faculty.ten_khoa.vi}
                                     </option>
                                 ))}
                             </select>

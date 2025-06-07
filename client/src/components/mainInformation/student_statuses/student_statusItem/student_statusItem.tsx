@@ -60,7 +60,7 @@ const StudentStatusItem: React.FC<StudentStatusItemProps> = ({ studentStatus, De
                 onCancel={() => setShowConfirmation(false)}
             />
             <tr>
-                <td>{i18n.language === "en" ? studentStatus.tinh_trang.en : studentStatus.tinh_trang.vn}</td>
+                <td>{i18n.language === "en" ? studentStatus.tinh_trang.en : studentStatus.tinh_trang.vi}</td>
                 <td>{studentStatus.created_at?.toString().split("T")[0]}</td>
                 <td>{studentStatus.updated_at?.toString().split("T")[0]}</td>
                 <td>

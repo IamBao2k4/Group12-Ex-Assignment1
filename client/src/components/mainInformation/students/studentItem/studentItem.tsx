@@ -111,7 +111,7 @@ const StudentItem: React.FC<StudentItemProps> = ({
                 </td>
                 <td>{student.ma_so_sinh_vien}</td>
                 <td>{student.ngay_sinh}</td>
-                <td>{i18n.language === "en"? status?.en: status?.vn}</td>
+                <td>{i18n.language === "en"? status?.en: status?.vi}</td>
                 <td>
                     <Button 
                         variant="outline-primary" 

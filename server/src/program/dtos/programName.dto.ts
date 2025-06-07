@@ -7,5 +7,5 @@ export class ProgramNameDto {
 
   @IsString()
   @IsNotEmpty()
-  vn: string;
+  vi: string;
 }

@@ -86,7 +86,7 @@ export class CreateStudentDto {
   @Type(() => IDDocumentDto)
   giay_to_tuy_than: IDDocumentDto[];
 
-  @ApiProperty({ description: 'Email address (must be from an accepted domain)', example: 'student@university.edu.vn' })
+  @ApiProperty({ description: 'Email address (must be from an accepted domain)', example: 'student@university.edu.vi' })
   @IsNotEmpty({ message: 'Email is required' })
   @IsEmail({}, { message: 'Invalid email' })
   @IsValidEmailDomain({ message: 'Email must belong to an accepted domain' })
@@ -170,7 +170,7 @@ export class UpdateStudentDto {
   @IsMongoId({ message: 'Student status ID must be a valid ID' })
   readonly tinh_trang?: mongoose.Schema.Types.ObjectId;
 
-  @ApiPropertyOptional({ description: 'Email address (must be from an accepted domain)', example: 'student@university.edu.vn' })
+  @ApiPropertyOptional({ description: 'Email address (must be from an accepted domain)', example: 'student@university.edu.vi' })
   @IsOptional()
   @IsEmail({}, { message: 'Invalid email' })
   @IsValidEmailDomain({ message: 'Email must belong to an accepted domain' })
@@ -235,7 +235,7 @@ export class FindStudentDto {
   @IsString()
   readonly dia_chi?: string;
 
-  @ApiPropertyOptional({ description: 'Email address', example: 'student@university.edu.vn' })
+  @ApiPropertyOptional({ description: 'Email address', example: 'student@university.edu.vi' })
   @IsOptional()
   @IsEmail({}, { message: 'Invalid email' })
   readonly email?: string;

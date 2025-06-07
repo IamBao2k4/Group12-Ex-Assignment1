@@ -2,7 +2,7 @@ import mongoose, { Document } from 'mongoose';
 
 interface FacultyName {
     en: string;
-    vn: string;
+    vi: string;
 }
 
 export interface Faculty extends Document {

@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose';
 
 const ProgramNameSchema = new mongoose.Schema({
   en: { type: String, required: true },
-  vn: { type: String, required: true }
+  vi: { type: String, required: true }
 });
 
 export const ProgramSchema = new mongoose.Schema({

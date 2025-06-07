@@ -4,7 +4,7 @@ import { IDDocumentSchema } from './id-document.schema';
 
 const GenderSchema = new mongoose.Schema({
   en: { type: String, required: true },
-  vn: { type: String, required: true }
+  vi: { type: String, required: true }
 });
 
 export const StudentSchema = new mongoose.Schema({

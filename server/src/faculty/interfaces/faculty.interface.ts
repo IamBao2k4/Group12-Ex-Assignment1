@@ -2,7 +2,7 @@ import { Document } from "mongodb";
 
 interface FacultyName {
     en: string;
-    vn: string;
+    vi: string;
 }
 
 export interface Faculty extends Document {

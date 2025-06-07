@@ -40,7 +40,7 @@ const OpenClassComponent: React.FC = () => {
       ma_mon_hoc: '',
       ten: {
         en: '',
-        vn: ''
+        vi: ''
       }
     },
     ten: '', 
@@ -121,8 +121,8 @@ const OpenClassComponent: React.FC = () => {
       ma_mon_hoc: selectedCourse ? {
         _id: selectedCourse._id.toString(),
         ma_mon_hoc: selectedCourse.ma_mon_hoc,
-        ten: {en: selectedCourse.ten.en, vn: selectedCourse.ten.vn}
-      } : { _id: '', ma_mon_hoc: '', ten: {en:'', vn:''} }
+        ten: {en: selectedCourse.ten.en, vi: selectedCourse.ten.vi}
+      } : { _id: '', ma_mon_hoc: '', ten: {en:'', vi:''} }
     }));
   };
 
@@ -141,7 +141,7 @@ const OpenClassComponent: React.FC = () => {
             ma_mon_hoc: '',
             ten: {
               en: '',
-              vn: ''
+              vi: ''
             }
           },
         ten: '',
@@ -278,7 +278,7 @@ const OpenClassComponent: React.FC = () => {
                     <tr key={openClass._id}>
                       <td>{openClass.ma_lop}</td>
                       <td>{openClass.ma_mon_hoc.ma_mon_hoc}</td>
-                      <td>{i18n.language === "en" ? openClass.ma_mon_hoc?.ten.en : openClass.ma_mon_hoc?.ten.vn}</td>
+                      <td>{i18n.language === "en" ? openClass.ma_mon_hoc?.ten.en : openClass.ma_mon_hoc?.ten.vi}</td>
                       <td>{openClass.giang_vien}</td>
                       <td>{openClass.so_luong_toi_da}</td>
                       <td>{openClass.lich_hoc}</td>
@@ -387,7 +387,7 @@ const OpenClassComponent: React.FC = () => {
               >
                 <option value="">{t('course.selectCourse')}</option>
                 {courses.map(course => (
-                  <option key={course._id.toString()} value={course._id.toString()}>{i18n.language === "en"? course.ten.en : course.ten.vn}</option>
+                  <option key={course._id.toString()} value={course._id.toString()}>{i18n.language === "en"? course.ten.en : course.ten.vi}</option>
                 ))}
               </Form.Select>
             </Form.Group>
@@ -397,7 +397,7 @@ const OpenClassComponent: React.FC = () => {
               <Form.Control
                 type="text"
                 name="ma_mon_hoc"
-                value={i18n.language === "en" ? newClass.ma_mon_hoc.ten.en : newClass.ma_mon_hoc.ten.vn}
+                value={i18n.language === "en" ? newClass.ma_mon_hoc.ten.en : newClass.ma_mon_hoc.ten.vi}
                 onChange={handleNewClassChange}
                 required
               />
