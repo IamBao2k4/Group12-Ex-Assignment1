@@ -6,8 +6,6 @@ import StudentStatusItem from "./student_statusItem/student_statusItem";
 import DetailDialog from "./detailDialog/detailDialog";
 import AddIcon from '@mui/icons-material/Add';
 import { Card, Button, Table, Pagination } from 'react-bootstrap';
-import ConfirmationDialog from '../../common/ConfirmationDialog';
-import { useNotification } from '../../common/NotificationContext';
 import { StudentStatusesRoute } from "./route/student_statuses.route";
 import { useTranslation } from 'react-i18next';
 import '../../../components/common/DomainStyles.css';
@@ -17,12 +15,10 @@ const StudentStatuses = () => {
     const [studentStatuses, setStudentStatuses] = useState<StudentStatus[]>([]);
     const [totalPages, setTotalPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
-    const [showConfirmation, setShowConfirmation] = useState(false);
     const [type, setType] = useState('');
     const [chosenStatus, setChosenStatus] = useState<StudentStatus | null>(null);
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(true);
-    const { showNotification } = useNotification();
 
     const fetchStudentStatuses = useCallback(async () => {
         setLoading(true);
@@ -49,19 +45,6 @@ const StudentStatuses = () => {
         const detailDialog = document.querySelector('.dialog-container') as HTMLElement;
         setType(type);
         detailDialog.classList.toggle('hidden');
-    }
-
-    async function DeleteHandler() {
-        try {
-            if (!chosenStatus) return;
-            await StudentStatusesRoute.deleteStudentStatus(chosenStatus._id.toString());
-            showNotification('success', t('studentStatus.deleteSuccess', { name: chosenStatus.tinh_trang }));
-            setShowConfirmation(false);
-            fetchStudentStatuses();
-        } catch (error) {
-            showNotification('error', t('studentStatus.deleteError'));
-            console.error('Error deleting student status:', error);
-        }
     }
 
     return (

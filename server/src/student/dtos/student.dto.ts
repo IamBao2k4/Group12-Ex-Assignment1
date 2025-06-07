@@ -37,7 +37,7 @@ export class CreateStudentDto {
 
   @ApiProperty({ description: 'Gender', example: 'Nam', enum: ['Nam', 'Nữ', 'Khác'] })
   @IsNotEmpty({ message: 'Gender is required' })
-  @IsString()
+  @IsObject()
   gioi_tinh: GenderDto;
 
   @ApiProperty({ description: 'Faculty ID (MongoDB ObjectId)', example: '60d6ec9d1c9d440000d7dcf5' })
@@ -86,7 +86,7 @@ export class CreateStudentDto {
   @Type(() => IDDocumentDto)
   giay_to_tuy_than: IDDocumentDto[];
 
-  @ApiProperty({ description: 'Email address (must be from an accepted domain)', example: 'student@university.edu.vi' })
+  @ApiProperty({ description: 'Email address (must be from an accepted domain)', example: 'student@university.edu.vn' })
   @IsNotEmpty({ message: 'Email is required' })
   @IsEmail({}, { message: 'Invalid email' })
   @IsValidEmailDomain({ message: 'Email must belong to an accepted domain' })
@@ -126,7 +126,7 @@ export class UpdateStudentDto {
 
   @ApiPropertyOptional({ description: 'Gender', example: 'Nam', enum: ['Nam', 'Nữ', 'Khác'] })
   @IsOptional()
-  @IsString()
+  @IsObject()
   readonly gioi_tinh?: GenderDto;
 
   @ApiPropertyOptional({ description: 'Faculty ID (MongoDB ObjectId)', example: '60d6ec9d1c9d440000d7dcf5' })
@@ -170,7 +170,7 @@ export class UpdateStudentDto {
   @IsMongoId({ message: 'Student status ID must be a valid ID' })
   readonly tinh_trang?: mongoose.Schema.Types.ObjectId;
 
-  @ApiPropertyOptional({ description: 'Email address (must be from an accepted domain)', example: 'student@university.edu.vi' })
+  @ApiPropertyOptional({ description: 'Email address (must be from an accepted domain)', example: 'student@university.edu.vn' })
   @IsOptional()
   @IsEmail({}, { message: 'Invalid email' })
   @IsValidEmailDomain({ message: 'Email must belong to an accepted domain' })
@@ -212,7 +212,7 @@ export class FindStudentDto {
 
   @ApiPropertyOptional({ description: 'Gender', example: 'Nam', enum: ['Nam', 'Nữ', 'Khác'] })
   @IsOptional()
-  @IsString()
+  @IsObject()
   readonly gioi_tinh?: GenderDto;
 
   @ApiPropertyOptional({ description: 'Faculty ID', example: '60d6ec9d1c9d440000d7dcf5' })
@@ -235,7 +235,7 @@ export class FindStudentDto {
   @IsString()
   readonly dia_chi?: string;
 
-  @ApiPropertyOptional({ description: 'Email address', example: 'student@university.edu.vi' })
+  @ApiPropertyOptional({ description: 'Email address', example: 'student@university.edu.vn' })
   @IsOptional()
   @IsEmail({}, { message: 'Invalid email' })
   readonly email?: string;

@@ -16,7 +16,7 @@ import { transcriptRoute } from "./route/transcript.route";
 import { useTranslation } from 'react-i18next';
 
 const Transcript: React.FC = () => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { studentId } = useParams();
     const [transcript, setTranscript] = React.useState<TranscriptModel[]>([]);
     const [loading, setLoading] = React.useState<boolean>(true);
@@ -47,6 +47,7 @@ const Transcript: React.FC = () => {
                 searchOptions
             );
             setTranscript(response.data);
+            console.log("Fetched transcript:", response.data);
             setTotalPages(response.meta.totalPages);
             setError(null);
             setLoading(false);
@@ -128,7 +129,7 @@ const Transcript: React.FC = () => {
         transcript.forEach((transcriptItem) => {
             const transcriptData = [
                 `${transcriptItem.ma_mon_hoc.ma_mon_hoc}`,
-                `${transcriptItem.ma_mon_hoc.ten_mon_hoc}`,
+                `${transcriptItem.ma_mon_hoc.ten}`,
                 `${transcriptItem.ma_mon_hoc.tin_chi}`,
                 `${transcriptItem.diem}`,
             ];
@@ -250,7 +251,11 @@ const Transcript: React.FC = () => {
                                                         .ma_mon_hoc
                                                 }{" "}
                                                 -{" "}
-                                                {transcriptItem.ma_mon_hoc.ten_mon_hoc}
+                                                {
+                                                    i18n.language === 'en'
+                                                        ? transcriptItem.ma_mon_hoc.ten.en
+                                                        : transcriptItem.ma_mon_hoc.ten.vi
+                                                }
                                             </td>
 
                                             <td>

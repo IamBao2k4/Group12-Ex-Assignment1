@@ -30,7 +30,7 @@ const validateEmail = (email: string) => {
         ".profile-dialog-info-form-error-email"
     ) as HTMLElement | null;
 
-    const allowedDomain = "student.university.edu.vi";
+    const allowedDomain = "student.university.edu.vn";
     const emailRegex = new RegExp(`^[a-zA-Z0-9._%+-]+@${allowedDomain}$`);
 
     if (!emailRegex.test(email)) {
@@ -207,16 +207,16 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess })
             return;
 
         try {
-            const gender = formData.gioi_tinh.toLowerCase();
             const genderData = i18n.language === 'en' ?
             {
                 en: formData.gioi_tinh,
-                vi: GoogleTranslateService.translateText(formData.gioi_tinh, 'vi')
+                vi: (await GoogleTranslateService.translateText(formData.gioi_tinh, 'vi')).translatedText
             }
             : {
                 vi: formData.gioi_tinh,
-                en: GoogleTranslateService.translateText(formData.gioi_tinh, 'en')
+                en: (await GoogleTranslateService.translateText(formData.gioi_tinh, 'en')).translatedText
             };
+            console.log("genderData", genderData);
             const method = type === "add" ? "POST" : "PATCH";
             const url =
                 type === "add"
@@ -230,6 +230,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess })
                 : [],
                 dia_chi_thuong_tru: addresses ? addresses[0] : null, 
                 dia_chi_tam_tru: addresses ? addresses[1] : null,
+                gioi_tinh: genderData,
             };
 
             const response = await fetch(`${SERVER_URL}${url}`, {

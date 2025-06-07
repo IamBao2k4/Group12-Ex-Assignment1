@@ -1,5 +1,5 @@
 // Email domains
-export const DEFAULT_STUDENT_EMAIL_DOMAIN = '@student.university.edu.vi';
+export const DEFAULT_STUDENT_EMAIL_DOMAIN = '@student.university.edu.vn';
 
 // Phone number
 export const VIETNAM_PHONE_REGEX = '^(\\+84|0[3|5|7|8|9])([0-9]{8})$';

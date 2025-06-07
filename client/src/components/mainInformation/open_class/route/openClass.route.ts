@@ -33,6 +33,7 @@ export const OpenClassRoute = {
 
   createOpenClass: async (openClass: CreateOpenClassDto): Promise<OpenClass> => {
     try {
+      console.log('Creating open class with data:', openClass);
       const response = await axios.post(API_URL, openClass);
       return response.data;
     } catch (error) {

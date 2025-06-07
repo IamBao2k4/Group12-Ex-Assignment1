@@ -168,7 +168,16 @@
         "inactive": "Tạm nghỉ",
         "graduated": "Đã tốt nghiệp",
         "suspended": "Đình chỉ",
-        "expelled": "Thôi học"
+        "expelled": "Thôi học",
+        "dialog":{
+            "title": "Trạng thái sinh viên",
+            "name": "Tên trạng thái",
+            "save":"Lưu",
+            "cancel":"Hủy",
+            "add":"Thêm",
+            "createSuccess": "Tạo trạng thái sinh viên thành công",
+            "updateSuccess": "Cập nhật trạng thái sinh viên thành công"
+        }
     },
     "transcript": {
         "title": "Bảng điểm",

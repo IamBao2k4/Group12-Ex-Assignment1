@@ -4,15 +4,31 @@ interface TranslationResponse {
 }
 
 class GoogleTranslateService {
-  private static apiKey: string;
   private static baseUrl = 'https://translation.googleapis.com/language/translate/v2';
+  
+  /**
+   * Get API key from environment variables
+   */
+  private static getApiKey(): string {
+    // For Vite (if using Vite)
+    const apiKey = import.meta.env.VITE_GOOGLE_TRANSLATE_API_KEY
+    
+    if (!apiKey) {
+      throw new Error('Google Translate API key is not configured');
+    }
+    
+    return apiKey;
+  }
+
   /**
    * Translate text using Google Translate API
    */
   static async translateText(text: string, targetLanguage: string, sourceLanguage?: string): Promise<TranslationResponse> {
     try {
+      const apiKey = this.getApiKey();
+      
       const params = new URLSearchParams({
-        key: this.apiKey,
+        key: apiKey,
         q: text,
         target: targetLanguage,
         format: 'text'
@@ -65,19 +81,6 @@ class GoogleTranslateService {
     }
   }
 }
-
-// Create singleton instance
-let translateService: GoogleTranslateService | null = null;
-
-/**
- * Get Google Translate service instance
- */
-export const getTranslateService = (): GoogleTranslateService => {
-  if (!translateService) {
-    throw new Error('Google Translate service not initialized. Call initializeTranslateService first.');
-  }
-  return translateService;
-};
 
 // Export types
 export type { TranslationResponse };

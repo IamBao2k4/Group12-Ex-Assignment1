@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional, IsNumber, IsArray, IsBoolean } from "class-validator";
+import { IsString, IsNotEmpty, IsOptional, IsNumber, IsArray, IsBoolean, IsObject } from "class-validator";
 import { ObjectId } from "mongoose";
 import { CourseNameDto } from "./courseName.dto";
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
@@ -10,7 +10,7 @@ export class CreateCourseDto {
     readonly ma_mon_hoc: string; // Course code
 
     @ApiProperty({ description: 'Course name', example: 'Introduction to Programming' })
-    @IsString()
+    @IsObject()
     @IsNotEmpty()
     readonly ten: CourseNameDto; // Course name
 
@@ -42,7 +42,7 @@ export class UpdateCourseDto {
     readonly ma_mon_hoc?: string; // Course code
 
     @ApiPropertyOptional({ description: 'Course name', example: 'Introduction to Programming' })
-    @IsString()
+    @IsObject()
     @IsOptional()
     readonly ten?: CourseNameDto; // Course name
 

@@ -1,6 +1,6 @@
 import mongoose, { Document } from 'mongoose';
 
-interface ProgramName {
+export interface ProgramName {
     en: string;
     vi: string;
 }

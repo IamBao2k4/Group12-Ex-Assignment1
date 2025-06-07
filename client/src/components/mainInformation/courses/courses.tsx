@@ -93,8 +93,6 @@ const Courses = () => {
         setCurrentPage(1);
     };
 
-    console.log("courses:",courses)
-
     return (
         <div className="domain-container">
             <CourseDialog 

@@ -182,7 +182,16 @@
         "inactive": "Inactive",
         "graduated": "Graduated",
         "suspended": "Suspended",
-        "expelled": "Expelled"
+        "expelled": "Expelled",
+        "dialog":{
+            "title": "Student Status",
+            "name": "Status Name",
+            "save":"Save",
+            "cancel":"Cancel",
+            "add":"Add",
+            "createSuccess": "Create student status successfully",
+            "updateSuccess": "Update student status successfully"
+        }
     },
     "transcript": {
         "title": "Transcript",

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Faculty } from '../models/faculty';
 import { useNotification } from '../../../common/NotificationContext';
 import { SERVER_URL } from '../../../../../global';
+import { GoogleTranslateService } from '../../../../middleware/gg-trans';
 
 interface DetailDialogProps {
     type: string;
@@ -12,7 +13,7 @@ interface DetailDialogProps {
 }
 
 const DetailDialog: React.FC<DetailDialogProps> = ({ type, faculty, onSuccess }) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const detailDialog = document.querySelector('.dialog-container') as HTMLElement;
     const { showNotification } = useNotification();
 
@@ -28,7 +29,7 @@ const DetailDialog: React.FC<DetailDialogProps> = ({ type, faculty, onSuccess })
         }
 
         if (type === 'edit') {
-            name.value = faculty.ten_khoa;
+            name.value = i18n.language === 'en' ? faculty.ten_khoa.en : faculty.ten_khoa.vi;
             code.value = faculty.ma_khoa;
         } else {
             name.value = '';
@@ -46,8 +47,12 @@ const DetailDialog: React.FC<DetailDialogProps> = ({ type, faculty, onSuccess })
         const form = event.currentTarget;
         const data = new FormData(form);
 
+        const name = data.get('name') as string;
+
         const facultyData = {
-            ten_khoa: data.get('name') as string,
+            ten_khoa: i18n.language === 'en' ? 
+                { en: name, vi: (await GoogleTranslateService.translateText(name, 'vi')).translatedText } : 
+                { en: (await GoogleTranslateService.translateText(name, 'en')).translatedText, vi: name },
             ma_khoa: data.get('code') as string,
         };
 

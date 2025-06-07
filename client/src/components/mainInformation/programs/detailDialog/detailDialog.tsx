@@ -12,7 +12,7 @@ interface DetailDialogProps {
 }
 
 const DetailDialog: React.FC<DetailDialogProps> = ({ type, program, onSuccess }) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const detailDialog = document.querySelector('.dialog-container') as HTMLElement;
     const { showNotification } = useNotification();
 
@@ -28,7 +28,7 @@ const DetailDialog: React.FC<DetailDialogProps> = ({ type, program, onSuccess })
         }
 
         if (type === 'edit') {
-            name.value = program.name;
+            name.value = i18n.language === 'en' ? program.name.en : program.name.vi;
             code.value = program.ma;
         } else {
             name.value = '';
@@ -47,8 +47,8 @@ const DetailDialog: React.FC<DetailDialogProps> = ({ type, program, onSuccess })
         const data = new FormData(form);
 
         const programData = {
-            name: data.get('name') as string,
-            ma: data.get('code') as string,
+            name: data.get('name'),
+            ma: data.get('code'),
         };
 
         try {

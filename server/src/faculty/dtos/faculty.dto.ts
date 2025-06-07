@@ -1,4 +1,4 @@
-import { IsDate, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsDate, IsNotEmpty, IsOptional, IsString, IsObject } from "class-validator";
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { FacultyNameDto } from "./facultyName.dto";
 
@@ -9,7 +9,7 @@ export class FacultyDto {
     readonly ma_khoa: string;
 
     @ApiProperty({ description: 'Faculty name', example: 'Công Nghệ Thông Tin' })
-    @IsString()
+    @IsObject()
     @IsNotEmpty()
     readonly ten_khoa: FacultyNameDto;
 
@@ -26,7 +26,7 @@ export class UpdateFacultyDto {
     readonly ma_khoa?: string;
 
     @ApiPropertyOptional({ description: 'Faculty name', example: 'Công Nghệ Thông Tin' })
-    @IsString()
+    @IsObject()
     @IsOptional()
     readonly ten_khoa?: FacultyNameDto;
 }
@@ -38,7 +38,7 @@ export class CreateFacultyDto {
     readonly ma_khoa: string;
 
     @ApiProperty({ description: 'Faculty name', example: 'Công Nghệ Thông Tin' })
-    @IsString()
+    @IsObject()
     @IsNotEmpty()
     readonly ten_khoa: FacultyNameDto;
 }

@@ -63,7 +63,6 @@ const OpenClassComponent: React.FC = () => {
     setLoading(true);
     try {
       const response = await OpenClassRoute.getOpenClasses(pagination, searchOptions);
-      console.log("data: ",response)
       setOpenClasses(response.data);
       setTotalPages(response.meta.totalPages);
       setError(null); // Clear any existing error
@@ -365,7 +364,7 @@ const OpenClassComponent: React.FC = () => {
               />
             </Form.Group>
 
-            <Form.Group className="mb-3">
+            {/* <Form.Group className="mb-3">
               <Form.Label>{t('openClass.className')}</Form.Label>
               <Form.Control
                 type="text"
@@ -375,7 +374,7 @@ const OpenClassComponent: React.FC = () => {
                 placeholder={t('openClass.classNamePlaceholder')}
                 required
               />
-            </Form.Group>
+            </Form.Group> */}
 
             <Form.Group className="mb-3">
               <Form.Label>{t('openClass.courseCode')}</Form.Label>
@@ -387,7 +386,7 @@ const OpenClassComponent: React.FC = () => {
               >
                 <option value="">{t('course.selectCourse')}</option>
                 {courses.map(course => (
-                  <option key={course._id.toString()} value={course._id.toString()}>{i18n.language === "en"? course.ten.en : course.ten.vi}</option>
+                  <option key={course._id.toString()} value={course._id.toString()}>{course.ma_mon_hoc}</option>
                 ))}
               </Form.Select>
             </Form.Group>

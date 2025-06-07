@@ -1,7 +1,8 @@
 import { Document } from "mongoose";
+import { CourseName } from "../../courses/models/course";
 
 export interface TranscriptModel extends Document {
-    _id?: string;
+    _id: string;
     ma_mon_hoc: CourseType; // Subject code
     ma_so_sinh_vien: StudentType; // Student ID
     diem: number; // Grade
@@ -13,7 +14,7 @@ export interface TranscriptModel extends Document {
 export type CourseType = {
     _id: string;
     ma_mon_hoc: string;
-    ten_mon_hoc: string;
+    ten: CourseName;
     tin_chi: number;
 };
 

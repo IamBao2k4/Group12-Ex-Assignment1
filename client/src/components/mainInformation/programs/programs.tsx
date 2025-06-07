@@ -6,6 +6,8 @@ import AddIcon from '@mui/icons-material/Add';
 import { SERVER_URL } from '../../../../global';
 import { useTranslation } from 'react-i18next';
 import { Program } from './models/program';
+import { GoogleTranslateService } from '../../../middleware/gg-trans';
+import { useNotification } from '../../common/NotificationContext';
 
 interface ProgramForm {
     _id: string;
@@ -19,6 +21,7 @@ const Programs: React.FC = () => {
     const { t, i18n } = useTranslation();
     const [programs, setPrograms] = useState<Program[]>([]);
     const [showModal, setShowModal] = useState(false);
+    const { showNotification } = useNotification();
     const [editingProgram, setEditingProgram] = useState<Program | null>(null);
     const [formData, setFormData] = useState<Omit<ProgramForm, '_id' | 'created_at' | 'updated_at'>>({
         name: '',
@@ -42,14 +45,21 @@ const Programs: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        const data = {
+            ...formData,
+            name: i18n.language === 'en' ? 
+                    { en: formData.name, vi: (await GoogleTranslateService.translateText(formData.name, 'vi')).translatedText } 
+                   :{en: (await GoogleTranslateService.translateText(formData.name, 'en')).translatedText, vi: formData.name },
+        }
         try {
             if (editingProgram) {
-                await axios.put(`${SERVER_URL}/api/v1/programs/${editingProgram._id}`, formData);
+                await axios.patch(`${SERVER_URL}/api/v1/programs/${editingProgram._id}`, data);
             } else {
-                await axios.post(`${SERVER_URL}/api/v1/programs`, formData);
+                await axios.post(`${SERVER_URL}/api/v1/programs`, data);
             }
             fetchPrograms();
             handleCloseModal();
+            showNotification('success', t('messages.saveSuccess'));
         } catch (error) {
             console.error('Error saving program:', error);
         }
@@ -75,7 +85,7 @@ const Programs: React.FC = () => {
     const handleEdit = (program: Program) => {
         setEditingProgram(program);
         setFormData({
-            name: i18n.language === 'en' ? program.name.en : program.name.vi,
+            name: i18n.language === "en" ? program.name.en : program.name.vi,
             ma: program.ma
         });
         setShowModal(true);
@@ -150,7 +160,8 @@ const Programs: React.FC = () => {
                             <Form.Control
                                 type="text"
                                 value={formData.name}
-                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                onChange={(e) => setFormData({ ...formData, name: e.target.value
+                                 })}
                                 required
                             />
                         </Form.Group>
