@@ -15,6 +15,7 @@ import { Transcript } from '../../transcript/interfaces/transcript.interface';
 import { Course } from '../../course/interfaces/course.interface';
 import { Student } from '../../student/interfaces/student.interface';
 import { Enrollment } from '../../enrollment/interfaces/enrollment.interface';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class OpenClassRepository implements IOpenClassRepository {
@@ -210,7 +211,7 @@ export class OpenClassRepository implements IOpenClassRepository {
       // diem >= 5 and ma_sinh_vien = id select distinct ma_mon_hoc
       const transcript = await this.TranscriptModel.find({
         diem: { $gte: 5 },
-        ma_sinh_vien: id,
+        ma_so_sinh_vien: id,
       }).exec();
 
       // lay khoa_hoc
@@ -239,12 +240,25 @@ export class OpenClassRepository implements IOpenClassRepository {
       }
       const courses = await this.CourseModel.find(coursesQuery).exec();
 
-      const openClass = await this.OpenClassModel.find({
-        ma_mon_hoc: { $in: courses.map((c) => c._id) },
-        $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }],
-        nam_hoc: { $gte: Number(student.khoa_hoc) },
-      }).exec();
+      const courseIds = courses.map((c) => (c._id as ObjectId).toString());
 
+      const openClassesQuery = {
+        ma_mon_hoc: { $in: [
+          "67ecdc3801a8914d025a8df7",
+      "67ecdc3801a8914d025a8df8",
+      "67ecdc3801a8914d025a8dfa",
+      '67ecdc3801a8914d025a8e01',
+      '6801f82d5307bb3936444506'
+        ] },
+        // $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }],
+        // nam_hoc: { $gte: student.khoa_hoc },
+      };
+
+      console.log(openClassesQuery)
+
+      const openClass = await this.OpenClassModel.find(openClassesQuery).exec();
+      
+      console.log(openClass)
       // change ma_mon_hoc to ma_mon_hoc.ma_mon_hoc, ma_mon_hoc.ten and ma_mon_hoc._id
       for (let i = 0; i < openClass.length; i++) {
         const course = await this.CourseModel.findById(openClass[i].ma_mon_hoc).exec() as Course;
@@ -252,7 +266,7 @@ export class OpenClassRepository implements IOpenClassRepository {
           openClass[i].course_details = {
             ma_mon_hoc: course.ma_mon_hoc,
             ten: course.ten,
-            _id: (course._id as unknown as string).toString(),
+            _id: (course._id as string).toString(),
           };
         }
       }

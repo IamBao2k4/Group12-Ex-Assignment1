@@ -214,15 +214,6 @@ const ProfilePage = () => {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        if (editedStudent) {
-            const updatedStudent = { ...editedStudent };
-            (updatedStudent as any)[name] = value;
-            setEditedStudent(updatedStudent as Student);
-        }
-    };
-
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 

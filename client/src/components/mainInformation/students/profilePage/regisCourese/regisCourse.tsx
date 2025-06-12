@@ -12,7 +12,7 @@ interface RegisCourseProps {
 }
 
 const RegisCourse: React.FC<RegisCourseProps> = ({ student }) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [availableCourses, setAvailableCourses] = useState<OpenClass[]>([]);
     const [registeredCourses, setRegisteredCourses] = useState<Enrollment[]>([]);
     const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
@@ -25,6 +25,7 @@ const RegisCourse: React.FC<RegisCourseProps> = ({ student }) => {
             try {
                 const response = await fetch(`${SERVER_URL}/api/v1/open_class/student/${student._id}`);
                 const data = await response.json();
+                console.log(data)
                 if (Array.isArray(data)) {
                     setAvailableCourses(data);
                 } else {
@@ -139,7 +140,7 @@ const RegisCourse: React.FC<RegisCourseProps> = ({ student }) => {
                         <tbody>
                             {availableCourses.map((course) => (
                                 <tr key={course._id} className="regis-course-row">
-                                    <td>{course.course_details?.ten}</td>
+                                    <td>{i18n.language === "en" ? course.course_details?.ten.en : course.course_details?.ten.vi}</td>
                                     <td>{course.course_details?.ma_mon_hoc}</td>
                                     <td>{course.lich_hoc}</td>
                                     <td>

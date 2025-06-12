@@ -1,10 +1,12 @@
 import * as mongoose from 'mongoose';
+import { CourseNameSchema } from 'src/course/schemas/course.schema';
+
 export const OpenClassSchema = new mongoose.Schema({
   ma_lop: { type: String, required: true },
-  ma_mon_hoc: { type: mongoose.Schema.Types.ObjectId, ref: 'Course', required: true },
+  ma_mon_hoc: { type: String, ref: 'Course', required: true },
   course_details: {
     ma_mon_hoc: { type: String },
-    ten: { type: String },
+    ten: { type: CourseNameSchema },
     _id: { type: String },
   }, 
   si_so: { type: Number, required: true, default: 0 }, // Sĩ số lớp học phần
