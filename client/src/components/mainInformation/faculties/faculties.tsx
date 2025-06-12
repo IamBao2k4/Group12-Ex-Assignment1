@@ -5,7 +5,7 @@ import './faculties.css';
 import FacultyItem from "./facultyItem/facultyItem";
 import DetailDialog from "./detailDialog/detailDialog";
 import AddIcon from '@mui/icons-material/Add';
-import { Card, Button, Form, Table, Pagination, Row, Col } from 'react-bootstrap';
+import { Card, Button, Table, Pagination } from 'react-bootstrap';
 import '../../../components/common/DomainStyles.css';
 import { useTranslation } from 'react-i18next';
 import { FacultiesRoute } from "./route/faculties.route";
@@ -28,7 +28,7 @@ const Faculties = () => {
                 { searchString: search }
             );
             setFaculties(response.data);
-            setTotalPages(response.meta.totalPages);
+            setTotalPages(response.meta.total);
             setLoading(false);
         } catch (error) {
             console.error('Error fetching faculties:', error);

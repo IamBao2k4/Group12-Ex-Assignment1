@@ -109,9 +109,15 @@ const StudentItem: React.FC<StudentItemProps> = ({
                 <td onClick={goToTranscriptHandler} style={{ cursor: "pointer" }}>
                     {student.ho_ten}
                 </td>
-                <td>{student.ma_so_sinh_vien}</td>
-                <td>{student.ngay_sinh}</td>
-                <td>{i18n.language === "en"? status?.en: status?.vi}</td>
+                <td onClick={goToTranscriptHandler} style={{ cursor: "pointer" }}>
+                    {student.ma_so_sinh_vien}
+                </td>
+                <td onClick={goToTranscriptHandler} style={{ cursor: "pointer" }}>
+                    {student.ngay_sinh}
+                </td>
+                <td onClick={goToTranscriptHandler} style={{ cursor: "pointer" }}>
+                    {i18n.language === "en"? status?.en: status?.vi}
+                </td>
                 <td>
                     <Button 
                         variant="outline-primary" 

@@ -56,10 +56,10 @@ const DetailDialog: React.FC<DetailDialogProps> = ({ type, studentStatus, onSucc
     try {
       if (type === 'add') {
         await StudentStatusesRoute.createStudentStatus(studentStatusData);
-        showNotification('success', t('studentStatuses.dialog.createSuccess'));
+        showNotification('success', t('studentStatus.dialog.createSuccess'));
       } else {
         await StudentStatusesRoute.updateStudentStatus(studentStatus._id.toString(), studentStatusData);
-        showNotification('success', t('studentStatuses.dialog.updateSuccess'));
+        showNotification('success', t('studentStatus.dialog.updateSuccess'));
       }
 
       detailDialog.classList.toggle('hidden');
