@@ -15,7 +15,7 @@ describe('ProgramRepository', () => {
   // Mock data
   const mockProgram: Partial<Program> = {
     _id: 'program-id',
-    name: 'Computer Science',
+    name: { en: 'Computer Science', vi: 'Khoa Học Máy Tính' },
     ma: 'CS001',
   };
 
@@ -23,7 +23,7 @@ describe('ProgramRepository', () => {
     mockProgram,
     {
       _id: 'program-id-2',
-      name: 'Data Science',
+      name: { en: 'Data Science', vi: 'Khoa Học Dữ Liệu' },
       ma: 'DS001',
     },
   ];
@@ -104,7 +104,7 @@ describe('ProgramRepository', () => {
     it('should create a program successfully', async () => {
       // Arrange
       const programData: Partial<Program> = { 
-        name: 'Computer Science', 
+        name: { en: 'Computer Science', vi: 'Khoa Học Máy Tính' }, 
         ma: 'CS001' 
       };
       
@@ -121,7 +121,7 @@ describe('ProgramRepository', () => {
     it('should throw an exception when save fails', async () => {
       // Arrange
       const programData: Partial<Program> = { 
-        name: 'Computer Science', 
+        name: { en: 'Computer Science', vi: 'Khoa Học Máy Tính' }, 
         ma: 'CS001' 
       };
       
@@ -214,7 +214,7 @@ describe('ProgramRepository', () => {
     it('should update a program successfully', async () => {
       // Arrange
       const id = 'program-id';
-      const updateData: Partial<Program> = { name: 'Advanced Computer Science' };
+      const updateData: Partial<Program> = { name: { en: 'Advanced Computer Science', vi: 'Khoa Học Máy Tính Nâng Cao' } };
       
       mockFindOneAndUpdate.mockReturnValue({
         exec: jest.fn().mockResolvedValue({ ...mockProgram, ...updateData })
@@ -238,7 +238,7 @@ describe('ProgramRepository', () => {
     it('should throw ProgramNotFoundException when program not found', async () => {
       // Arrange
       const id = 'non-existent-id';
-      const updateData: Partial<Program> = { name: 'Advanced Computer Science' };
+      const updateData: Partial<Program> = { name: { en: 'Advanced Computer Science', vi: 'Khoa Học Máy Tính Nâng Cao' } };
       
       mockFindOneAndUpdate.mockReturnValue({
         exec: jest.fn().mockResolvedValue(null)
@@ -251,7 +251,7 @@ describe('ProgramRepository', () => {
     it('should throw an exception when update fails', async () => {
       // Arrange
       const id = 'program-id';
-      const updateData: Partial<Program> = { name: 'Advanced Computer Science' };
+      const updateData: Partial<Program> = { name: { en: 'Advanced Computer Science', vi: 'Khoa Học Máy Tính Nâng Cao' } };
       
       mockFindOneAndUpdate.mockReturnValue({
         exec: jest.fn().mockRejectedValue(new Error('Database error'))

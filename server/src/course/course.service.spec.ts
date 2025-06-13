@@ -69,14 +69,14 @@ describe('CourseService', () => {
       // Arrange
       const courseDto = { 
         ma_mon_hoc: 'CS101',
-        ten: 'Course 1',
+        ten: { en: 'Course 1', vi: 'Môn Học 1' },
         tin_chi: 3,
         khoa: '123'
       };
       const expectedResult = { 
         _id: validObjectId, 
         ma_mon_hoc: 'CS101',
-        ten: 'Course 1',
+        ten: { en: 'Course 1', vi: 'Môn Học 1' },
         tin_chi: 3,
         khoa: '123'
       };
@@ -94,11 +94,11 @@ describe('CourseService', () => {
   describe('update', () => {
     it('should update a course', async () => {
       // Arrange
-      const updateDto = { ten: 'Updated Course' };
+      const updateDto = { ten: { en: 'Updated Course', vi: 'Môn Học Đã Cập Nhật' } };
       const expectedResult = { 
         _id: validObjectId, 
         ma_mon_hoc: 'CS101',
-        ten: 'Updated Course',
+        ten: { en: 'Updated Course', vi: 'Môn Học Đã Cập Nhật' },
         tin_chi: 3,
         khoa: '123'
       };
@@ -115,7 +115,7 @@ describe('CourseService', () => {
 
     it('should throw an error if course not found', async () => {
       // Arrange
-      const updateDto = { ten: 'Updated Course' };
+      const updateDto = { ten: { en: 'Updated Course', vi: 'Môn Học Đã Cập Nhật' } };
       mockCourseRepository.update.mockResolvedValue(null);
       
       // Act & Assert
@@ -127,7 +127,7 @@ describe('CourseService', () => {
     it('should return all courses', async () => {
       // Arrange
       const expectedResult = {
-        data: [{ _id: validObjectId, ma_mon_hoc: 'CS101', ten: 'Course 1' }],
+        data: [{ _id: validObjectId, ma_mon_hoc: 'CS101', ten: { en: 'Course 1', vi: 'Môn Học 1' } }],
         meta: { total: 1, page: 1, limit: 10, totalPages: 1 },
       };
       mockCourseRepository.findAll.mockResolvedValue(expectedResult);
@@ -146,7 +146,7 @@ describe('CourseService', () => {
       const expectedResult = { 
         _id: validObjectId, 
         ma_mon_hoc: 'CS101',
-        ten: 'Course 1',
+        ten: { en: 'Course 1', vi: 'Môn Học 1' },
         deleted_at: new Date() 
       };
       mockCourseRepository.softDelete.mockResolvedValue(expectedResult);
@@ -171,7 +171,7 @@ describe('CourseService', () => {
     it('should return all courses', async () => {
       // Arrange
       const expectedResult = [
-        { _id: validObjectId, ma_mon_hoc: 'CS101', ten: 'Course 1' }
+        { _id: validObjectId, ma_mon_hoc: 'CS101', ten: { en: 'Course 1', vi: 'Môn Học 1' } }
       ];
       mockCourseRepository.getAll.mockResolvedValue(expectedResult);
       
@@ -188,7 +188,7 @@ describe('CourseService', () => {
       // Arrange
       const mockCourse = {
         _id: validObjectId,
-        ten: 'Course 1',
+        ten: { en: 'Course 1', vi: 'Môn Học 1' },
         ma_mon_hoc: 'CS101',
         tin_chi: 3,
         khoa: 'CNTT'

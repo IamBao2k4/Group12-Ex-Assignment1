@@ -55,7 +55,7 @@ describe('ProgramService', () => {
   describe('create', () => {
     it('should call repository create with program data', async () => {
       const createDto: CreateProgramDto = {
-        name: 'Computer Science',
+        name: { en: 'Computer Science', vi: 'Khoa Học Máy Tính' },
         ma: 'CS',
       };
       
@@ -74,7 +74,7 @@ describe('ProgramService', () => {
 
     it('should propagate errors from repository', async () => {
       const createDto: CreateProgramDto = {
-        name: 'Computer Science',
+        name: { en: 'Computer Science', vi: 'Khoa Học Máy Tính' },
         ma: 'CS',
       };
       
@@ -92,7 +92,7 @@ describe('ProgramService', () => {
       const page = 1;
       
       const paginatedResult = {
-        data: [{ _id: 'program-id', name: 'Computer Science', ma: 'CS' }],
+        data: [{ _id: 'program-id', name: { en: 'Computer Science', vi: 'Khoa Học Máy Tính' }, ma: 'CS' }],
         meta: { page: 1, limit: 10, totalPages: 1, total: 1 }
       };
 
@@ -115,12 +115,12 @@ describe('ProgramService', () => {
     it('should update a program when valid id and data provided', async () => {
       const id = 'valid-id';
       const updateDto: UpdateProgramDto = {
-        name: 'Updated Program Name',
+        name: { en: 'Updated Program Name', vi: 'Tên Chương Trình Đã Cập Nhật' },
       };
       
       const expectedResult = {
         _id: id,
-        name: 'Updated Program Name',
+        name: { en: 'Updated Program Name', vi: 'Tên Chương Trình Đã Cập Nhật' },
         ma: 'CS',
       };
 
@@ -136,7 +136,7 @@ describe('ProgramService', () => {
 
     it('should throw ProgramNotFoundException for invalid ObjectId format', async () => {
       const id = 'invalid-id';
-      const updateDto: UpdateProgramDto = { name: 'New Name' };
+      const updateDto: UpdateProgramDto = { name: { en: 'New Name', vi: 'Tên Mới' } };
 
       (isValidObjectId as jest.Mock).mockReturnValue(false);
 
@@ -146,7 +146,7 @@ describe('ProgramService', () => {
 
     it('should throw ProgramNotFoundException when program not found', async () => {
       const id = 'valid-id-not-found';
-      const updateDto: UpdateProgramDto = { name: 'New Name' };
+      const updateDto: UpdateProgramDto = { name: { en: 'New Name', vi: 'Tên Mới' } };
 
       (isValidObjectId as jest.Mock).mockReturnValue(true);
       mockRepository.update.mockResolvedValue(null);
@@ -160,7 +160,7 @@ describe('ProgramService', () => {
       const id = 'valid-id';
       const deletedProgram = {
         _id: id,
-        name: 'Computer Science',
+        name: { en: 'Computer Science', vi: 'Khoa Học Máy Tính' },
         ma: 'CS',
         deleted_at: new Date()
       };
@@ -197,8 +197,8 @@ describe('ProgramService', () => {
   describe('getAll', () => {
     it('should call repository getAll', async () => {
       const programs = [
-        { _id: 'program1', name: 'Computer Science', ma: 'CS' },
-        { _id: 'program2', name: 'Information Technology', ma: 'IT' }
+        { _id: 'program1', name: { en: 'Computer Science', vi: 'Khoa Học Máy Tính' }, ma: 'CS' },
+        { _id: 'program2', name: { en: 'Information Technology', vi: 'Công Nghệ Thông Tin' }, ma: 'IT' }
       ];
 
       mockRepository.getAll.mockResolvedValue(programs);
@@ -219,7 +219,7 @@ describe('ProgramService', () => {
   describe('findByCode', () => {
     it('should call repository findByCode with code', async () => {
       const code = 'CS';
-      const program = { _id: 'program-id', name: 'Computer Science', ma: code };
+      const program = { _id: 'program-id', name: { en: 'Computer Science', vi: 'Khoa Học Máy Tính' }, ma: code };
 
       mockRepository.findByCode.mockResolvedValue(program);
 
@@ -239,7 +239,7 @@ describe('ProgramService', () => {
   describe('detail', () => {
     it('should return program details when valid id provided', async () => {
       const id = 'valid-id';
-      const program = { _id: id, name: 'Computer Science', ma: 'CS' };
+      const program = { _id: id, name: { en: 'Computer Science', vi: 'Khoa Học Máy Tính' }, ma: 'CS' };
 
       (isValidObjectId as jest.Mock).mockReturnValue(true);
       mockRepository.detail.mockResolvedValue(program);

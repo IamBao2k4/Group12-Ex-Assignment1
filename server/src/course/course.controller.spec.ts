@@ -34,7 +34,7 @@ describe('CourseController', () => {
 
   describe('create', () => {
     it('should call service.create with correct parameters', async () => {
-      const dto = { ma_mon_hoc: 'CS101', ten: 'Intro to CS', tin_chi: 3, khoa: '123' };
+      const dto = { ma_mon_hoc: 'CS101', ten: { en: 'Intro to CS', vi: 'Giới Thiệu Về Khoa Học Máy Tính' }, tin_chi: 3, khoa: '123' };
       await controller.create(dto);
       expect(service.create).toHaveBeenCalledWith(dto);
     });
@@ -52,7 +52,7 @@ describe('CourseController', () => {
   describe('update', () => {
     it('should call service.update with correct parameters', async () => {
       const id = '123';
-      const dto = { ten: 'Updated Course Name' };
+      const dto = { ten: { en: 'Updated Course Name', vi: 'Tên Môn Học Đã Cập Nhật' } };
       await controller.update(id, dto);
       expect(service.update).toHaveBeenCalledWith(id, dto);
     });

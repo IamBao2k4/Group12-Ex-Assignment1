@@ -15,14 +15,14 @@ describe('StudentStatusRepository', () => {
   // Mock data
   const mockStudentStatus: Partial<StudentStatus> = {
     _id: 'status-id',
-    tinh_trang: 'Đang học',
+    tinh_trang: { en: 'Studying', vi: 'Đang học' },
   };
 
   const mockStudentStatusList: Partial<StudentStatus>[] = [
     mockStudentStatus,
     {
       _id: 'status-id-2',
-      tinh_trang: 'Bảo lưu',
+      tinh_trang: { en: 'On leave', vi: 'Bảo lưu' },
     },
   ];
 
@@ -85,7 +85,7 @@ describe('StudentStatusRepository', () => {
   describe('create', () => {
     it('should create a student status successfully', async () => {
       // Arrange
-      const statusData: Partial<StudentStatus> = { tinh_trang: 'Đang học' };
+      const statusData: Partial<StudentStatus> = { tinh_trang: { en: 'Studying', vi: 'Đang học' } };
       
       mockSave.mockResolvedValueOnce(mockStudentStatus);
 
@@ -99,7 +99,7 @@ describe('StudentStatusRepository', () => {
 
     it('should throw an exception when save fails', async () => {
       // Arrange
-      const statusData: Partial<StudentStatus> = { tinh_trang: 'Đang học' };
+      const statusData: Partial<StudentStatus> = { tinh_trang: { en: 'Studying', vi: 'Đang học' } };
       
       mockSave.mockRejectedValueOnce(new Error('Database error'));
 
@@ -192,7 +192,7 @@ describe('StudentStatusRepository', () => {
     it('should update a student status successfully', async () => {
       // Arrange
       const id = 'status-id';
-      const updateData: Partial<StudentStatus> = { tinh_trang: 'Đã tốt nghiệp' };
+      const updateData: Partial<StudentStatus> = { tinh_trang: { en: 'Graduated', vi: 'Đã tốt nghiệp' } };
       
       mockExec.mockResolvedValueOnce({ ...mockStudentStatus, ...updateData });
 
@@ -214,7 +214,7 @@ describe('StudentStatusRepository', () => {
     it('should throw StudentStatusNotFoundException when status not found', async () => {
       // Arrange
       const id = 'non-existent-id';
-      const updateData: Partial<StudentStatus> = { tinh_trang: 'Đã tốt nghiệp' };
+      const updateData: Partial<StudentStatus> = { tinh_trang: { en: 'Graduated', vi: 'Đã tốt nghiệp' } };
       
       mockExec.mockResolvedValueOnce(null);
 
@@ -225,7 +225,7 @@ describe('StudentStatusRepository', () => {
     it('should throw an exception when update fails', async () => {
       // Arrange
       const id = 'status-id';
-      const updateData: Partial<StudentStatus> = { tinh_trang: 'Đã tốt nghiệp' };
+      const updateData: Partial<StudentStatus> = { tinh_trang: { en: 'Graduated', vi: 'Đã tốt nghiệp' } };
       
       mockExec.mockRejectedValueOnce(new Error('Database error'));
 

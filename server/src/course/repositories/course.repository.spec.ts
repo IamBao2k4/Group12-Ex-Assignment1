@@ -16,7 +16,7 @@ describe('CourseRepository', () => {
   const mockCourse: Partial<Course> = {
     _id: 'course-id',
     ma_mon_hoc: 'CS101',
-    ten: 'Introduction to Computer Science',
+    ten: { en: 'Introduction to Computer Science', vi: 'Giới Thiệu Khoa Học Máy Tính' },
     tin_chi: 3,
     khoa: 'faculty-id',
     vo_hieu_hoa: false,
@@ -27,7 +27,7 @@ describe('CourseRepository', () => {
     {
       _id: 'course-id-2',
       ma_mon_hoc: 'CS102',
-      ten: 'Data Structures and Algorithms',
+      ten: { en: 'Data Structures and Algorithms', vi: 'Cấu Trúc Dữ Liệu và Giải Thuật' },
       tin_chi: 4,
       khoa: 'faculty-id',
       vo_hieu_hoa: false,
@@ -87,7 +87,7 @@ describe('CourseRepository', () => {
       // Arrange
       const courseData: Partial<Course> = {
         ma_mon_hoc: 'CS101',
-        ten: 'Introduction to Computer Science',
+        ten: { en: 'Introduction to Computer Science', vi: 'Giới Thiệu Khoa Học Máy Tính' },
         tin_chi: 3,
         khoa: 'faculty-id',
       };
@@ -103,7 +103,7 @@ describe('CourseRepository', () => {
       // Arrange
       const courseData: Partial<Course> = {
         ma_mon_hoc: 'CS101',
-        ten: 'Introduction to Computer Science',
+        ten: { en: 'Introduction to Computer Science', vi: 'Giới Thiệu Khoa Học Máy Tính' },
         tin_chi: 3,
         khoa: 'faculty-id',
       };
@@ -202,7 +202,7 @@ describe('CourseRepository', () => {
     it('should update a course successfully', async () => {
       // Arrange
       const id = 'course-id';
-      const updateData: Partial<Course> = { ten: 'Advanced Computer Science' };
+      const updateData: Partial<Course> = { ten: { en: 'Advanced Computer Science', vi: 'Khoa Học Máy Tính Nâng Cao' } };
       const updatedCourse = { ...mockCourse, ...updateData };
       
       mockModel.exec.mockResolvedValueOnce(updatedCourse);
@@ -218,7 +218,7 @@ describe('CourseRepository', () => {
     it('should throw CourseNotFoundException when course not found', async () => {
       // Arrange
       const id = 'non-existent-id';
-      const updateData: Partial<Course> = { ten: 'Advanced Computer Science' };
+      const updateData: Partial<Course> = { ten: { en: 'Advanced Computer Science', vi: 'Khoa Học Máy Tính Nâng Cao' } };
       
       mockModel.exec.mockResolvedValueOnce(null);
 
@@ -229,7 +229,7 @@ describe('CourseRepository', () => {
     it('should throw an exception when update fails', async () => {
       // Arrange
       const id = 'course-id';
-      const updateData: Partial<Course> = { ten: 'Advanced Computer Science' };
+      const updateData: Partial<Course> = { ten: { en: 'Advanced Computer Science', vi: 'Khoa Học Máy Tính Nâng Cao' } };
       
       mockModel.exec.mockRejectedValueOnce(new Error('Database error'));
 

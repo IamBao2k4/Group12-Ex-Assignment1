@@ -47,7 +47,7 @@ describe('ProgramController', () => {
   describe('create', () => {
     it('should call service create with program data', async () => {
       const createDto: CreateProgramDto = {
-        name: 'Computer Science',
+        name: { en: 'Computer Science', vi: 'Khoa Học Máy Tính' },
         ma: 'CS',
       };
       
@@ -66,7 +66,7 @@ describe('ProgramController', () => {
 
     it('should propagate errors from service', async () => {
       const createDto: CreateProgramDto = {
-        name: 'Computer Science',
+        name: { en: 'Computer Science', vi: 'Khoa Học Máy Tính' },
         ma: 'CS',
       };
       
@@ -84,7 +84,7 @@ describe('ProgramController', () => {
       const page = 1;
       
       const paginatedResult = {
-        data: [{ _id: 'program-id', name: 'Computer Science', ma: 'CS' }],
+        data: [{ _id: 'program-id', name: { en: 'Computer Science', vi: 'Khoa Học Máy Tính' }, ma: 'CS' }],
         meta: { page: 1, limit: 10, totalPages: 1, total: 1 }
       };
 
@@ -109,12 +109,12 @@ describe('ProgramController', () => {
     it('should call service update with id and update data', async () => {
       const id = 'program-id';
       const updateDto: UpdateProgramDto = {
-        name: 'Updated Program Name',
+        name: { en: 'Updated Program Name', vi: 'Tên Chương Trình Đã Cập Nhật' },
       };
       
       const expectedResult = {
         _id: id,
-        name: 'Updated Program Name',
+        name: { en: 'Updated Program Name', vi: 'Tên Chương Trình Đã Cập Nhật' },
         ma: 'CS',
       };
 
@@ -128,7 +128,7 @@ describe('ProgramController', () => {
 
     it('should propagate ProgramNotFoundException', async () => {
       const id = 'non-existent-id';
-      const updateDto: UpdateProgramDto = { name: 'New Name' };
+      const updateDto: UpdateProgramDto = { name: { en: 'New Name', vi: 'Tên Mới' } };
       const notFoundError = new ProgramNotFoundException(id);
 
       jest.spyOn(service, 'update').mockRejectedValue(notFoundError);
@@ -138,7 +138,7 @@ describe('ProgramController', () => {
 
     it('should propagate other errors from service', async () => {
       const id = 'program-id';
-      const updateDto: UpdateProgramDto = { name: 'New Name' };
+      const updateDto: UpdateProgramDto = { name: { en: 'New Name', vi: 'Tên Mới' } };
 
       jest.spyOn(service, 'update').mockRejectedValue(new Error('Service error'));
 
@@ -151,7 +151,7 @@ describe('ProgramController', () => {
       const id = 'program-id';
       const deletedProgram = {
         _id: id,
-        name: 'Computer Science',
+        name: { en: 'Computer Science', vi: 'Khoa Học Máy Tính' },
         ma: 'CS',
         deleted_at: new Date(),
       };
@@ -185,8 +185,8 @@ describe('ProgramController', () => {
   describe('getAll', () => {
     it('should call service getAll', async () => {
       const programs = [
-        { _id: 'program1', name: 'Computer Science', ma: 'CS' },
-        { _id: 'program2', name: 'Information Technology', ma: 'IT' }
+        { _id: 'program1', name: { en: 'Computer Science', vi: 'Khoa Học Máy Tính' }, ma: 'CS' },
+        { _id: 'program2', name: { en: 'Information Technology', vi: 'Công Nghệ Thông Tin' }, ma: 'IT' }
       ];
 
       jest.spyOn(service, 'getAll').mockResolvedValue(programs as any);

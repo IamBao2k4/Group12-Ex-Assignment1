@@ -56,7 +56,7 @@ describe('FacultyService', () => {
     it('should call repository create with faculty data', async () => {
       const createDto: CreateFacultyDto = {
         ma_khoa: 'IT',
-        ten_khoa: 'Information Technology',
+        ten_khoa: { en: 'Information Technology', vi: 'Công Nghệ Thông Tin' },
       };
       
       const expectedResult = {
@@ -75,7 +75,7 @@ describe('FacultyService', () => {
     it('should propagate errors from repository', async () => {
       const createDto: CreateFacultyDto = {
         ma_khoa: 'IT',
-        ten_khoa: 'Information Technology',
+        ten_khoa: { en: 'Information Technology', vi: 'Công Nghệ Thông Tin' },
       };
       
       const repositoryError = new Error('Repository error');
@@ -92,7 +92,7 @@ describe('FacultyService', () => {
       const page = 1;
       
       const paginatedResult = {
-        data: [{ _id: 'faculty-id', ma_khoa: 'IT', ten_khoa: 'Information Technology' }],
+        data: [{ _id: 'faculty-id', ma_khoa: 'IT', ten_khoa: { en: 'Information Technology', vi: 'Công Nghệ Thông Tin' } }],
         meta: { page: 1, limit: 10, totalPages: 1, total: 1 }
       };
 
@@ -115,13 +115,13 @@ describe('FacultyService', () => {
     it('should update a faculty when valid id and data provided', async () => {
       const id = 'valid-id';
       const updateDto: UpdateFacultyDto = {
-        ten_khoa: 'Updated Faculty Name',
+        ten_khoa: { en: 'Updated Faculty Name', vi: 'Tên Khoa Đã Cập Nhật' },
       };
       
       const expectedResult = {
         _id: id,
         ma_khoa: 'IT',
-        ten_khoa: 'Updated Faculty Name',
+        ten_khoa: { en: 'Updated Faculty Name', vi: 'Tên Khoa Đã Cập Nhật' },
       };
 
       (isValidObjectId as jest.Mock).mockReturnValue(true);
@@ -136,7 +136,7 @@ describe('FacultyService', () => {
 
     it('should throw FacultyNotFoundException for invalid ObjectId format', async () => {
       const id = 'invalid-id';
-      const updateDto: UpdateFacultyDto = { ten_khoa: 'New Name' };
+      const updateDto: UpdateFacultyDto = { ten_khoa: { en: 'New Name', vi: 'Tên Mới' } };
 
       (isValidObjectId as jest.Mock).mockReturnValue(false);
 
@@ -146,7 +146,7 @@ describe('FacultyService', () => {
 
     it('should throw FacultyNotFoundException when faculty not found', async () => {
       const id = 'valid-id-not-found';
-      const updateDto: UpdateFacultyDto = { ten_khoa: 'New Name' };
+      const updateDto: UpdateFacultyDto = { ten_khoa: { en: 'New Name', vi: 'Tên Mới' } };
 
       (isValidObjectId as jest.Mock).mockReturnValue(true);
       mockRepository.update.mockResolvedValue(null);
@@ -161,7 +161,7 @@ describe('FacultyService', () => {
       const deletedFaculty = {
         _id: id,
         ma_khoa: 'IT',
-        ten_khoa: 'Information Technology',
+        ten_khoa: { en: 'Information Technology', vi: 'Công Nghệ Thông Tin' },
         deleted_at: new Date()
       };
 
@@ -197,8 +197,8 @@ describe('FacultyService', () => {
   describe('getAll', () => {
     it('should call repository getAll', async () => {
       const faculties = [
-        { _id: 'faculty1', ma_khoa: 'IT', ten_khoa: 'Information Technology' },
-        { _id: 'faculty2', ma_khoa: 'CS', ten_khoa: 'Computer Science' }
+        { _id: 'faculty1', ma_khoa: 'IT', ten_khoa: { en: 'Information Technology', vi: 'Công Nghệ Thông Tin' } },
+        { _id: 'faculty2', ma_khoa: 'CS', ten_khoa: { en: 'Computer Science', vi: 'Khoa Học Máy Tính' } }
       ];
 
       mockRepository.getAll.mockResolvedValue(faculties);
@@ -219,7 +219,7 @@ describe('FacultyService', () => {
   describe('findByCode', () => {
     it('should call repository findByCode with code', async () => {
       const code = 'IT';
-      const faculty = { _id: 'faculty-id', ma_khoa: code, ten_khoa: 'Information Technology' };
+      const faculty = { _id: 'faculty-id', ma_khoa: code, ten_khoa: { en: 'Information Technology', vi: 'Công Nghệ Thông Tin' } };
 
       mockRepository.findByCode.mockResolvedValue(faculty);
 
@@ -239,7 +239,7 @@ describe('FacultyService', () => {
   describe('detail', () => {
     it('should return faculty details when valid id provided', async () => {
       const id = 'valid-id';
-      const faculty = { _id: id, ma_khoa: 'IT', ten_khoa: 'Information Technology' };
+      const faculty = { _id: id, ma_khoa: 'IT', ten_khoa: { en: 'Information Technology', vi: 'Công Nghệ Thông Tin' } };
 
       (isValidObjectId as jest.Mock).mockReturnValue(true);
       mockRepository.detail.mockResolvedValue(faculty);
@@ -273,7 +273,7 @@ describe('FacultyService', () => {
   describe('getById', () => {
     it('should call repository getById with id', async () => {
       const id = 'valid-id';
-      const faculty = { _id: id, ma_khoa: 'IT', ten_khoa: 'Information Technology' };
+      const faculty = { _id: id, ma_khoa: 'IT', ten_khoa: { en: 'Information Technology', vi: 'Công Nghệ Thông Tin' } };
 
       (isValidObjectId as jest.Mock).mockReturnValue(true);
       mockRepository.getById.mockResolvedValue(faculty);

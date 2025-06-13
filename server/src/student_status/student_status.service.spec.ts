@@ -54,7 +54,7 @@ describe('StudentStatusService', () => {
   describe('create', () => {
     it('should call repository create with student status data', async () => {
       const createDto: CreateStudentStatusDto = {
-        tinh_trang: 'Đang học',
+        tinh_trang: { en: 'Studying', vi: 'Đang học' },
       };
       
       const expectedResult = {
@@ -72,7 +72,7 @@ describe('StudentStatusService', () => {
 
     it('should propagate errors from repository', async () => {
       const createDto: CreateStudentStatusDto = {
-        tinh_trang: 'Đang học',
+        tinh_trang: { en: 'Studying', vi: 'Đang học' },
       };
       
       const repositoryError = new Error('Repository error');
@@ -89,7 +89,7 @@ describe('StudentStatusService', () => {
       const page = 1;
       
       const paginatedResult = {
-        data: [{ _id: 'status-id', tinh_trang: 'Đang học' }],
+        data: [{ _id: 'status-id', tinh_trang: { en: 'Studying', vi: 'Đang học' } }],
         meta: { page: 1, limit: 10, totalPages: 1, total: 1 }
       };
 
@@ -112,12 +112,12 @@ describe('StudentStatusService', () => {
     it('should update a student status when valid id and data provided', async () => {
       const id = 'valid-id';
       const updateDto: UpdateStudentStatusDto = {
-        tinh_trang: 'Đã tốt nghiệp',
+        tinh_trang: { en: 'Graduated', vi: 'Đã tốt nghiệp' },
       };
       
       const expectedResult = {
         _id: id,
-        tinh_trang: 'Đã tốt nghiệp',
+        tinh_trang: { en: 'Graduated', vi: 'Đã tốt nghiệp' },
       };
 
       (isValidObjectId as jest.Mock).mockReturnValue(true);
@@ -132,7 +132,7 @@ describe('StudentStatusService', () => {
 
     it('should throw StudentStatusNotFoundException for invalid ObjectId format', async () => {
       const id = 'invalid-id';
-      const updateDto: UpdateStudentStatusDto = { tinh_trang: 'Đã tốt nghiệp' };
+      const updateDto: UpdateStudentStatusDto = { tinh_trang: { en: 'Graduated', vi: 'Đã tốt nghiệp' } };
 
       (isValidObjectId as jest.Mock).mockReturnValue(false);
 
@@ -142,7 +142,7 @@ describe('StudentStatusService', () => {
 
     it('should throw StudentStatusNotFoundException when student status not found', async () => {
       const id = 'valid-id-not-found';
-      const updateDto: UpdateStudentStatusDto = { tinh_trang: 'Đã tốt nghiệp' };
+      const updateDto: UpdateStudentStatusDto = { tinh_trang: { en: 'Graduated', vi: 'Đã tốt nghiệp' } };
 
       (isValidObjectId as jest.Mock).mockReturnValue(true);
       mockRepository.update.mockResolvedValue(null);
@@ -156,7 +156,7 @@ describe('StudentStatusService', () => {
       const id = 'valid-id';
       const deletedStatus = {
         _id: id,
-        tinh_trang: 'Đang học',
+        tinh_trang: { en: 'Studying', vi: 'Đang học' },
         deleted_at: new Date()
       };
 
@@ -192,8 +192,8 @@ describe('StudentStatusService', () => {
   describe('getAll', () => {
     it('should call repository getAll', async () => {
       const statuses = [
-        { _id: 'status1', tinh_trang: 'Đang học' },
-        { _id: 'status2', tinh_trang: 'Đã tốt nghiệp' }
+        { _id: 'status1', tinh_trang: { en: 'Studying', vi: 'Đang học' } },
+        { _id: 'status2', tinh_trang: { en: 'Graduated', vi: 'Đã tốt nghiệp' } }
       ];
 
       mockRepository.getAll.mockResolvedValue(statuses);
@@ -214,7 +214,7 @@ describe('StudentStatusService', () => {
   describe('detail', () => {
     it('should return student status details when valid id provided', async () => {
       const id = 'valid-id';
-      const status = { _id: id, tinh_trang: 'Đang học' };
+      const status = { _id: id, tinh_trang: { en: 'Studying', vi: 'Đang học' } };
 
       (isValidObjectId as jest.Mock).mockReturnValue(true);
       mockRepository.detail.mockResolvedValue(status);

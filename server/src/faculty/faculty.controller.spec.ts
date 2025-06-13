@@ -49,7 +49,7 @@ describe('FacultyController', () => {
     it('should call service create with faculty data', async () => {
       const createDto: CreateFacultyDto = {
         ma_khoa: 'IT',
-        ten_khoa: 'Information Technology',
+        ten_khoa: { en: 'Information Technology', vi: 'Công Nghệ Thông Tin' },
       };
       
       const expectedResult = {
@@ -68,7 +68,7 @@ describe('FacultyController', () => {
     it('should propagate errors from service', async () => {
       const createDto: CreateFacultyDto = {
         ma_khoa: 'IT',
-        ten_khoa: 'Information Technology',
+        ten_khoa: { en: 'Information Technology', vi: 'Công Nghệ Thông Tin' },
       };
       
       const serviceError = new Error('Service error');
@@ -85,7 +85,7 @@ describe('FacultyController', () => {
       const page = 1;
       
       const paginatedResult = {
-        data: [{ _id: 'faculty-id', ma_khoa: 'IT', ten_khoa: 'Information Technology' }],
+        data: [{ _id: 'faculty-id', ma_khoa: 'IT', ten_khoa: { en: 'Information Technology', vi: 'Công Nghệ Thông Tin' } }],
         meta: { page: 1, limit: 10, totalPages: 1, total: 1 }
       };
 
@@ -110,13 +110,13 @@ describe('FacultyController', () => {
     it('should call service update with id and update data', async () => {
       const id = 'faculty-id';
       const updateDto: UpdateFacultyDto = {
-        ten_khoa: 'Updated Faculty Name',
+        ten_khoa: { en: 'Updated Faculty Name', vi: 'Tên Khoa Đã Cập Nhật' },
       };
       
       const expectedResult = {
         _id: id,
         ma_khoa: 'IT',
-        ten_khoa: 'Updated Faculty Name',
+        ten_khoa: { en: 'Updated Faculty Name', vi: 'Tên Khoa Đã Cập Nhật' },
       };
 
       jest.spyOn(service, 'update').mockResolvedValue(expectedResult);
@@ -129,7 +129,7 @@ describe('FacultyController', () => {
 
     it('should propagate FacultyNotFoundException', async () => {
       const id = 'non-existent-id';
-      const updateDto: UpdateFacultyDto = { ten_khoa: 'New Name' };
+      const updateDto: UpdateFacultyDto = { ten_khoa: { en: 'New Name', vi: 'Tên Mới' } };
       const notFoundError = new FacultyNotFoundException(id);
 
       jest.spyOn(service, 'update').mockRejectedValue(notFoundError);
@@ -139,7 +139,7 @@ describe('FacultyController', () => {
 
     it('should propagate other errors from service', async () => {
       const id = 'faculty-id';
-      const updateDto: UpdateFacultyDto = { ten_khoa: 'New Name' };
+      const updateDto: UpdateFacultyDto = { ten_khoa: { en: 'New Name', vi: 'Tên Mới' } };
 
       jest.spyOn(service, 'update').mockRejectedValue(new Error('Service error'));
 
@@ -153,7 +153,7 @@ describe('FacultyController', () => {
       const deletedFaculty = {
         _id: id,
         ma_khoa: 'IT',
-        ten_khoa: 'Information Technology',
+        ten_khoa: { en: 'Information Technology', vi: 'Công Nghệ Thông Tin' },
         deleted_at: new Date(),
       };
 
@@ -186,8 +186,8 @@ describe('FacultyController', () => {
   describe('getAll', () => {
     it('should call service getAll', async () => {
       const faculties = [
-        { _id: 'faculty1', ma_khoa: 'IT', ten_khoa: 'Information Technology' },
-        { _id: 'faculty2', ma_khoa: 'CS', ten_khoa: 'Computer Science' }
+        { _id: 'faculty1', ma_khoa: 'IT', ten_khoa: { en: 'Information Technology', vi: 'Công Nghệ Thông Tin' } },
+        { _id: 'faculty2', ma_khoa: 'CS', ten_khoa: { en: 'Computer Science', vi: 'Khoa Học Máy Tính' } }
       ];
 
       jest.spyOn(service, 'getAll').mockResolvedValue(faculties);
@@ -208,7 +208,7 @@ describe('FacultyController', () => {
   describe('getById', () => {
     it('should call service getById with id', async () => {
       const id = 'faculty-id';
-      const faculty = { _id: id, ma_khoa: 'IT', ten_khoa: 'Information Technology' };
+      const faculty = { _id: id, ma_khoa: 'IT', ten_khoa: { en: 'Information Technology', vi: 'Công Nghệ Thông Tin' } };
 
       jest.spyOn(service, 'getById').mockResolvedValue(faculty);
 

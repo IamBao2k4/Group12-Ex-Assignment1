@@ -50,7 +50,7 @@ describe('StudentStatusController', () => {
   describe('create', () => {
     it('should create a new student status', async () => {
       const createDto: CreateStudentStatusDto = {
-        tinh_trang: 'Đang học'
+        tinh_trang: { en: 'Studying', vi: 'Đang học' }
       };
 
       const expectedResult = {
@@ -65,7 +65,7 @@ describe('StudentStatusController', () => {
 
     it('should propagate errors from service', async () => {
       const createDto: CreateStudentStatusDto = {
-        tinh_trang: 'Đang học',
+        tinh_trang: { en: 'Studying', vi: 'Đang học' },
       };
       
       const serviceError = new Error('Service error');
@@ -81,7 +81,7 @@ describe('StudentStatusController', () => {
         data: [
           {
             _id: 'status-id',
-            tinh_trang: 'Đang học',
+            tinh_trang: { en: 'Studying', vi: 'Đang học' },
           } as StudentStatus,
         ],
         meta: {
@@ -112,7 +112,7 @@ describe('StudentStatusController', () => {
   describe('update', () => {
     it('should update student status', async () => {
       const updateDto: UpdateStudentStatusDto = {
-        tinh_trang: 'Tạm dừng'
+        tinh_trang: { en: 'Suspended', vi: 'Tạm dừng' }
       };
 
       const expectedResult = {
@@ -127,7 +127,7 @@ describe('StudentStatusController', () => {
 
     it('should propagate errors from service', async () => {
       const id = 'status-id';
-      const updateDto: UpdateStudentStatusDto = { tinh_trang: 'Đã tốt nghiệp' };
+      const updateDto: UpdateStudentStatusDto = { tinh_trang: { en: 'Graduated', vi: 'Đã tốt nghiệp' } };
 
       jest.spyOn(service, 'update').mockRejectedValue(new Error('Service error'));
 
@@ -139,7 +139,7 @@ describe('StudentStatusController', () => {
     it('should delete student status', async () => {
       const expectedResult = {
         _id: 'status-id',
-        tinh_trang: 'Đang học',
+        tinh_trang: { en: 'Studying', vi: 'Đang học' },
       } as StudentStatus;
 
       jest.spyOn(service, 'delete').mockResolvedValue(expectedResult);
@@ -161,7 +161,7 @@ describe('StudentStatusController', () => {
       const expectedResult = [
         {
           _id: 'status-id',
-          tinh_trang: 'Đang học',
+          tinh_trang: { en: 'Studying', vi: 'Đang học' },
         } as StudentStatus,
       ];
 
@@ -181,7 +181,7 @@ describe('StudentStatusController', () => {
     it('should get details of a student status', async () => {
       const studentStatus = {
         _id: 'status-id',
-        tinh_trang: 'Đang học',
+        tinh_trang: { en: 'Studying', vi: 'Đang học' },
       } as StudentStatus;
 
       jest.spyOn(service, 'detail').mockResolvedValue(studentStatus);
