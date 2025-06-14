@@ -4,260 +4,283 @@ sidebar_position: 10
 
 # Registering New Routes
 
-## Giới thiệu
+Learn how to register and configure new routes in the **Student Manager System** using NestJS decorators and routing patterns.
 
-Document này hướng dẫn cách đăng ký và cấu hình routes trong hệ thống Student Management sử dụng NestJS framework. Routes định nghĩa các endpoints API mà client có thể truy cập.
+## Overview
 
-## Route Structure trong NestJS
+The application uses NestJS's built-in routing system with decorators to define RESTful API endpoints. Routes are organized by modules following a domain-driven design approach.
 
-### Controller-based Routing
+## Route Structure
 
-Trong NestJS, routes được định nghĩa thông qua decorators trong controllers:
+### Base API Prefix
 
-```typescript
-@Controller('students')
-export class StudentController {
-  // Routes will be defined here
+All API routes are prefixed with `/api` as configured in the main application:
+
+```typescript title="main.ts"
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  
+  // Global API prefix
+  app.setGlobalPrefix('api');
+  
+  // Enable CORS
+  app.enableCors({
+    origin: process.env.CLIENT_URL || 'http://localhost:3001',
+    credentials: true,
+  });
+  
+  await app.listen(process.env.PORT || 3000);
 }
 ```
 
-### HTTP Method Decorators
+## Creating Routes in Controllers
 
-```typescript
-@Get()       // GET request
-@Post()      // POST request
-@Patch()     // PATCH request
-@Put()       // PUT request
-@Delete()    // DELETE request
-```
+### Basic Route Registration
 
-## Tạo Routes Cơ Bản
+```typescript title="student/student.controller.ts"
+import { Controller, Get, Post, Body, Param, Query, Patch, Delete } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
-### 1. Simple Route
-
-```typescript
+@ApiTags('students')
 @Controller('students')
 export class StudentController {
+  constructor(private readonly studentService: StudentService) {}
+
+  @Post()
+  @ApiOperation({ summary: 'Create a new student' })
+  @ApiResponse({ status: 201, description: 'Student created successfully' })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  async create(@Body() createStudentDto: CreateStudentDto) {
+    return this.studentService.create(createStudentDto);
+  }
+
   @Get()
-  async findAll() {
-    // GET /students
-    return this.studentService.findAll();
+  @ApiOperation({ summary: 'Get all students with pagination' })
+  async findAll(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Query('searchString') searchString?: string,
+    @Query('faculty') faculty?: string,
+  ) {
+    return this.studentService.get({ page, limit }, searchString, faculty);
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get student by ID' })
   async findOne(@Param('id') id: string) {
-    // GET /students/:id
-    return this.studentService.findById(id);
+    return this.studentService.detail(id);
+  }
+
+  @Patch(':id')
+  @ApiOperation({ summary: 'Update student information' })
+  async update(
+    @Param('id') id: string,
+    @Body() updateStudentDto: UpdateStudentDto,
+  ) {
+    return this.studentService.update(id, updateStudentDto);
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete a student' })
+  async remove(@Param('id') id: string) {
+    return this.studentService.delete(id);
   }
 }
 ```
 
-### 2. Route với Query Parameters
+### Nested Routes
+
+For related resources, create nested routes:
+
+```typescript title="student/student.controller.ts"
+@Controller('students')
+export class StudentController {
+  // Get student's transcripts
+  @Get(':id/transcripts')
+  @ApiOperation({ summary: 'Get transcripts for a specific student' })
+  async getTranscripts(@Param('id') studentId: string) {
+    return this.transcriptService.findByStudent(studentId);
+  }
+
+  // Get student's enrollments
+  @Get(':id/enrollments')
+  @ApiOperation({ summary: 'Get enrollments for a specific student' })
+  async getEnrollments(
+    @Param('id') studentId: string,
+    @Query('semester') semester?: number,
+    @Query('year') year?: number,
+  ) {
+    return this.enrollmentService.findByStudent(studentId, { semester, year });
+  }
+
+  // Get student's open classes
+  @Get(':id/classes')
+  @ApiOperation({ summary: 'Get open classes for a specific student' })
+  async getClasses(@Param('id') studentId: string) {
+    return this.openClassService.findByStudent(studentId);
+  }
+}
+```
+
+## Route Parameters and Validation
+
+### Path Parameters
+
+```typescript
+// Single parameter
+@Get(':id')
+async findOne(@Param('id') id: string) {
+  return this.studentService.detail(id);
+}
+
+// Multiple parameters
+@Get(':facultyId/programs/:programId')
+async findByFacultyAndProgram(
+  @Param('facultyId') facultyId: string,
+  @Param('programId') programId: string,
+) {
+  return this.studentService.findByFacultyAndProgram(facultyId, programId);
+}
+```
+
+### Query Parameters
 
 ```typescript
 @Get()
-@ApiQuery({ name: 'page', required: false, type: Number })
-@ApiQuery({ name: 'limit', required: false, type: Number })
-@ApiQuery({ name: 'searchString', required: false, type: String })
-@ApiQuery({ name: 'faculty', required: false, type: String })
-async getStudents(
-  @Query() query: PaginationOptions,
-  @Query('searchString') searchString: string,
-  @Query('faculty') faculty: string,
-  @Query('page') page: number,
+async findAll(
+  @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+  @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+  @Query('sort') sort?: string,
+  @Query('order') order?: 'asc' | 'desc',
 ) {
-  return this.studentService.get(query, searchString, faculty, page);
+  return this.studentService.findAll({ page, limit, sort, order });
 }
 ```
 
-### 3. Route với Path Parameters
+### Request Body Validation
 
 ```typescript
-@Get(':id')
-@ApiParam({ name: 'id', description: 'Student ID or MongoDB ObjectId' })
-async getStudentDetail(@Param('id') id: string) {
-  const sanitizedId = id.trim();
-  return this.studentService.detail(sanitizedId);
-}
-```
+import { IsNotEmpty, IsEmail, IsOptional, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
 
-### 4. Route với Request Body
-
-```typescript
-@Post()
-@ApiBody({ type: CreateStudentDto })
-@UsePipes(new ValidationPipe({ transform: true }))
-async createStudent(@Body() createDto: CreateStudentDto) {
-  return this.studentService.create(createDto);
-}
-```
-
-## Nested Routes
-
-### Sub-resource Routes
-
-```typescript
-@Controller('students')
-export class StudentController {
-  // GET /students/:id/transcripts
-  @Get(':id/transcripts')
-  @ApiOperation({ summary: 'Get student transcripts' })
-  async getTranscripts(
-    @Param('id') id: string,
-    @Query() query: PaginationOptions,
-  ) {
-    return this.transcriptService.findByStudentId(id, query);
-  }
-
-  // POST /students/:id/enrollments
-  @Post(':id/enrollments')
-  async enrollCourse(
-    @Param('id') studentId: string,
-    @Body() enrollmentDto: CreateEnrollmentDto,
-  ) {
-    return this.enrollmentService.enroll(studentId, enrollmentDto);
-  }
-}
-```
-
-## Route Validation
-
-### 1. DTO Validation
-
-```typescript
-// create-student.dto.ts
 export class CreateStudentDto {
-  @IsNotEmpty({ message: 'Họ tên không được để trống' })
+  @IsNotEmpty({ message: 'Full name is required' })
   @IsString()
   @MaxLength(100)
   ho_ten: string;
 
-  @IsNotEmpty({ message: 'MSSV không được để trống' })
+  @IsNotEmpty({ message: 'Student ID is required' })
   @Matches(/^[A-Z0-9]+$/, {
-    message: 'MSSV chỉ chứa chữ cái viết hoa và số',
+    message: 'Student ID must contain only uppercase letters and numbers',
   })
   ma_so_sinh_vien: string;
 
-  @IsEmail({}, { message: 'Email không hợp lệ' })
+  @IsEmail({}, { message: 'Invalid email format' })
   @IsOptional()
   email?: string;
 
-  @IsPhoneNumber('VN', { message: 'Số điện thoại không hợp lệ' })
+  @IsPhoneNumber('VN', { message: 'Invalid phone number format' })
   @IsOptional()
   so_dien_thoai?: string;
 
-  @IsMongoId({ message: 'Faculty ID không hợp lệ' })
+  @IsMongoId({ message: 'Invalid Faculty ID format' })
   @IsOptional()
   khoa?: string;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => AddressDto)
+  dia_chi?: AddressDto;
 }
-```
 
-### 2. Custom Validation Pipe
-
-```typescript
+// In controller
 @Post()
 @UsePipes(new ValidationPipe({
   transform: true,
   whitelist: true,
   forbidNonWhitelisted: true,
-  transformOptions: {
-    enableImplicitConversion: true,
-  },
 }))
-async create(@Body() dto: CreateStudentDto) {
-  return this.studentService.create(dto);
+async create(@Body() createStudentDto: CreateStudentDto) {
+  return this.studentService.create(createStudentDto);
 }
 ```
 
-### 3. Parameter Validation
+## Custom Routes
+
+### File Upload Routes
+
+```typescript title="import/import.controller.ts"
+@Controller('import')
+export class ImportController {
+  @Post('csv')
+  @UseInterceptors(FileInterceptor('file', {
+    storage: diskStorage({
+      destination: './uploads',
+      filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, file.fieldname + '-' + uniqueSuffix + '.csv');
+      }
+    }),
+    fileFilter: (req, file, cb) => {
+      if (!file.originalname.match(/\.(csv)$/)) {
+        return cb(new BadRequestException('Only CSV files are allowed'), false);
+      }
+      cb(null, true);
+    },
+    limits: { fileSize: 5 * 1024 * 1024 } // 5MB
+  }))
+  @ApiOperation({ summary: 'Import students from CSV file' })
+  @ApiConsumes('multipart/form-data')
+  async importCSV(@UploadedFile() file: Express.Multer.File) {
+    return this.importService.processCSV(file.path);
+  }
+}
+```
+
+### Export Routes
+
+```typescript title="export/export.controller.ts"
+@Controller('export')
+export class ExportController {
+  @Get('students/excel')
+  @Header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+  @Header('Content-Disposition', 'attachment; filename=students.xlsx')
+  @ApiOperation({ summary: 'Export students to Excel file' })
+  async exportStudentsExcel(@Res() res: Response) {
+    const buffer = await this.exportService.exportStudentsToExcel();
+    res.send(buffer);
+  }
+
+  @Get('students/csv')
+  @Header('Content-Type', 'text/csv')
+  @Header('Content-Disposition', 'attachment; filename=students.csv')
+  @ApiOperation({ summary: 'Export students to CSV file' })
+  async exportStudentsCSV(@Res() res: Response) {
+    const csv = await this.exportService.exportStudentsToCSV();
+    res.send(csv);
+  }
+}
+```
+
+## Route Guards and Middleware
+
+### Authentication Guard (Future Implementation)
 
 ```typescript
-@Get(':id')
-async findOne(@Param('id', ParseMongoIdPipe) id: string) {
-  return this.studentService.findById(id);
-}
+import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 
-// Custom pipe for MongoDB ObjectId validation
 @Injectable()
-export class ParseMongoIdPipe implements PipeTransform {
-  transform(value: string): string {
-    if (!isValidObjectId(value)) {
-      throw new BadRequestException('Invalid MongoDB ObjectId');
-    }
-    return value;
+export class AuthGuard implements CanActivate {
+  canActivate(context: ExecutionContext): boolean {
+    const request = context.switchToHttp().getRequest();
+    // Add authentication logic here
+    return true;
   }
 }
-```
 
-## Route Documentation với Swagger
-
-### 1. Basic Documentation
-
-```typescript
-@ApiTags('students')
-@Controller('students')
-export class StudentController {
-  @Post()
-  @ApiOperation({
-    summary: 'Create new student',
-    description: 'Creates a new student record in the system',
-  })
-  @ApiResponse({ 
-    status: 201, 
-    description: 'Student successfully created',
-    type: StudentResponseDto,
-  })
-  @ApiResponse({ 
-    status: 400, 
-    description: 'Bad request - Invalid data provided' 
-  })
-  @ApiResponse({ 
-    status: 500, 
-    description: 'Internal server error' 
-  })
-  async create(@Body() dto: CreateStudentDto) {
-    return this.studentService.create(dto);
-  }
-}
-```
-
-### 2. Response DTOs
-
-```typescript
-export class StudentResponseDto {
-  @ApiProperty({ example: '507f1f77bcf86cd799439011' })
-  _id: string;
-
-  @ApiProperty({ example: 'Nguyen Van A' })
-  ho_ten: string;
-
-  @ApiProperty({ example: 'SV001' })
-  ma_so_sinh_vien: string;
-
-  @ApiProperty({ example: 'student@example.edu.vn' })
-  email: string;
-
-  @ApiProperty({ example: '0123456789' })
-  so_dien_thoai: string;
-
-  @ApiProperty({ type: () => FacultyDto })
-  khoa: FacultyDto;
-
-  @ApiProperty({ type: () => ProgramDto })
-  chuong_trinh: ProgramDto;
-
-  @ApiProperty({ type: () => StudentStatusDto })
-  tinh_trang: StudentStatusDto;
-}
-```
-
-## Advanced Routing Patterns
-
-### 1. Route Guards
-
-```typescript
+// Apply to routes
+@UseGuards(AuthGuard)
 @Controller('admin/students')
-@UseGuards(AuthGuard, RoleGuard)
 export class AdminStudentController {
   @Get()
   @Roles('admin', 'manager')
@@ -267,108 +290,67 @@ export class AdminStudentController {
 }
 ```
 
-### 2. Route Interceptors
+### Request Logging Middleware
 
 ```typescript
-@Controller('students')
-@UseInterceptors(LoggingInterceptor)
-export class StudentController {
-  @Get()
-  @UseInterceptors(CacheInterceptor)
-  async findAll() {
-    return this.studentService.findAll();
+import { Injectable, NestMiddleware } from '@nestjs/common';
+
+@Injectable()
+export class LoggerMiddleware implements NestMiddleware {
+  use(req: Request, res: Response, next: NextFunction) {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+    next();
+  }
+}
+
+// Apply in module
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(LoggerMiddleware)
+      .forRoutes('*');
   }
 }
 ```
 
-### 3. Route Filters
+## Route Organization Best Practices
 
-```typescript
-@Controller('students')
-@UseFilters(HttpExceptionFilter)
-export class StudentController {
-  @Post()
-  @UseFilters(ValidationExceptionFilter)
-  async create(@Body() dto: CreateStudentDto) {
-    return this.studentService.create(dto);
-  }
-}
+### Module-Based Organization
+
+Each domain has its own module with routes:
+
+```
+src/
+├── student/
+│   ├── student.controller.ts
+│   ├── student.service.ts
+│   └── student.module.ts
+├── faculty/
+│   ├── faculty.controller.ts
+│   ├── faculty.service.ts
+│   └── faculty.module.ts
+└── course/
+    ├── course.controller.ts
+    ├── course.service.ts
+    └── course.module.ts
 ```
 
-## Module-based Route Organization
+### Route Naming Conventions
 
-### 1. Feature Module Routes
+Follow RESTful naming conventions:
 
-```typescript
-// student.module.ts
-@Module({
-  imports: [
-    MongooseModule.forFeature([
-      { name: 'Student', schema: StudentSchema }
-    ]),
-  ],
-  controllers: [StudentController],
-  providers: [StudentService, StudentRepository],
-  exports: [StudentService],
-})
-export class StudentModule {}
+| HTTP Method | Route Pattern          | Action         | Example                      |
+| ----------- | --------------------- | -------------- | ---------------------------- |
+| GET         | `/resources`          | List all       | `GET /api/students`          |
+| GET         | `/resources/:id`      | Get one        | `GET /api/students/123`      |
+| POST        | `/resources`          | Create new     | `POST /api/students`         |
+| PATCH       | `/resources/:id`      | Update partial | `PATCH /api/students/123`    |
+| PUT         | `/resources/:id`      | Update full    | `PUT /api/students/123`      |
+| DELETE      | `/resources/:id`      | Delete         | `DELETE /api/students/123`   |
 
-// faculty.module.ts
-@Module({
-  imports: [
-    MongooseModule.forFeature([
-      { name: 'Faculty', schema: FacultySchema }
-    ]),
-  ],
-  controllers: [FacultyController],
-  providers: [FacultyService, FacultyRepository],
-  exports: [FacultyService],
-})
-export class FacultyModule {}
-```
+### Versioning Strategy
 
-### 2. Route Prefix Configuration
-
-```typescript
-// main.ts
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  
-  // Global prefix
-  app.setGlobalPrefix('api/v1');
-  
-  // Module-specific prefix
-  app.use('/api/v2/students', studentRouter);
-  
-  await app.listen(3001);
-}
-```
-
-## Route Best Practices
-
-### 1. RESTful Conventions
-
-```typescript
-@Controller('students')
-export class StudentController {
-  @Get()                    // GET /students
-  findAll() {}
-
-  @Get(':id')              // GET /students/:id
-  findOne() {}
-
-  @Post()                  // POST /students
-  create() {}
-
-  @Patch(':id')            // PATCH /students/:id
-  update() {}
-
-  @Delete(':id')           // DELETE /students/:id
-  delete() {}
-}
-```
-
-### 2. Versioning
+For API versioning (future implementation):
 
 ```typescript
 // Version in URL
@@ -378,7 +360,7 @@ export class StudentV1Controller {}
 @Controller('v2/students')
 export class StudentV2Controller {}
 
-// Header versioning
+// Version in header
 @Controller('students')
 export class StudentController {
   @Get()
@@ -391,31 +373,198 @@ export class StudentController {
 }
 ```
 
-### 3. Error Handling
+## Swagger Documentation
 
-```typescript
-@Get(':id')
-async findOne(@Param('id') id: string) {
-  try {
-    const student = await this.studentService.findById(id);
-    if (!student) {
-      throw new NotFoundException(`Student with ID ${id} not found`);
-    }
-    return student;
-  } catch (error) {
-    if (error instanceof StudentNotFoundException) {
-      throw new NotFoundException(error.message);
-    }
-    throw new InternalServerErrorException('Failed to fetch student');
+All routes are automatically documented with Swagger:
+
+```typescript title="main.ts"
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  const config = new DocumentBuilder()
+    .setTitle('Student Manager API')
+    .setDescription('API documentation for Student Management System')
+    .setVersion('1.0')
+    .addTag('students')
+    .addTag('faculties')
+    .addTag('courses')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/docs', app, document);
+
+  await app.listen(3000);
+}
+```
+
+Access documentation at: `http://localhost:3000/api/docs`
+
+## Adding a New Route Module
+
+### Step 1: Create the Module Structure
+
+```bash
+# Create new module
+nest g module attendance
+nest g controller attendance
+nest g service attendance
+```
+
+### Step 2: Define the Schema
+
+```typescript title="attendance/schemas/attendance.schema.ts"
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, Types } from 'mongoose';
+
+@Schema({ timestamps: true })
+export class Attendance extends Document {
+  @Prop({ type: Types.ObjectId, ref: 'Student', required: true })
+  student: Types.ObjectId;
+
+  @Prop({ type: Types.ObjectId, ref: 'OpenClass', required: true })
+  class: Types.ObjectId;
+
+  @Prop({ required: true })
+  date: Date;
+
+  @Prop({ enum: ['present', 'absent', 'late'], required: true })
+  status: string;
+
+  @Prop()
+  notes?: string;
+}
+
+export const AttendanceSchema = SchemaFactory.createForClass(Attendance);
+```
+
+### Step 3: Create DTOs
+
+```typescript title="attendance/dto/create-attendance.dto.ts"
+import { IsNotEmpty, IsEnum, IsOptional, IsDateString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+
+export class CreateAttendanceDto {
+  @IsNotEmpty()
+  @ApiProperty({ description: 'Student ID' })
+  student: string;
+
+  @IsNotEmpty()
+  @ApiProperty({ description: 'Class ID' })
+  class: string;
+
+  @IsDateString()
+  @ApiProperty({ description: 'Attendance date' })
+  date: string;
+
+  @IsEnum(['present', 'absent', 'late'])
+  @ApiProperty({ enum: ['present', 'absent', 'late'] })
+  status: string;
+
+  @IsOptional()
+  @ApiProperty({ required: false })
+  notes?: string;
+}
+```
+
+### Step 4: Implement the Controller
+
+```typescript title="attendance/attendance.controller.ts"
+@ApiTags('attendance')
+@Controller('attendance')
+export class AttendanceController {
+  constructor(private readonly attendanceService: AttendanceService) {}
+
+  @Post()
+  @ApiOperation({ summary: 'Record attendance' })
+  create(@Body() createAttendanceDto: CreateAttendanceDto) {
+    return this.attendanceService.create(createAttendanceDto);
+  }
+
+  @Get('class/:classId')
+  @ApiOperation({ summary: 'Get attendance by class' })
+  findByClass(
+    @Param('classId') classId: string,
+    @Query('date') date?: string,
+  ) {
+    return this.attendanceService.findByClass(classId, date);
+  }
+
+  @Get('student/:studentId')
+  @ApiOperation({ summary: 'Get attendance by student' })
+  findByStudent(
+    @Param('studentId') studentId: string,
+    @Query('from') from?: string,
+    @Query('to') to?: string,
+  ) {
+    return this.attendanceService.findByStudent(studentId, { from, to });
+  }
+
+  @Patch(':id')
+  @ApiOperation({ summary: 'Update attendance record' })
+  update(
+    @Param('id') id: string,
+    @Body() updateAttendanceDto: UpdateAttendanceDto,
+  ) {
+    return this.attendanceService.update(id, updateAttendanceDto);
   }
 }
 ```
 
+### Step 5: Register in App Module
+
+```typescript title="app.module.ts"
+import { AttendanceModule } from './attendance/attendance.module';
+
+@Module({
+  imports: [
+    // ... other modules
+    AttendanceModule,
+  ],
+})
+export class AppModule {}
+```
+
 ## Testing Routes
 
-### 1. E2E Testing
+### Using Thunder Client or Postman
 
-```typescript
+```json
+// POST /api/students
+{
+  "ho_ten": "Nguyen Van Test",
+  "ma_so_sinh_vien": "SV12345",
+  "email": "test@student.edu.vn",
+  "so_dien_thoai": "0123456789",
+  "khoa": "507f1f77bcf86cd799439011",
+  "chuong_trinh": "507f1f77bcf86cd799439012",
+  "tinh_trang": "507f1f77bcf86cd799439013"
+}
+
+// GET /api/students?page=1&limit=10&searchString=Nguyen&faculty=507f1f77bcf86cd799439011
+```
+
+### Using cURL
+
+```bash
+# Create a student
+curl -X POST http://localhost:3000/api/students \
+  -H "Content-Type: application/json" \
+  -d '{"ho_ten":"Test Student","ma_so_sinh_vien":"SV999"}'
+
+# Get students with pagination
+curl "http://localhost:3000/api/students?page=1&limit=10"
+
+# Update a student
+curl -X PATCH http://localhost:3000/api/students/507f1f77bcf86cd799439011 \
+  -H "Content-Type: application/json" \
+  -d '{"ho_ten":"Updated Name"}'
+```
+
+### E2E Testing
+
+```typescript title="test/student.e2e-spec.ts"
 describe('StudentController (e2e)', () => {
   let app: INestApplication;
 
@@ -438,124 +587,118 @@ describe('StudentController (e2e)', () => {
       });
   });
 
-  it('/students/:id (GET)', () => {
-    const studentId = '507f1f77bcf86cd799439011';
-    return request(app.getHttpServer())
-      .get(`/students/${studentId}`)
-      .expect(200)
-      .expect((res) => {
-        expect(res.body).toHaveProperty('_id', studentId);
-      });
-  });
-});
-```
-
-### 2. Route Integration Testing
-
-```typescript
-describe('Student Routes Integration', () => {
-  it('should handle pagination correctly', async () => {
-    const response = await request(app.getHttpServer())
-      .get('/students')
-      .query({ page: 2, limit: 10 })
-      .expect(200);
-
-    expect(response.body.meta.page).toBe(2);
-    expect(response.body.meta.limit).toBe(10);
-    expect(response.body.data.length).toBeLessThanOrEqual(10);
-  });
-
-  it('should validate input data', async () => {
-    const invalidData = {
-      ho_ten: '', // Empty name
-      ma_so_sinh_vien: 'invalid!@#', // Invalid format
+  it('/students (POST)', () => {
+    const createDto = {
+      ho_ten: 'Test Student',
+      ma_so_sinh_vien: 'SV999',
+      email: 'test@example.com',
     };
 
-    const response = await request(app.getHttpServer())
+    return request(app.getHttpServer())
       .post('/students')
-      .send(invalidData)
-      .expect(400);
-
-    expect(response.body.message).toContain('Validation failed');
+      .send(createDto)
+      .expect(201)
+      .expect((res) => {
+        expect(res.body.ho_ten).toBe(createDto.ho_ten);
+        expect(res.body.ma_so_sinh_vien).toBe(createDto.ma_so_sinh_vien);
+      });
   });
 });
 ```
 
 ## Common Route Patterns
 
-### 1. Search and Filter
+### Search and Filter
 
 ```typescript
 @Get('search')
+@ApiOperation({ summary: 'Search students with filters' })
 async search(
   @Query('q') query: string,
-  @Query('faculty') faculty: string,
-  @Query('status') status: string,
-  @Query() pagination: PaginationOptions,
+  @Query('filters') filters?: string,
 ) {
-  return this.studentService.search({
-    query,
-    filters: { faculty, status },
-    pagination,
-  });
+  const parsedFilters = filters ? JSON.parse(filters) : {};
+  return this.studentService.search(query, parsedFilters);
 }
 ```
 
-### 2. Bulk Operations
+### Bulk Operations
 
 ```typescript
 @Post('bulk')
+@ApiOperation({ summary: 'Create multiple students' })
 async bulkCreate(@Body() students: CreateStudentDto[]) {
   return this.studentService.createMany(students);
 }
 
 @Delete('bulk')
-async bulkDelete(@Body() ids: string[]) {
+@ApiOperation({ summary: 'Delete multiple students' })
+async bulkDelete(@Body('ids') ids: string[]) {
   return this.studentService.deleteMany(ids);
 }
 ```
 
-### 3. File Upload Routes
+### Aggregation Routes
 
 ```typescript
-@Post('import')
-@UseInterceptors(FileInterceptor('file'))
-async importStudents(@UploadedFile() file: Express.Multer.File) {
-  return this.importService.importStudents(file);
+@Get('statistics')
+@ApiOperation({ summary: 'Get student statistics' })
+async getStatistics() {
+  return this.studentService.getStatistics();
 }
 
-@Get('export')
-async exportStudents(@Res() res: Response) {
-  const file = await this.exportService.exportStudents();
-  res.download(file.path, file.filename);
+@Get('faculty/:facultyId/count')
+@ApiOperation({ summary: 'Count students by faculty' })
+async countByFaculty(@Param('facultyId') facultyId: string) {
+  return this.studentService.countByFaculty(facultyId);
 }
 ```
 
 ## Troubleshooting
 
-### Common Issues
+### Route Not Found
 
-1. **Route not found (404)**
-   - Check controller is registered in module
-   - Verify route path and HTTP method
-   - Check global prefix configuration
+1. Check route registration in controller
+2. Verify module is imported in AppModule
+3. Ensure correct HTTP method is used
+4. Check for typos in route path
 
-2. **Validation errors not showing**
-   - Ensure ValidationPipe is applied
-   - Check DTO decorators are correct
-   - Verify class-transformer is installed
+### Parameter Validation Errors
 
-3. **Parameters not binding**
-   - Check decorator usage (@Param, @Query, @Body)
-   - Verify parameter names match
-   - Ensure proper type transformation
+1. Verify DTO decorators are correct
+2. Check if ValidationPipe is globally enabled
+3. Ensure class-validator is installed
+
+### CORS Issues
+
+```typescript
+// Enable CORS with specific options
+app.enableCors({
+  origin: ['http://localhost:3001', 'http://localhost:3000'],
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+  credentials: true,
+});
+```
+
+## Best Practices
+
+1. **Use proper HTTP methods** - GET for read, POST for create, etc.
+2. **Validate all inputs** - Use DTOs with validation decorators
+3. **Return consistent responses** - Follow the same response structure
+4. **Document with Swagger** - Add ApiOperation and ApiResponse decorators
+5. **Handle errors properly** - Use exception filters
+6. **Use meaningful route names** - Clear and descriptive paths
+7. **Version your API** - Plan for future changes
+8. **Test all routes** - Write integration tests
 
 ## Conclusion
 
-Routes là foundation của API trong Student Management System. Proper route design và organization ensures scalable và maintainable API structure.
+Routes are the foundation of the API in the Student Management System. Proper route design and organization ensures a scalable and maintainable API structure.
 
 ## See Also
 
-- [NestJS Controllers](https://docs.nestjs.com/controllers)
 - [API Documentation](./api-documentation.md)
-- [Overview of Architecture](./overview-of-architecture.md)
+- [Source Code Organization](./source-code-organization.md)
+- [Database Schema](./database-schema.md)

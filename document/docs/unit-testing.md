@@ -4,39 +4,49 @@ sidebar_position: 9
 
 # Unit Testing
 
-## Giới thiệu
+A comprehensive guide to writing and running unit tests in the **Student Manager System** using Jest and NestJS testing utilities.
 
-Unit testing là một phần quan trọng trong việc đảm bảo chất lượng code của hệ thống Student Management. Document này hướng dẫn cách viết và chạy unit test cho các module trong backend sử dụng Jest testing framework.
+## Overview
 
-## Cấu trúc Test
+Unit testing ensures code quality and reliability throughout the application. This guide covers testing patterns for both **backend (NestJS)** and **frontend (React)** components.
 
-### Tổ chức File Test
+## Backend Testing (NestJS)
 
-Mỗi module trong hệ thống có các file test riêng theo cấu trúc:
+### Test Environment Setup
 
+The project uses **Jest** as the testing framework with the following configuration:
+
+```json title="jest.config.js"
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": "src",
+  "testRegex": ".*\\.spec\\.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "collectCoverageFrom": ["**/*.(t|j)s"],
+  "coverageDirectory": "../coverage",
+  "testEnvironment": "node"
+}
 ```
-src/
-├── student/
-│   ├── student.controller.spec.ts
-│   ├── student.service.spec.ts
-│   └── student.repository.spec.ts
-├── faculty/
-│   ├── faculty.controller.spec.ts
-│   ├── faculty.service.spec.ts
-│   └── faculty.repository.spec.ts
-└── ...
-```
 
-### Test File Template
+### Service Testing Pattern
 
-```typescript
+Here's the standard pattern for testing services in our application:
+
+```typescript title="student.service.spec.ts"
 import { Test, TestingModule } from '@nestjs/testing';
 import { Logger } from '@nestjs/common';
+import { StudentService } from './services/student.service';
+import { STUDENT_REPOSITORY } from './repositories/student.repository.interface';
 
-describe('ServiceName', () => {
-  let service: ServiceName;
+describe('StudentService', () => {
+  let service: StudentService;
   let mockRepository: any;
-  
+  let mockFacultyService: any;
+  let mockProgramService: any;
+  let mockStudentStatusService: any;
+
   beforeEach(async () => {
     // Mock dependencies
     mockRepository = {
@@ -45,336 +55,325 @@ describe('ServiceName', () => {
       create: jest.fn(),
       update: jest.fn(),
       softDelete: jest.fn(),
+      findByMSSV: jest.fn().mockResolvedValue(null),
+      findByEmailOrPhone: jest.fn().mockResolvedValue(null),
     };
 
+    mockFacultyService = {
+      detail: jest.fn().mockResolvedValue({ _id: 'faculty-id', name: 'Faculty' }),
+    };
+
+    // Set up testing module
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        ServiceName,
+        StudentService,
         {
-          provide: REPOSITORY_TOKEN,
+          provide: STUDENT_REPOSITORY,
           useValue: mockRepository,
+        },
+        {
+          provide: FacultyService,
+          useValue: mockFacultyService,
         },
       ],
     }).compile();
 
-    service = module.get<ServiceName>(ServiceName);
-    
-    // Mock logger
-    jest.spyOn(Logger.prototype, 'error').mockImplementation(() => {});
+    service = module.get<StudentService>(StudentService);
   });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  // Test cases here
-});
-```
-
-## Viết Unit Test
-
-### Test Service Methods
-
-#### Test Create Method
-
-```typescript
-describe('create', () => {
-  it('should create a new student successfully', async () => {
-    // Arrange
-    const studentData = {
-      ho_ten: 'Nguyen Van A',
-      ma_so_sinh_vien: 'SV001',
-      email: 'student@example.com',
-      so_dien_thoai: '0123456789',
-      khoa: 'faculty-id',
-      chuong_trinh: 'program-id',
-      tinh_trang: 'status-id',
-      ngay_sinh: new Date('2000-01-01'),
-      gioi_tinh: 'Nam',
-      dia_chi: '123 ABC Street',
-    };
-    
-    const expectedResult = {
-      _id: 'new-student-id',
-      ...studentData,
-    };
-    
-    mockRepository.create.mockResolvedValue(expectedResult);
-    mockRepository.findByMSSV.mockResolvedValue(null);
-    mockRepository.findByEmailOrPhone.mockResolvedValue(null);
-
-    // Act
-    const result = await service.create(studentData);
-
-    // Assert
-    expect(mockRepository.create).toHaveBeenCalledWith(studentData);
-    expect(result).toEqual(expectedResult);
-  });
-
-  it('should throw error if MSSV already exists', async () => {
-    // Arrange
-    const studentData = {
-      ma_so_sinh_vien: 'SV001',
-      // ... other fields
-    };
-    
-    mockRepository.findByMSSV.mockResolvedValue({ _id: 'existing-id' });
-
-    // Act & Assert
-    await expect(service.create(studentData))
-      .rejects
-      .toThrow(StudentIdExistsException);
-  });
-});
-```
-
-#### Test Update Method
-
-```typescript
-describe('update', () => {
-  it('should update student successfully', async () => {
-    // Arrange
-    const studentId = '507f1f77bcf86cd799439011';
-    const updateData = {
-      ho_ten: 'Updated Name',
-      dia_chi: 'New Address'
-    };
-    
-    const currentStudent = {
-      _id: studentId,
-      ho_ten: 'Old Name',
-      ma_so_sinh_vien: 'SV001',
-      tinh_trang: 'status-id'
-    };
-    
-    const expectedResult = {
-      ...currentStudent,
-      ...updateData
-    };
-    
-    mockRepository.findById.mockResolvedValue(currentStudent);
-    mockRepository.update.mockResolvedValue(expectedResult);
-
-    // Act
-    const result = await service.update(studentId, updateData);
-
-    // Assert
-    expect(mockRepository.findById).toHaveBeenCalledWith(studentId);
-    expect(mockRepository.update).toHaveBeenCalledWith(studentId, updateData);
-    expect(result).toEqual(expectedResult);
-  });
-
-  it('should validate status transition', async () => {
-    // Test status transition logic
-    const studentId = '507f1f77bcf86cd799439011';
-    const updateData = {
-      tinh_trang: 'new-status-id'
-    };
-    
-    const currentStudent = {
-      _id: studentId,
-      tinh_trang: 'current-status-id'
-    };
-    
-    mockRepository.findById.mockResolvedValue(currentStudent);
-    mockStudentStatusService.detail
-      .mockResolvedValueOnce({ tinh_trang: { vi: 'Đang học' } })
-      .mockResolvedValueOnce({ tinh_trang: { vi: 'Tốt nghiệp' } });
-    
-    // Mock invalid transition
-    jest.spyOn(service as any, 'isValidStatusTransition')
-      .mockResolvedValue(false);
-
-    // Act & Assert
-    await expect(service.update(studentId, updateData))
-      .rejects
-      .toThrow(InvalidStatusTransitionException);
-  });
-});
-```
-
-### Test Controller Methods
-
-```typescript
-describe('StudentController', () => {
-  let controller: StudentController;
-  let service: StudentService;
-  let transcriptService: TranscriptService;
-
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [StudentController],
-      providers: [
-        {
-          provide: StudentService,
-          useValue: {
-            create: jest.fn(),
-            get: jest.fn(),
-            detail: jest.fn(),
-            update: jest.fn(),
-            delete: jest.fn(),
-          },
-        },
-        {
-          provide: TranscriptService,
-          useValue: {
-            findByStudentId: jest.fn(),
-          },
-        },
-      ],
-    }).compile();
-
-    controller = module.get<StudentController>(StudentController);
-    service = module.get<StudentService>(StudentService);
-    transcriptService = module.get<TranscriptService>(TranscriptService);
-  });
-
-  describe('GET /students', () => {
-    it('should return paginated students', async () => {
+  describe('create', () => {
+    it('should create a new student', async () => {
       // Arrange
-      const query = { page: 1, limit: 10 };
-      const expectedResult = {
-        data: [{ _id: '1', ho_ten: 'Student 1' }],
-        meta: { page: 1, limit: 10, total: 1, totalPages: 1 }
+      const studentData = {
+        ho_ten: 'Nguyen Van A',
+        ma_so_sinh_vien: 'SV001',
+        email: 'student@example.com',
+        so_dien_thoai: '0123456789',
+        khoa: 'faculty-id',
+        chuong_trinh: 'program-id',
+        tinh_trang: 'status-id',
       };
       
-      jest.spyOn(service, 'get').mockResolvedValue(expectedResult);
+      const expectedResult = {
+        _id: 'new-student-id',
+        ...studentData,
+      };
+      
+      mockRepository.create.mockResolvedValue(expectedResult);
 
       // Act
-      const result = await controller.get(query, '', '', 1);
+      const result = await service.create(studentData);
 
       // Assert
-      expect(service.get).toHaveBeenCalledWith(query, '', '', 1);
+      expect(mockRepository.create).toHaveBeenCalledWith(studentData);
       expect(result).toEqual(expectedResult);
     });
   });
 });
 ```
 
-## Mock Dependencies
+### Controller Testing Pattern
 
-### Mock Repository
+```typescript title="student.controller.spec.ts"
+import { Test, TestingModule } from '@nestjs/testing';
+import { StudentController } from './student.controller';
+import { StudentService } from './services/student.service';
 
-```typescript
-const createMockRepository = () => ({
-  find: jest.fn(),
-  findOne: jest.fn(),
-  findById: jest.fn(),
-  create: jest.fn(),
-  save: jest.fn(),
-  updateOne: jest.fn(),
-  deleteOne: jest.fn(),
-  countDocuments: jest.fn(),
-  aggregate: jest.fn(),
-});
-```
+describe('StudentController', () => {
+  let controller: StudentController;
+  let mockService: any;
 
-### Mock External Services
-
-```typescript
-// Mock Faculty Service
-const mockFacultyService = {
-  detail: jest.fn().mockImplementation((id) => {
-    if (id === 'valid-faculty-id') {
-      return Promise.resolve({
-        _id: id,
-        ten_khoa: { vi: 'Khoa CNTT', en: 'IT Faculty' }
-      });
-    }
-    throw new FacultyNotFoundException(id);
-  }),
-};
-
-// Mock Program Service
-const mockProgramService = {
-  detail: jest.fn().mockImplementation((id) => {
-    if (id === 'valid-program-id') {
-      return Promise.resolve({
-        _id: id,
-        ten_chuong_trinh: 'Kỹ sư phần mềm'
-      });
-    }
-    throw new ProgramNotFoundException(id);
-  }),
-};
-```
-
-### Mock Validation Utils
-
-```typescript
-// Mock isValidObjectId
-jest.mock('../common/utils/validation.util', () => ({
-  isValidObjectId: jest.fn().mockImplementation((id) => {
-    // Simple ObjectId validation mock
-    return /^[0-9a-fA-F]{24}$/.test(id);
-  }),
-}));
-```
-
-## Test Validation và Error Handling
-
-### Test Input Validation
-
-```typescript
-describe('validation', () => {
-  it('should validate email format', async () => {
-    const invalidData = {
-      ho_ten: 'Test Student',
-      email: 'invalid-email',
-      // ... other fields
+  beforeEach(async () => {
+    mockService = {
+      get: jest.fn(),
+      create: jest.fn(),
+      detail: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
     };
 
-    await expect(service.create(invalidData))
-      .rejects
-      .toThrow(BadRequestException);
+    const module: TestingModule = await Test.createTestingModule({
+      controllers: [StudentController],
+      providers: [
+        {
+          provide: StudentService,
+          useValue: mockService,
+        },
+      ],
+    }).compile();
+
+    controller = module.get<StudentController>(StudentController);
   });
 
-  it('should validate phone number format', async () => {
-    const invalidData = {
-      ho_ten: 'Test Student',
-      so_dien_thoai: '123', // Too short
-      // ... other fields
-    };
+  describe('findAll', () => {
+    it('should return paginated students', async () => {
+      // Arrange
+      const expectedResult = {
+        data: [{ _id: '1', ho_ten: 'Student 1' }],
+        meta: { page: 1, limit: 10, total: 1, totalPages: 1 },
+      };
+      mockService.get.mockResolvedValue(expectedResult);
 
-    await expect(service.create(invalidData))
-      .rejects
-      .toThrow(BadRequestException);
+      // Act
+      const result = await controller.findAll(1, 10, '', '');
+
+      // Assert
+      expect(mockService.get).toHaveBeenCalledWith(
+        { page: 1, limit: 10 },
+        '',
+        ''
+      );
+      expect(result).toEqual(expectedResult);
+    });
   });
 });
 ```
 
-### Test Error Handling
+### Testing Validation
 
-```typescript
-describe('error handling', () => {
-  it('should handle database errors', async () => {
+Testing DTOs with validation decorators:
+
+```typescript title="student.dto.spec.ts"
+import { validate } from 'class-validator';
+import { CreateStudentDto } from './student.dto';
+
+describe('CreateStudentDto', () => {
+  it('should fail validation with invalid email', async () => {
     // Arrange
-    const dbError = new Error('Database connection failed');
-    dbError.name = 'MongoError';
-    mockRepository.create.mockRejectedValue(dbError);
+    const dto = new CreateStudentDto();
+    dto.email = 'invalid-email';
+    dto.ho_ten = 'Test Student';
+    dto.ma_so_sinh_vien = 'SV001';
 
-    // Act & Assert
-    await expect(service.create({}))
-      .rejects
-      .toThrow(InternalServerErrorException);
+    // Act
+    const errors = await validate(dto);
+
+    // Assert
+    expect(errors.length).toBeGreaterThan(0);
+    expect(errors[0].constraints).toHaveProperty('isEmail');
   });
 
-  it('should handle not found errors', async () => {
+  it('should pass validation with valid data', async () => {
     // Arrange
-    const invalidId = 'invalid-id';
-    mockRepository.findById.mockResolvedValue(null);
+    const dto = new CreateStudentDto();
+    dto.email = 'student@university.edu.vn';
+    dto.ho_ten = 'Test Student';
+    dto.ma_so_sinh_vien = 'SV001';
+    dto.so_dien_thoai = '0123456789';
 
-    // Act & Assert
-    await expect(service.detail(invalidId))
-      .rejects
-      .toThrow(StudentNotFoundException);
+    // Act
+    const errors = await validate(dto);
+
+    // Assert
+    expect(errors.length).toBe(0);
+  });
+});
+```
+
+### Testing MongoDB Schemas
+
+```typescript title="student.schema.spec.ts"
+import { Test } from '@nestjs/testing';
+import { getModelToken } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Student } from './student.schema';
+
+describe('Student Schema', () => {
+  let studentModel: Model<Student>;
+
+  beforeEach(async () => {
+    const module = await Test.createTestingModule({
+      providers: [
+        {
+          provide: getModelToken(Student.name),
+          useValue: {
+            new: jest.fn().mockResolvedValue({}),
+            constructor: jest.fn().mockResolvedValue({}),
+            find: jest.fn(),
+            findOne: jest.fn(),
+            update: jest.fn(),
+            create: jest.fn(),
+            remove: jest.fn(),
+            exec: jest.fn(),
+          },
+        },
+      ],
+    }).compile();
+
+    studentModel = module.get<Model<Student>>(getModelToken(Student.name));
+  });
+
+  it('should be defined', () => {
+    expect(studentModel).toBeDefined();
+  });
+});
+```
+
+## Frontend Testing (React + TypeScript)
+
+### Component Testing
+
+```typescript title="StudentList.test.tsx"
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { StudentList } from './StudentList';
+import { studentService } from '../../services/student.service';
+
+jest.mock('../../services/student.service');
+
+describe('StudentList Component', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should render student list', async () => {
+    // Arrange
+    const mockStudents = [
+      { _id: '1', ho_ten: 'Nguyen Van A', ma_so_sinh_vien: 'SV001' },
+      { _id: '2', ho_ten: 'Tran Thi B', ma_so_sinh_vien: 'SV002' },
+    ];
+    
+    (studentService.getAll as jest.Mock).mockResolvedValue({
+      data: mockStudents,
+      meta: { page: 1, limit: 10, total: 2, totalPages: 1 },
+    });
+
+    // Act
+    render(<StudentList />);
+
+    // Assert
+    await waitFor(() => {
+      expect(screen.getByText('Nguyen Van A')).toBeInTheDocument();
+      expect(screen.getByText('Tran Thi B')).toBeInTheDocument();
+    });
+  });
+
+  it('should handle search functionality', async () => {
+    // Arrange
+    const user = userEvent.setup();
+    render(<StudentList />);
+
+    // Act
+    const searchInput = screen.getByPlaceholderText('Search students...');
+    await user.type(searchInput, 'Nguyen');
+
+    // Assert
+    await waitFor(() => {
+      expect(studentService.getAll).toHaveBeenCalledWith({
+        page: 1,
+        limit: 10,
+        searchString: 'Nguyen',
+      });
+    });
+  });
+});
+```
+
+### Service Testing
+
+```typescript title="student.service.test.ts"
+import axios from 'axios';
+import { studentService } from './student.service';
+
+jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
+
+describe('StudentService', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('getAll', () => {
+    it('should fetch students with pagination', async () => {
+      // Arrange
+      const mockResponse = {
+        data: {
+          data: [{ _id: '1', ho_ten: 'Test Student' }],
+          meta: { page: 1, limit: 10, total: 1, totalPages: 1 },
+        },
+      };
+      mockedAxios.get.mockResolvedValue(mockResponse);
+
+      // Act
+      const result = await studentService.getAll({ page: 1, limit: 10 });
+
+      // Assert
+      expect(mockedAxios.get).toHaveBeenCalledWith('/students', {
+        params: { page: 1, limit: 10 },
+      });
+      expect(result).toEqual(mockResponse.data);
+    });
+  });
+
+  describe('create', () => {
+    it('should create a new student', async () => {
+      // Arrange
+      const studentData = {
+        ho_ten: 'New Student',
+        ma_so_sinh_vien: 'SV003',
+        email: 'newstudent@example.com',
+      };
+      const mockResponse = { data: { _id: '3', ...studentData } };
+      mockedAxios.post.mockResolvedValue(mockResponse);
+
+      // Act
+      const result = await studentService.create(studentData);
+
+      // Assert
+      expect(mockedAxios.post).toHaveBeenCalledWith('/students', studentData);
+      expect(result).toEqual(mockResponse.data);
+    });
   });
 });
 ```
 
 ## Running Tests
 
-### Run All Tests
+### Backend Tests
 
 ```bash
 # Run all tests
@@ -385,162 +384,211 @@ npm run test:watch
 
 # Run tests with coverage
 npm run test:cov
-```
 
-### Run Specific Tests
-
-```bash
-# Run tests for a specific file
+# Run specific test file
 npm test student.service.spec.ts
 
-# Run tests matching a pattern
+# Run tests matching pattern
 npm test -- --testNamePattern="should create"
-
-# Run tests for a specific module
-npm test -- student/
 ```
 
-### Test Coverage
+### Frontend Tests
 
 ```bash
-# Generate coverage report
-npm run test:cov
+# Run all tests
+npm test
 
-# Coverage thresholds in package.json
-"jest": {
-  "coverageThreshold": {
-    "global": {
-      "branches": 80,
-      "functions": 80,
-      "lines": 80,
-      "statements": 80
-    }
-  }
-}
+# Run tests in watch mode
+npm test -- --watch
+
+# Run tests with coverage
+npm test -- --coverage
+
+# Run specific test suite
+npm test StudentList.test.tsx
 ```
 
-## Best Practices
+## Test Coverage
 
-### 1. Test Structure
+### Coverage Requirements
 
-- Sử dụng pattern **Arrange-Act-Assert** (AAA)
-- Group related tests với `describe` blocks
-- Sử dụng descriptive test names
+| Component         | Minimum Coverage |
+| ----------------- | --------------- |
+| Services          | 80%             |
+| Controllers       | 70%             |
+| DTOs/Schemas      | 60%             |
+| Utility Functions | 90%             |
+| React Components  | 70%             |
 
-### 2. Mocking
+### Viewing Coverage Reports
 
-- Mock external dependencies
-- Reset mocks trong `afterEach`
-- Sử dụng `jest.spyOn` cho partial mocking
+```bash
+# Backend coverage
+npm run test:cov
+# Open coverage/lcov-report/index.html
 
-### 3. Async Testing
+# Frontend coverage
+npm test -- --coverage --watchAll=false
+# Open coverage/lcov-report/index.html
+```
+
+## Mocking Best Practices
+
+### Mocking MongoDB Operations
 
 ```typescript
-// Use async/await
+// Mock repository pattern
+const mockRepository = {
+  find: jest.fn().mockReturnValue({
+    populate: jest.fn().mockReturnValue({
+      skip: jest.fn().mockReturnValue({
+        limit: jest.fn().mockReturnValue({
+          exec: jest.fn().mockResolvedValue([]),
+        }),
+      }),
+    }),
+  }),
+};
+```
+
+### Mocking External Services
+
+```typescript
+// Mock external API calls
+jest.mock('../common/utils/external-api', () => ({
+  fetchExternalData: jest.fn().mockResolvedValue({ data: 'mocked' }),
+}));
+```
+
+### Mocking File Operations
+
+```typescript
+// Mock file upload
+const mockFile = new File(['content'], 'test.csv', { type: 'text/csv' });
+const mockMulterFile = {
+  fieldname: 'file',
+  originalname: 'test.csv',
+  encoding: '7bit',
+  mimetype: 'text/csv',
+  buffer: Buffer.from('content'),
+  size: 7,
+};
+```
+
+## Common Testing Patterns
+
+### Testing Async Operations
+
+```typescript
 it('should handle async operations', async () => {
+  // Using async/await
   const result = await service.asyncMethod();
   expect(result).toBeDefined();
-});
 
-// Test rejected promises
-it('should throw on error', async () => {
-  await expect(service.methodThatThrows())
-    .rejects
-    .toThrow(ExpectedError);
+  // Using promises
+  return service.asyncMethod().then(result => {
+    expect(result).toBeDefined();
+  });
 });
 ```
 
-### 4. Test Data
+### Testing Error Handling
 
 ```typescript
-// Create test data factories
-const createTestStudent = (overrides = {}) => ({
-  ho_ten: 'Test Student',
-  ma_so_sinh_vien: 'SV001',
-  email: 'test@student.edu.vn',
-  so_dien_thoai: '0123456789',
-  ngay_sinh: new Date('2000-01-01'),
-  gioi_tinh: 'Nam',
-  dia_chi: 'Test Address',
-  ...overrides
-});
+it('should handle errors gracefully', async () => {
+  // Arrange
+  mockRepository.findById.mockRejectedValue(new Error('Database error'));
 
-// Use in tests
-const studentData = createTestStudent({ ho_ten: 'Custom Name' });
+  // Act & Assert
+  await expect(service.detail('invalid-id')).rejects.toThrow('Database error');
+});
 ```
 
-## Integration Testing
-
-### Test Database Integration
+### Testing Validation Errors
 
 ```typescript
-describe('StudentRepository Integration', () => {
-  let connection: Connection;
-  let repository: StudentRepository;
+it('should throw BadRequestException for invalid data', async () => {
+  // Arrange
+  const invalidData = { email: 'invalid' };
 
-  beforeAll(async () => {
-    connection = await createTestConnection();
-    repository = new StudentRepository(connection);
-  });
-
-  afterAll(async () => {
-    await connection.close();
-  });
-
-  it('should create and retrieve student', async () => {
-    // Arrange
-    const studentData = createTestStudent();
-
-    // Act
-    const created = await repository.create(studentData);
-    const retrieved = await repository.findById(created._id);
-
-    // Assert
-    expect(retrieved).toMatchObject(studentData);
-  });
+  // Act & Assert
+  await expect(controller.create(invalidData)).rejects.toThrow(BadRequestException);
 });
+```
+
+## CI/CD Integration
+
+### GitHub Actions Configuration
+
+```yaml title=".github/workflows/test.yml"
+name: Run Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          
+      - name: Install dependencies
+        run: |
+          cd server && npm install
+          cd ../client && npm install
+          
+      - name: Run backend tests
+        run: cd server && npm test
+        
+      - name: Run frontend tests
+        run: cd client && npm test -- --watchAll=false
 ```
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **Module not found errors**
-   - Check import paths
-   - Ensure all dependencies are mocked
-
-2. **Timeout errors**
-   - Increase jest timeout: `jest.setTimeout(10000)`
-   - Check for unresolved promises
-
-3. **Mock not working**
-   - Verify mock is defined before module creation
-   - Check mock function names match actual methods
-
-### Debug Tips
-
+**MongoDB Memory Server Issues**
 ```typescript
-// Enable debug logging
-console.log('Mock calls:', mockRepository.create.mock.calls);
-
-// Check if mock was called
-expect(mockRepository.create).toHaveBeenCalled();
-expect(mockRepository.create).toHaveBeenCalledTimes(1);
-
-// Inspect mock arguments
-expect(mockRepository.create).toHaveBeenCalledWith(
-  expect.objectContaining({
-    ho_ten: 'Expected Name'
-  })
-);
+// Use in-memory database for tests
+beforeAll(async () => {
+  const mongoServer = await MongoMemoryServer.create();
+  await mongoose.connect(mongoServer.getUri());
+});
 ```
 
-## Conclusion
+**Timeout Issues**
+```typescript
+// Increase timeout for slow operations
+jest.setTimeout(30000); // 30 seconds
+```
 
-Unit testing là essential cho việc maintain code quality trong Student Management System. Follow các best practices và patterns trong document này để ensure tests are reliable và maintainable.
+**Module Import Errors**
+```typescript
+// Configure module name mapper in jest.config.js
+moduleNameMapper: {
+  '^@/(.*)$': '<rootDir>/src/$1',
+}
+```
+
+## Best Practices Summary
+
+1. **Write tests first** - Follow TDD when possible
+2. **Test behavior, not implementation** - Focus on what the code does
+3. **Keep tests simple and readable** - One assertion per test when possible
+4. **Use descriptive test names** - Should explain what is being tested
+5. **Mock external dependencies** - Isolate the unit being tested
+6. **Clean up after tests** - Use afterEach to reset state
+7. **Test edge cases** - Include boundary conditions and error scenarios
+8. **Maintain test coverage** - Aim for high coverage but focus on quality
 
 ## See Also
 
-- [Jest Documentation](https://jestjs.io/docs/getting-started)
-- [NestJS Testing](https://docs.nestjs.com/fundamentals/testing)
-- [Overview of Architecture](./overview-of-architecture.md)
+- [Coding Standard](./coding-standard.md)
+- [API Documentation](./api-documentation.md)
+- [Source Code Organization](./source-code-organization.md)

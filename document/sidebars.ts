@@ -19,6 +19,7 @@ const sidebars: SidebarsConfig = {
     'overview-of-architecture',
     'source-code-organization',
     'coding-standard',
+    'unit-testing',
     {
       type: 'category',
       label: 'API Documentation',
@@ -29,6 +30,14 @@ const sidebars: SidebarsConfig = {
         'inversion-of-control',
       ],
       collapsed: false,
+    },
+        {
+      type: 'category',
+      label: 'Route and Settings API',
+      items: [
+        'registering-new-routes',
+        'settings-api',
+      ],
     },
     {
       type: 'category',
