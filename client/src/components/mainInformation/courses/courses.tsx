@@ -41,7 +41,8 @@ const Courses = () => {
 
             const response = await CoursesRoute.getCourses(
                 { page: currentPage, limit: 10 }, 
-                searchParams
+                searchParams,
+                i18n.language
             );
             setCourses(response.data);
             setTotalPages(response.meta.totalPages);

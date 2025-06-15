@@ -59,6 +59,7 @@ export class StudentStatusRepository implements IStudentStatusRepository {
     paginationOpts: PaginationOptions,
     searchString: string,
     page: number,
+    lang: string = 'vi'
   ): Promise<PaginatedResponse<StudentStatus>> {
     const pagination = new Pagination(paginationOpts);
     const skip = pagination.Skip();
@@ -66,15 +67,24 @@ export class StudentStatusRepository implements IStudentStatusRepository {
 
     let query = {};
 
+    const searchStringOpt = lang === 'en' ?
+    {
+      $or: [
+        { description: { $regex: searchString, $options: 'i' } },
+        { 'tinh_trang.en': { $regex: searchString, $options: 'i' } },
+      ],
+    }:
+    {
+      $or: [
+        { description: { $regex: searchString, $options: 'i' } },
+        { 'tinh_trang.vi': { $regex: searchString, $options: 'i' } },
+      ],
+    }
+
     if (searchString) {
       query = {
         $and: [
-          {
-            $or: [
-              { description: { $regex: searchString, $options: 'i' } },
-              { name: { $regex: searchString, $options: 'i' } },
-            ],
-          },
+          searchStringOpt,
           {
             $or: [
               { deleted_at: { $exists: false } },

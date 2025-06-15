@@ -13,7 +13,7 @@ import { CourseNotFoundException } from '../exceptions/course-not-found.exceptio
 export class CourseRepository implements ICourseRepository {
   private readonly logger = new Logger(CourseRepository.name);
 
-  constructor(@InjectModel('Course') private courseModel: Model<Course>) {}
+  constructor(@InjectModel('Course') private courseModel: Model<Course>) { }
 
   async create(courseData: any): Promise<Course> {
     const course = new this.courseModel(courseData);
@@ -39,11 +39,11 @@ export class CourseRepository implements ICourseRepository {
           { new: true }
         )
         .exec();
-      
+
       if (!updatedCourse) {
         throw new CourseNotFoundException(id);
       }
-      
+
       return updatedCourse;
     } catch (error) {
       if (error instanceof CourseNotFoundException) {
@@ -58,18 +58,36 @@ export class CourseRepository implements ICourseRepository {
     paginationOpts: PaginationOptions,
     faculty: string,
     available: string,
+    lang: string = 'vi',
+    searchString: string
   ): Promise<PaginatedResponse<Course>> {
     const pagination = new Pagination(paginationOpts);
     const skip = pagination.Skip();
     const limit = pagination.Limit();
-    const  page = pagination.Page();
+    const page = pagination.Page();
 
     let query: any = { $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] };
-
+    if (searchString) {
+      if (lang === 'en') {
+        query = {
+          $and: [
+            query,
+            { 'ten.en': { $regex: searchString, $options: 'i' } }
+          ]
+        }
+      } else {
+        query = {
+          $and: [
+            query,
+            { 'ten.vn': { $regex: searchString, $options: 'i' } }
+          ]
+        }
+      }
+    }
     if (faculty) {
       query = {
         $and: [
-          { $or: [{ ma_khoa: faculty }, { ten_khoa: faculty }]},
+          { $or: [{ ma_khoa: faculty }, { ten_khoa: faculty }] },
           query,
         ]
       };
@@ -77,7 +95,7 @@ export class CourseRepository implements ICourseRepository {
     if (available === 'true') {
       query = {
         $and: [
-          { $or: [{ vo_hieu_hoa: { $exists: false } }, { vo_hieu_hoa: false }]},
+          { $or: [{ vo_hieu_hoa: { $exists: false } }, { vo_hieu_hoa: false }] },
           query,
         ]
       };
@@ -85,7 +103,7 @@ export class CourseRepository implements ICourseRepository {
     if (available === 'false') {
       query = {
         $and: [
-          { $or: [{ vo_hieu_hoa: { $exists: true } }, { vo_hieu_hoa: true }]},
+          { $or: [{ vo_hieu_hoa: { $exists: true } }, { vo_hieu_hoa: true }] },
           query,
         ]
       };
@@ -109,7 +127,7 @@ export class CourseRepository implements ICourseRepository {
       this.logger.error('course.repository.findAll: Error counting courses', error.stack);
       throw new BaseException(error, 'COUNT_COURSES_ERROR');
     }
-    
+
     const totalPages = pagination.TotalPages(total);
 
     return new PaginatedResponse<Course>(
@@ -125,7 +143,7 @@ export class CourseRepository implements ICourseRepository {
     let courses: Course[] = [];
     const query = {
       $and: [
-        { $or: [{vo_hieu_hoa: { $exists: false }}, {vo_hieu_hoa: false}] },
+        { $or: [{ vo_hieu_hoa: { $exists: false } }, { vo_hieu_hoa: false }] },
         { $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }] },
       ],
     };
@@ -146,11 +164,11 @@ export class CourseRepository implements ICourseRepository {
       const deletedCourse = await this.courseModel
         .findByIdAndUpdate(id, { deleted_at: new Date() }, { new: true })
         .exec();
-      
+
       if (!deletedCourse) {
         throw new CourseNotFoundException(id);
       }
-      
+
       return deletedCourse;
     } catch (error) {
       if (error instanceof CourseNotFoundException) {

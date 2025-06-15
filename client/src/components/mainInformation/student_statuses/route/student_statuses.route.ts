@@ -8,7 +8,8 @@ const API_URL = `${SERVER_URL}/api/v1/student-statuses`;
 export const StudentStatusesRoute = {
   getStudentStatuses: async (
     pagination: PaginationOptions,
-    searchOptions: { searchString?: string }
+    searchOptions: { searchString?: string },
+    lang: string = 'vi'
   ): Promise<PaginatedResponse<StudentStatus>> => {
     try {
       const response = await axios.get(API_URL, {
@@ -16,6 +17,7 @@ export const StudentStatusesRoute = {
           page: pagination.page,
           limit: pagination.limit,
           searchString: searchOptions.searchString || '',
+          lang: lang,
         },
       });
       return response.data;

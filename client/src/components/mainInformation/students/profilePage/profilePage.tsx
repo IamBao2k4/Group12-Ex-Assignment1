@@ -16,9 +16,9 @@ import IdDocumentItem from "../profileDialog/idDocumentItem/idDocumentItem";
 import RegisCourse from "./regisCourese/regisCourse";
 import { useNotification } from "../../../../components/common/NotificationContext";
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
-import { SERVER_URL } from "../../../../../global";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
+import { StudentRoute } from "../route/student.route";
 
 const validateEmail = (email: string) => {
     const emailError = document.querySelector(
@@ -66,22 +66,19 @@ const ProfilePage = () => {
     useEffect(() => {
         const fetchStudent = async () => {
             try {
-                const response = await fetch(
-                    `${SERVER_URL}/api/v1/students/${id}`
-                );
-                if (!response.ok) throw new Error("Error fetching student data");
-                const data = await response.json();
+                const data = await StudentRoute.getStudentById(id!);
                 setStudent(data);
                 setEditedStudent(data);
             } catch (error) {
                 console.error("Error fetching student:", error);
+                showNotification('error', t('messages.error'));
             }
         };
 
         if (type === "edit" && id) {
             fetchStudent();
         }
-    }, [id, type]);
+    }, [id, type, t, showNotification]);
 
     const defaultAddress: Address = {
         chi_tiet: "",
@@ -140,21 +137,24 @@ const ProfilePage = () => {
     });
 
     useEffect(() => {
-        const fetchData = async (url: string, setState: Function) => {
+        const fetchData = async () => {
             try {
-                const response = await fetch(`${SERVER_URL}${url}`);
-                if (!response.ok) throw new Error("Error fetching data");
-                const data = await response.json();
-                setState(data);
+                const [facultiesData, programsData, studentStatusesData] = await Promise.all([
+                    StudentRoute.getAllFaculties(),
+                    StudentRoute.getAllPrograms(),
+                    StudentRoute.getAllStudentStatuses()
+                ]);
+                setFaculties(facultiesData);
+                setPrograms(programsData);
+                setStudentStatuses(studentStatusesData);
             } catch (error) {
-                console.error(`Error fetching ${url}:`, error);
+                console.error('Error fetching data:', error);
+                showNotification('error', t('messages.error'));
             }
         };
 
-        fetchData("/api/v1/faculties/all", setFaculties);
-        fetchData("/api/v1/programs/all", setPrograms);
-        fetchData("/api/v1/student-statuses/all", setStudentStatuses);
-    }, []);
+        fetchData();
+    }, [t, showNotification]);
 
     useEffect(() => {
         if (type === "edit" && student) {
@@ -224,8 +224,6 @@ const ProfilePage = () => {
             return;
 
         try {
-            const method = "PATCH";
-            const url = `/api/v1/students/${student?._id}`;
             const cleanedData = {
                 ...formData,
                 giay_to_tuy_than: documents ? documents.map(
@@ -236,16 +234,7 @@ const ProfilePage = () => {
                 dia_chi_tam_tru: addresses ? addresses[1] : null,
             };
 
-            const response = await fetch(`${SERVER_URL}${url}`, {
-                method,
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(cleanedData),
-            });
-
-            const responseData = await response.json();
-            if (!response.ok)
-                throw new Error(responseData.message || "Có lỗi xảy ra");
-
+            await StudentRoute.updateStudent(student?._id.toString() || '', cleanedData);
             showNotification('success', "Student updated successfully!");
             window.location.reload();
         } catch (error) {
@@ -271,18 +260,7 @@ const ProfilePage = () => {
         }
 
         try {
-            const response = await fetch(`${SERVER_URL}/api/v1/students/${student?._id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(editedStudent),
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to update student");
-            }
-
+            await StudentRoute.updateStudent(student?._id.toString() || '', editedStudent);
             showNotification('success', t('profile.updateSuccess'));
             setIsEditing(false);
         } catch (error) {

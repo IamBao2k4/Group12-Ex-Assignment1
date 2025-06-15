@@ -28,9 +28,10 @@ export class StudentStatusService {
     query: PaginationOptions,
     searchString: string,
     page: number,
+    lang: string = 'vi'
   ): Promise<PaginatedResponse<StudentStatus>> {
     try {
-      return await this.studentStatusRepository.findAll(query, searchString, page);
+      return await this.studentStatusRepository.findAll(query, searchString, page, lang);
     } catch (error) {
       this.logger.error(`student_status.service.get: ${error.message}`, error.stack);
       throw error;

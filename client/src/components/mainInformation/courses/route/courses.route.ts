@@ -10,7 +10,8 @@ const FACULTY_API_URL = `${SERVER_URL}/api/v1/faculties`;
 export const CoursesRoute = {
   getCourses: async (
     pagination: PaginationOptions,
-    searchOptions: { searchString?: string }
+    searchOptions: { searchString?: string },
+    lang: string
   ): Promise<PaginatedResponse<Course>> => {
     try {
       const response = await axios.get(API_URL, {
@@ -18,6 +19,7 @@ export const CoursesRoute = {
           page: pagination.page,
           limit: pagination.limit,
           searchString: searchOptions.searchString || '',
+          lang: lang || 'vi', 
         },
       });
       return response.data;
@@ -27,23 +29,41 @@ export const CoursesRoute = {
     }
   },
 
-  createCourse: async (courseData: { ten: string; ma_mon_hoc: string; tin_chi: number; khoa: string }): Promise<void> => {
+  createCourse: async (courseData: { 
+    ma_mon_hoc: string; 
+    ten: { vi: string; en: string }; 
+    tin_chi: number; 
+    khoa?: string 
+  }): Promise<any> => {
     try {
-      await axios.post(API_URL, courseData, {
+      const response = await axios.post(API_URL, courseData, {
         headers: { 'Content-Type': 'application/json' },
       });
+      return response.data;
     } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw new Error(error.response.data.message || 'Error creating course');
+      }
       console.error('Error creating course:', error);
       throw error;
     }
   },
 
-  updateCourse: async (id: string, courseData: { ten: string; ma_mon_hoc: string; tin_chi: number; khoa: string }): Promise<void> => {
+  updateCourse: async (id: string, courseData: { 
+    ma_mon_hoc: string; 
+    ten: { vi: string; en: string }; 
+    tin_chi: number; 
+    khoa?: string 
+  }): Promise<any> => {
     try {
-      await axios.patch(`${API_URL}/${id}`, courseData, {
+      const response = await axios.patch(`${API_URL}/${id}`, courseData, {
         headers: { 'Content-Type': 'application/json' },
       });
+      return response.data;
     } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw new Error(error.response.data.message || 'Error updating course');
+      }
       console.error(`Error updating course ${id}:`, error);
       throw error;
     }

@@ -3,11 +3,15 @@ import { SERVER_URL } from '../../../../../global';
 import { PaginatedResponse } from '../../open_class/models/open_class.model';
 import { Student } from '../models/student';
 import { Faculty } from '../../faculties/models/faculty';
+import { Program } from '../../programs/models/program';
+import { StudentStatus } from '../../student_statuses/models/student_status';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 
 const API_URL = `${SERVER_URL}/api/v1/students`;
 const FACULTY_API_URL = `${SERVER_URL}/api/v1/faculties`;
+const PROGRAM_API_URL = `${SERVER_URL}/api/v1/programs`;
+const STUDENT_STATUS_API_URL = `${SERVER_URL}/api/v1/student-statuses`;
 
 export const StudentRoute = {
   getStudents: async (
@@ -40,6 +44,26 @@ export const StudentRoute = {
     }
   },
 
+  getAllPrograms: async (): Promise<Program[]> => {
+    try {
+      const response = await axios.get(`${PROGRAM_API_URL}/all`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching programs:', error);
+      throw error;
+    }
+  },
+
+  getAllStudentStatuses: async (): Promise<StudentStatus[]> => {
+    try {
+      const response = await axios.get(`${STUDENT_STATUS_API_URL}/all`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching student statuses:', error);
+      throw error;
+    }
+  },
+
   getStudentById: async (id: string): Promise<Student> => {
     try {
       const response = await axios.get(`${API_URL}/${id}`);
@@ -50,25 +74,31 @@ export const StudentRoute = {
     }
   },
 
-  createStudent: async (studentData: Partial<Student>): Promise<Student> => {
+  createStudent: async (studentData: any): Promise<any> => {
     try {
       const response = await axios.post(API_URL, studentData, {
         headers: { 'Content-Type': 'application/json' },
       });
       return response.data;
     } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw new Error(error.response.data.message || 'Error creating student');
+      }
       console.error('Error creating student:', error);
       throw error;
     }
   },
 
-  updateStudent: async (id: string, studentData: Partial<Student>): Promise<Student> => {
+  updateStudent: async (id: string, studentData: any): Promise<any> => {
     try {
       const response = await axios.patch(`${API_URL}/${id}`, studentData, {
         headers: { 'Content-Type': 'application/json' },
       });
       return response.data;
     } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw new Error(error.response.data.message || 'Error updating student');
+      }
       console.error(`Error updating student ${id}:`, error);
       throw error;
     }

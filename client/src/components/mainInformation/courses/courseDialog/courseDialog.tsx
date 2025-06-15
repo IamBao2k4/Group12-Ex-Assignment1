@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "./courseDialog.css";
-import { SERVER_URL } from "../../../../../global";
 import { useTranslation } from 'react-i18next';
 import { Course } from "../models/course";
 import { Faculty } from "../../faculties/models/faculty";
 import { useNotification } from '../../../common/NotificationContext';
 import { CourseName } from "../models/course";
 import { GoogleTranslateService } from '../../../../middleware/gg-trans'
+import { FacultiesRoute } from '../../faculties/route/faculties.route';
+import { CoursesRoute } from '../route/courses.route';
 
 interface CourseDialogProps {
     type: string;
@@ -29,27 +30,21 @@ const CourseDialog: React.FC<CourseDialogProps> = ({ course, type, onSuccess }) 
         const fetchFaculties = async () => {
             try {
                 setLoading(true);
-                const response = await fetch(SERVER_URL + '/api/v1/faculties/all');
+                const response = await FacultiesRoute.getAll();
                 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const text = await response.text();
-                
-                if (!text) {
+                if (!response || response.length === 0) {
                     console.warn('Empty response from faculties API');
                     setFaculties([]);
                     return;
                 }
                 
-                const data = JSON.parse(text);
+                const data = response;
                 
-                // Ensure data is an array
+                // Ensure data is an arrayxmx
                 if (Array.isArray(data)) {
                     setFaculties(data);
-                } else if (data && Array.isArray(data.data)) {
-                    setFaculties(data.data);
+                } else if (data && Array.isArray(data)) {
+                    setFaculties(data);
                 } else {
                     console.warn('Unexpected faculties data structure:', data);
                     setFaculties([]);
@@ -96,34 +91,12 @@ const CourseDialog: React.FC<CourseDialogProps> = ({ course, type, onSuccess }) 
 
         try {
             if (type === 'add') {
-                const response = await fetch(SERVER_URL + '/api/v1/courses', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(courseData),
-                });
-
-                const responseData = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(responseData.message || t('messages.error'));
-                }
-
+                await CoursesRoute.createCourse(courseData);
                 showNotification('success', t('messages.saveSuccess'));
                 detailDialog.classList.toggle('hidden');
                 onSuccess();
             } else {
-                const response = await fetch(SERVER_URL + `/api/v1/courses/${course._id}`, {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(courseData),
-                });
-
-                const responseData = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(responseData.message || t('messages.error'));
-                }
-
+                await CoursesRoute.updateCourse(course._id.toString(), courseData);
                 showNotification('success', t('messages.saveSuccess'));
                 detailDialog.classList.toggle('hidden');
                 onSuccess();

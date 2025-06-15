@@ -47,9 +47,10 @@ import {
       @Query() query: PaginationOptions,
       @Query('searchString') searchString: string,
       @Query('page') page: number,
+      @Query('lang') lang: string = 'vi'
     ) {
       try {
-        return await this.facultyService.get(query, searchString, page);
+        return await this.facultyService.get(query, searchString, page, lang);
       } catch (error) {
         this.logger.error(`faculty.controller.get: ${error.message}`, error.stack);
         throw error;

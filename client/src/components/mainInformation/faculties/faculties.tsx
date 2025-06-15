@@ -9,6 +9,7 @@ import { Card, Button, Table, Pagination } from 'react-bootstrap';
 import '../../../components/common/DomainStyles.css';
 import { useTranslation } from 'react-i18next';
 import { FacultiesRoute } from "./route/faculties.route";
+import i18n from "../../../i18n/config";
 
 const Faculties = () => {
     const { t } = useTranslation();
@@ -25,7 +26,8 @@ const Faculties = () => {
         try {
             const response = await FacultiesRoute.getFaculties(
                 { page: currentPage, limit: 10 }, 
-                { searchString: search }
+                { searchString: search },
+                i18n.language
             );
             setFaculties(response.data);
             setTotalPages(response.meta.total);

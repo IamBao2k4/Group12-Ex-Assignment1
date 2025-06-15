@@ -3,8 +3,8 @@ import './detailDialog.css';
 import { useTranslation } from 'react-i18next';
 import { Faculty } from '../models/faculty';
 import { useNotification } from '../../../common/NotificationContext';
-import { SERVER_URL } from '../../../../../global';
 import { GoogleTranslateService } from '../../../../middleware/gg-trans';
+import { FacultiesRoute } from '../route/faculties.route';
 
 interface DetailDialogProps {
     type: string;
@@ -58,34 +58,12 @@ const DetailDialog: React.FC<DetailDialogProps> = ({ type, faculty, onSuccess })
 
         try {
             if (type === 'add') {
-                const response = await fetch(SERVER_URL + `/api/v1/faculties`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(facultyData),
-                });
-
-                const responseData = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(responseData.message || t('messages.error'));
-                }
-
+                await FacultiesRoute.createFaculty(facultyData);
                 showNotification('success', t('faculty.createSuccess'));
                 detailDialog.classList.toggle('hidden');
                 onSuccess();
             } else {
-                const response = await fetch(SERVER_URL + `/api/v1/faculties/${faculty._id}`, {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(facultyData),
-                });
-
-                const responseData = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(responseData.message || t('messages.error'));
-                }
-
+                await FacultiesRoute.updateFaculty(faculty._id.toString(), facultyData);
                 showNotification('success', t('faculty.updateSuccess'));
                 detailDialog.classList.toggle('hidden');
                 onSuccess();

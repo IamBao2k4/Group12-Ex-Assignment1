@@ -15,9 +15,8 @@ import AddressItem from "./addressItem/addressItem";
 import IdDocumentItem from "./idDocumentItem/idDocumentItem";
 import { useNotification } from "../../../../components/common/NotificationContext";
 import { useTranslation } from 'react-i18next';
-
-import { SERVER_URL } from "../../../../../global";
 import { GoogleTranslateService } from "../../../../middleware/gg-trans";
+import { StudentRoute } from "../route/student.route";
 
 interface StudentItemProps {
     type: string;
@@ -123,21 +122,24 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess })
     ) as HTMLElement;
 
     useEffect(() => {
-        const fetchData = async (url: string, setState: Function) => {
+        const fetchData = async () => {
             try {
-                const response = await fetch(`${SERVER_URL}${url}`);
-                if (!response.ok) throw new Error("Error fetching data");
-                const data = await response.json();
-                setState(data);
+                const [facultiesData, programsData, studentStatusesData] = await Promise.all([
+                    StudentRoute.getAllFaculties(),
+                    StudentRoute.getAllPrograms(),
+                    StudentRoute.getAllStudentStatuses()
+                ]);
+                setFaculties(facultiesData);
+                setPrograms(programsData);
+                setStudentStatuses(studentStatusesData);
             } catch (error) {
-                console.error(`Error fetching ${url}:`, error);
+                console.error('Error fetching data:', error);
+                showNotification('error', t('messages.error'));
             }
         };
 
-        fetchData("/api/v1/faculties/all", setFaculties);
-        fetchData("/api/v1/programs/all", setPrograms);
-        fetchData("/api/v1/student-statuses/all", setStudentStatuses);
-    }, []);
+        fetchData();
+    }, [t, showNotification]);
 
     useEffect(() => {
         if (type === "edit" && student) {
@@ -216,12 +218,7 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess })
                 vi: formData.gioi_tinh,
                 en: (await GoogleTranslateService.translateText(formData.gioi_tinh, 'en')).translatedText
             };
-            console.log("genderData", genderData);
-            const method = type === "add" ? "POST" : "PATCH";
-            const url =
-                type === "add"
-                    ? "/api/v1/students"
-                    : `/api/v1/students/${student?._id}`;
+            
             const cleanedData = {
                 ...formData,
                 giay_to_tuy_than: documents ? documents.map(
@@ -233,15 +230,9 @@ const ProfileDialog: React.FC<StudentItemProps> = ({ type, student, onSuccess })
                 gioi_tinh: genderData,
             };
 
-            const response = await fetch(`${SERVER_URL}${url}`, {
-                method,
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(cleanedData),
-            });
-
-            const responseData = await response.json();
-            if (!response.ok)
-                throw new Error(responseData.message || t('messages.error'));
+            type === "add"
+                ? await StudentRoute.createStudent(cleanedData)
+                : await StudentRoute.updateStudent(student?._id.toString() || '', cleanedData);
 
             showNotification('success', 
                 type === "add"

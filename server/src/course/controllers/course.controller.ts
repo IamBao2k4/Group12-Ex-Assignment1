@@ -48,9 +48,12 @@ export class CourseController {
     @Query() query: PaginationOptions,
     @Query('faculty') faculty: string,
     @Query('available') available: string,
+    @Query('lang') lang: string = 'vi',
+    @Query('searchString') searchString
   ) {
     try {
-      return await this.courseService.get(query, faculty, available);
+      console.log(lang);
+      return await this.courseService.get(query, faculty, available, lang, searchString);
     } catch (error) {
       this.logger.error(`course.controller.get: ${error.message}`, error.stack);
       throw error;

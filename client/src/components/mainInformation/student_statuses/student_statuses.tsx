@@ -9,6 +9,7 @@ import { Card, Button, Table, Pagination } from 'react-bootstrap';
 import { StudentStatusesRoute } from "./route/student_statuses.route";
 import { useTranslation } from 'react-i18next';
 import '../../../components/common/DomainStyles.css';
+import i18n from "../../../i18n/config";
 
 const StudentStatuses = () => {
     const { t } = useTranslation();
@@ -23,7 +24,7 @@ const StudentStatuses = () => {
     const fetchStudentStatuses = useCallback(async () => {
         setLoading(true);
         try {
-            const response = await StudentStatusesRoute.getStudentStatuses({ page: currentPage, limit: 10 }, { searchString: search });
+            const response = await StudentStatusesRoute.getStudentStatuses({ page: currentPage, limit: 10 }, { searchString: search }, i18n.language);
             setStudentStatuses(response.data);
             setTotalPages(response.meta.total);
             setLoading(false);

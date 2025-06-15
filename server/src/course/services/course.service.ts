@@ -29,9 +29,11 @@ export class CourseService {
     query: PaginationOptions,
     faculty: string,
     available: string,
+    lang: string = 'vi',
+    searchString: string
   ): Promise<PaginatedResponse<Course>> {
     try {
-      return await this.courseRepository.findAll(query, faculty,available);
+      return await this.courseRepository.findAll(query, faculty, available, lang, searchString);
     } catch (error) {
       this.logger.error(`course.service.get: ${error.message}`, error.stack);
       throw error;

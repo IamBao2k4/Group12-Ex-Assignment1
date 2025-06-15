@@ -58,6 +58,7 @@ export class FacultyRepository implements IFacultyRepository {
     paginationOpts: PaginationOptions,
     searchString: string,
     page: number,
+    lang: string = 'vi'
   ): Promise<PaginatedResponse<Faculty>> {
     const pagination = new Pagination(paginationOpts);
     const skip = pagination.Skip();
@@ -65,15 +66,24 @@ export class FacultyRepository implements IFacultyRepository {
 
     let query = {};
 
+    const searchStringOpt = lang === 'en' ? 
+    {
+      $or: [
+        { 'ten_khoa.en': { $regex: searchString, $options: 'i' } },
+        { ma_khoa: { $regex: searchString, $options: 'i' } },
+      ],
+    }:
+    {
+      $or: [
+        { 'ten_khoa.vi': { $regex: searchString, $options: 'i' } },
+        { ma_khoa: { $regex: searchString, $options: 'i' } },
+      ],
+    }
+
     if (searchString) {
       query = {
         $and: [
-          {
-            $or: [
-              { ten_khoa: { $regex: searchString, $options: 'i' } },
-              { ma_khoa: { $regex: searchString, $options: 'i' } },
-            ],
-          },
+          searchStringOpt,
           {
             $or: [
               { deleted_at: { $exists: false } },

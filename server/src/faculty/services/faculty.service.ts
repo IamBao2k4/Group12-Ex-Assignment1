@@ -29,9 +29,10 @@ export class FacultyService {
     query: PaginationOptions,
     searchString: string,
     page: number,
+    lang: string = 'vi'
   ): Promise<PaginatedResponse<Faculty>> {
     try {
-      return await this.facultyRepository.findAll(query, searchString, page);
+      return await this.facultyRepository.findAll(query, searchString, page, lang);
     } catch (error) {
       this.logger.error(`faculty.service.get: ${error.message}`, error.stack);
       throw error;
