@@ -240,25 +240,12 @@ export class OpenClassRepository implements IOpenClassRepository {
       }
       const courses = await this.CourseModel.find(coursesQuery).exec();
 
-      const courseIds = courses.map((c) => (c._id as ObjectId).toString());
-
-      const openClassesQuery = {
-        ma_mon_hoc: { $in: [
-          "67ecdc3801a8914d025a8df7",
-      "67ecdc3801a8914d025a8df8",
-      "67ecdc3801a8914d025a8dfa",
-      '67ecdc3801a8914d025a8e01',
-      '6801f82d5307bb3936444506'
-        ] },
-        // $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }],
-        // nam_hoc: { $gte: student.khoa_hoc },
-      };
-
-      console.log(openClassesQuery)
-
-      const openClass = await this.OpenClassModel.find(openClassesQuery).exec();
+      const openClass = await this.OpenClassModel.find({
+        ma_mon_hoc: { $in: courses.map((c) => c._id) },
+        $or: [{ deleted_at: { $exists: false } }, { deleted_at: null }],
+        nam_hoc: { $gte: Number(student.khoa_hoc) },
+      }).exec();
       
-      console.log(openClass)
       // change ma_mon_hoc to ma_mon_hoc.ma_mon_hoc, ma_mon_hoc.ten and ma_mon_hoc._id
       for (let i = 0; i < openClass.length; i++) {
         const course = await this.CourseModel.findById(openClass[i].ma_mon_hoc).exec() as Course;
