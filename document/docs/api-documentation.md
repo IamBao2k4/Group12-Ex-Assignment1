@@ -24,13 +24,13 @@ All API responses follow a consistent JSON format:
 
 ```json
 {
-  "data": "Actual response data",
-  "meta": {
-    "page": 1,
-    "limit": 10,
-    "total": 100,
-    "totalPages": 10
-  }
+    "data": "Actual response data",
+    "meta": {
+        "page": 1,
+        "limit": 10,
+        "total": 100,
+        "totalPages": 10
+    }
 }
 ```
 
@@ -38,9 +38,9 @@ All API responses follow a consistent JSON format:
 
 ```json
 {
-  "statusCode": 404,
-  "message": "Resource not found",
-  "error": "Not Found"
+    "statusCode": 404,
+    "message": "Resource not found",
+    "error": "Not Found"
 }
 ```
 
@@ -83,10 +83,10 @@ Content-Type: application/json
 
 #### Query Parameters for GET /students
 
-- `page` (number): Page number (default: 1)
-- `limit` (number): Items per page (default: 10)
-- `searchString` (string): Search in student name or ID
-- `faculty` (string): Filter by faculty ID
+-   `page` (number): Page number (default: 1)
+-   `limit` (number): Items per page (default: 10)
+-   `searchString` (string): Search in student name or ID
+-   `faculty` (string): Filter by faculty ID
 
 ---
 
@@ -183,8 +183,8 @@ Content-Type: application/json
 
 #### Query Parameters for GET /courses
 
-- `faculty` (string): Filter by faculty ID
-- `available` (string): Filter available courses ("true"/"false")
+-   `faculty` (string): Filter by faculty ID
+-   `available` (string): Filter available courses ("true"/"false")
 
 ---
 
@@ -327,16 +327,16 @@ file: [CSV file with student data]
 
 **File Requirements:**
 
-- **CSV**: Maximum 5MB, `.csv` extension
-- **Excel**: Maximum 10MB, `.xlsx` or `.xls` extension
+-   **CSV**: Maximum 5MB, `.csv` extension
+-   **Excel**: Maximum 10MB, `.xlsx` or `.xls` extension
 
 **Response:**
 
 ```json
 {
-  "success": true,
-  "imported": 150,
-  "errors": []
+    "success": true,
+    "imported": 150,
+    "errors": []
 }
 ```
 
@@ -359,9 +359,9 @@ GET /export/students/excel
 
 **Response:**
 
-- Returns a downloadable Excel file
-- Content-Type: `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`
-- Filename format: `student_export_YYYY-MM-DDTHH-MM-SS.xlsx`
+-   Returns a downloadable Excel file
+-   Content-Type: `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`
+-   Filename format: `student_export_YYYY-MM-DDTHH-MM-SS.xlsx`
 
 ---
 
@@ -371,32 +371,32 @@ GET /export/students/excel
 
 ```json
 {
-  "ma_sv": "string", // Student ID
-  "ho_ten": "string", // Full name
-  "gioi_tinh": {
-    "en": "string", // Gender in English
-    "vi": "string" // Gender in Vietnamese
-  },
-  "ngay_sinh": "date", // Birth date
-  "email": "string",
-  "sdt": "string", // Phone number
-  "dia_chi": {
-    "chi_tiet": "string",
-    "phuong_xa": "string",
-    "quan_huyen": "string",
-    "tinh_thanh_pho": "string",
-    "quoc_gia": "string"
-  },
-  "cccd": {
-    "type": "cccd|cmnd|passport",
-    "so": "string",
-    "ngay_cap": "date",
-    "noi_cap": "string",
-    "ngay_het_han": "date"
-  },
-  "khoa": "ObjectId", // Faculty reference
-  "chuong_trinh": "ObjectId", // Program reference
-  "tinh_trang": "ObjectId" // Status reference
+    "ma_sv": "string", // Student ID
+    "ho_ten": "string", // Full name
+    "gioi_tinh": {
+        "en": "string", // Gender in English
+        "vi": "string" // Gender in Vietnamese
+    },
+    "ngay_sinh": "date", // Birth date
+    "email": "string",
+    "sdt": "string", // Phone number
+    "dia_chi": {
+        "chi_tiet": "string",
+        "phuong_xa": "string",
+        "quan_huyen": "string",
+        "tinh_thanh_pho": "string",
+        "quoc_gia": "string"
+    },
+    "cccd": {
+        "type": "cccd|cmnd|passport",
+        "so": "string",
+        "ngay_cap": "date",
+        "noi_cap": "string",
+        "ngay_het_han": "date"
+    },
+    "khoa": "ObjectId", // Faculty reference
+    "chuong_trinh": "ObjectId", // Program reference
+    "tinh_trang": "ObjectId" // Status reference
 }
 ```
 
@@ -404,15 +404,15 @@ GET /export/students/excel
 
 ```json
 {
-  "ma_mon_hoc": "string", // Course code
-  "ten": {
-    "en": "string", // Course name in English
-    "vi": "string" // Course name in Vietnamese
-  },
-  "tin_chi": "number", // Credit hours
-  "khoa": "ObjectId", // Faculty reference
-  "mon_tien_quyet": ["ObjectId"], // Prerequisites
-  "vo_hieu_hoa": "boolean" // Disabled flag
+    "ma_mon_hoc": "string", // Course code
+    "ten": {
+        "en": "string", // Course name in English
+        "vi": "string" // Course name in Vietnamese
+    },
+    "tin_chi": "number", // Credit hours
+    "khoa": "ObjectId", // Faculty reference
+    "mon_tien_quyet": ["ObjectId"], // Prerequisites
+    "vo_hieu_hoa": "boolean" // Disabled flag
 }
 ```
 
@@ -430,9 +430,9 @@ GET /export/students/excel
 
 Most GET endpoints support pagination with the following parameters:
 
-- `page` (number, default: 1): Page number
-- `limit` (number, default: 10): Items per page
-- `searchString` (string): Search term for filtering
+-   `page` (number, default: 1): Page number
+-   `limit` (number, default: 10): Items per page
+-   `searchString` (string): Search term for filtering
 
 **Pagination Response:**
 
@@ -452,18 +452,18 @@ Most GET endpoints support pagination with the following parameters:
 
 The system supports bilingual content (English/Vietnamese) for:
 
-- Faculty names (`ten_khoa`)
-- Program names (`name`)
-- Course names (`ten`)
-- Student status (`tinh_trang`)
-- Gender information (`gioi_tinh`)
+-   Faculty names (`ten_khoa`)
+-   Program names (`name`)
+-   Course names (`ten`)
+-   Student status (`tinh_trang`)
+-   Gender information (`gioi_tinh`)
 
 All multilingual fields follow this structure:
 
 ```json
 {
-  "en": "English text",
-  "vi": "Vietnamese text"
+    "en": "English text",
+    "vi": "Vietnamese text"
 }
 ```
 
@@ -471,15 +471,15 @@ All multilingual fields follow this structure:
 
 ### Import Files
 
-- **CSV**: Text files with comma-separated values
-- **Excel**: Microsoft Excel files (.xlsx, .xls)
-- **Size Limits**: CSV (5MB), Excel (10MB)
+-   **CSV**: Text files with comma-separated values
+-   **Excel**: Microsoft Excel files (.xlsx, .xls)
+-   **Size Limits**: CSV (5MB), Excel (10MB)
 
 ### Export Files
 
-- Generated files include timestamps in filename
-- Available formats: Excel (.xlsx), CSV (.csv)
-- Files are streamed directly to the client
+-   Generated files include timestamps in filename
+-   Available formats: Excel (.xlsx), CSV (.csv)
+-   Files are streamed directly to the client
 
 ## Best Practices
 

@@ -1,4 +1,4 @@
-import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
+import type { SidebarsConfig } from "@docusaurus/plugin-content-docs";
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
@@ -13,52 +13,52 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
  Create as many sidebars as you want.
  */
 const sidebars: SidebarsConfig = {
-  // Manually defined sidebar for better organization
-  tutorialSidebar: [
-    'intro',
-    'overview-of-architecture',
-    'source-code-organization',
-    'coding-standard',
-    'unit-testing',
-    {
-      type: 'category',
-      label: 'API Documentation',
-      items: [
-        'api-documentation',
-        'api-examples',
-        'database-schema',
-        'inversion-of-control',
-      ],
-      collapsed: false,
-    },
+    // Manually defined sidebar for better organization
+    tutorialSidebar: [
+        "intro",
+        "overview-of-architecture",
+        "source-code-organization",
+        "coding-standard",
+        "unit-testing",
+        "getting-started",
+        "updating-an-existing-entity",
+        "data-validation",
         {
-      type: 'category',
-      label: 'Route and Settings API',
-      items: [
-        'registering-new-routes',
-        'settings-api',
-      ],
-    },
-    {
-      type: 'category',
-      label: 'Tutorial - Basics',
-      items: [
-        'tutorial-basics/create-a-document',
-        'tutorial-basics/create-a-page',
-        'tutorial-basics/markdown-features',
-        'tutorial-basics/deploy-your-site',
-        'tutorial-basics/congratulations',
-      ],
-    },
-    {
-      type: 'category',
-      label: 'Tutorial - Extras',
-      items: [
-        'tutorial-extras/manage-docs-versions',
-        'tutorial-extras/translate-your-site',
-      ],
-    },
-  ],
+            type: "category",
+            label: "API Documentation",
+            items: [
+                "api-documentation",
+                "api-examples",
+                "database-schema",
+                "inversion-of-control",
+            ],
+            collapsed: false,
+        },
+        {
+            type: "category",
+            label: "Route and Settings API",
+            items: ["registering-new-routes", "settings-api"],
+        },
+        {
+            type: "category",
+            label: "Tutorial - Basics",
+            items: [
+                "tutorial-basics/create-a-document",
+                "tutorial-basics/create-a-page",
+                "tutorial-basics/markdown-features",
+                "tutorial-basics/deploy-your-site",
+                "tutorial-basics/congratulations",
+            ],
+        },
+        {
+            type: "category",
+            label: "Tutorial - Extras",
+            items: [
+                "tutorial-extras/manage-docs-versions",
+                "tutorial-extras/translate-your-site",
+            ],
+        },
+    ],
 };
 
 export default sidebars;
