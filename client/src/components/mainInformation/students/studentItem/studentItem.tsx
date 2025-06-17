@@ -1,14 +1,14 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import ArticleIcon from '@mui/icons-material/Article';
+import ArticleIcon from "@mui/icons-material/Article";
 import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import ConfirmationDialog from "../../../common/ConfirmationDialog";
 import { useNotification } from "../../../common/NotificationContext";
 import { Student } from "../models/student";
-import { Status } from "../../student_statuses/models/student_status"
+import { Status } from "../../student_statuses/models/student_status";
 import "./studentItem.css";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 import { SERVER_URL } from "../../../../../global";
 import { useNavigate } from "react-router-dom";
 
@@ -72,18 +72,18 @@ const StudentItem: React.FC<StudentItemProps> = ({
             if (response.ok) {
                 showNotification(
                     "success",
-                    t('student.deleteSuccess', { name: student.ho_ten })
+                    t("student.deleteSuccess", { name: student.ho_ten })
                 );
                 setShowConfirmation(false);
                 onDeleteSuccess();
             } else {
                 showNotification(
                     "error",
-                    data.message || t('student.deleteError')
+                    data.message || t("student.deleteError")
                 );
             }
         } catch (error) {
-            showNotification("error", t('student.deleteError'));
+            showNotification("error", t("student.deleteError"));
             console.error("Error deleting student:", error);
         }
     }
@@ -100,48 +100,62 @@ const StudentItem: React.FC<StudentItemProps> = ({
         <>
             <ConfirmationDialog
                 isOpen={showConfirmation}
-                title={t('student.deleteConfirmTitle')}
-                message={t('student.deleteConfirmMessage', { name: student.ho_ten })}
+                title={t("student.deleteConfirmTitle")}
+                message={t("student.deleteConfirmMessage", {
+                    name: student.ho_ten,
+                })}
                 onConfirm={DeleteStudentHandler}
                 onCancel={() => setShowConfirmation(false)}
             />
-            <tr key={id}>
-                <td onClick={goToTranscriptHandler} style={{ cursor: "pointer" }}>
+            <tr key={id} title={t("student.viewTranscript")}>
+                <td
+                    onClick={goToTranscriptHandler}
+                    style={{ cursor: "pointer" }}
+                >
                     {student.ho_ten}
                 </td>
-                <td onClick={goToTranscriptHandler} style={{ cursor: "pointer" }}>
+                <td
+                    onClick={goToTranscriptHandler}
+                    style={{ cursor: "pointer" }}
+                >
                     {student.ma_so_sinh_vien}
                 </td>
-                <td onClick={goToTranscriptHandler} style={{ cursor: "pointer" }}>
+                <td
+                    onClick={goToTranscriptHandler}
+                    style={{ cursor: "pointer" }}
+                >
                     {student.ngay_sinh}
                 </td>
-                <td onClick={goToTranscriptHandler} style={{ cursor: "pointer" }}>
-                    {i18n.language === "en"? status?.en: status?.vi}
+                <td
+                    onClick={goToTranscriptHandler}
+                    style={{ cursor: "pointer" }}
+                >
+                    {i18n.language === "en" ? status?.en : status?.vi}
                 </td>
                 <td>
-                    <Button 
-                        variant="outline-primary" 
-                        size="sm" 
-                        className="me-2" 
+                    <Button
+                        variant="outline-primary"
+                        size="sm"
+                        className="me-2"
                         onClick={EditBtnHandler}
-                        title={t('common.edit')}
+                        title={t("common.edit")}
                     >
                         <EditIcon fontSize="small" />
                     </Button>
-                    <Button 
-                        variant="outline-danger" 
-                        size="sm" 
+                    <Button
+                        variant="outline-danger"
+                        size="sm"
                         onClick={deleteConfirmHandler}
-                        title={t('common.delete')}
+                        title={t("common.delete")}
                     >
                         <DeleteIcon fontSize="small" />
                     </Button>
-                    <Button 
-                        variant="outline-info" 
-                        size="sm" 
-                        className="ms-2" 
+                    <Button
+                        variant="outline-info"
+                        size="sm"
+                        className="ms-2"
                         onClick={handleDetailClick}
-                        title={t('common.view')}
+                        title={t("common.view")}
                     >
                         <ArticleIcon fontSize="small" />
                     </Button>

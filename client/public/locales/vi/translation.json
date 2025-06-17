@@ -73,7 +73,8 @@
         "deleteConfirmTitle": "Xác nhận xóa",
         "deleteConfirmMessage": "Bạn có chắc chắn muốn xóa sinh viên \"{{name}}\"?",
         "deleteSuccess": "Đã xóa sinh viên \"{{name}}\" thành công",
-        "deleteError": "Không thể xóa sinh viên"
+        "deleteError": "Không thể xóa sinh viên",
+        "viewTranscript": "Xem bảng điểm"
     },
     "course": {
         "title": "Danh sách môn học",
@@ -169,12 +170,12 @@
         "graduated": "Đã tốt nghiệp",
         "suspended": "Đình chỉ",
         "expelled": "Thôi học",
-        "dialog":{
+        "dialog": {
             "title": "Trạng thái sinh viên",
             "name": "Tên trạng thái",
-            "save":"Lưu",
-            "cancel":"Hủy",
-            "add":"Thêm",
+            "save": "Lưu",
+            "cancel": "Hủy",
+            "add": "Thêm",
             "createSuccess": "Tạo trạng thái sinh viên thành công",
             "updateSuccess": "Cập nhật trạng thái sinh viên thành công"
         }

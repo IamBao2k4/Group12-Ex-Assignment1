@@ -74,7 +74,8 @@
         "deleteConfirmTitle": "Delete Confirmation",
         "deleteConfirmMessage": "Are you sure you want to delete the student \"{{name}}\"?",
         "deleteSuccess": "Student \"{{name}}\" deleted successfully",
-        "deleteError": "Failed to delete student"
+        "deleteError": "Failed to delete student",
+        "viewTranscript": "View Transcript"
     },
     "course": {
         "title": "Course List",
@@ -183,12 +184,12 @@
         "graduated": "Graduated",
         "suspended": "Suspended",
         "expelled": "Expelled",
-        "dialog":{
+        "dialog": {
             "title": "Student Status",
             "name": "Status Name",
-            "save":"Save",
-            "cancel":"Cancel",
-            "add":"Add",
+            "save": "Save",
+            "cancel": "Cancel",
+            "add": "Add",
             "createSuccess": "Create student status successfully",
             "updateSuccess": "Update student status successfully"
         }
