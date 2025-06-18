@@ -2,91 +2,159 @@
 
 **Student Manager**
 
-## Cấu trúc source code
+## 📁 Cấu trúc source code
 
 ### Tổng quan
-
--   Source code gồm 2 phần chính: client (frontend) và server (backend)
--   Mỗi phần được tổ chức theo cấu trúc module, với mỗi thư mục đại diện cho một tính năng hoặc thành phần riêng biệt
+- Source code gồm 2 phần chính: **client** (frontend) và **server** (backend)
+- Mỗi phần được tổ chức theo cấu trúc module, với mỗi thư mục đại diện cho một tính năng hoặc thành phần riêng biệt
 
 ### Client (Frontend)
+- **Framework**: React với TypeScript
+- **Build tool**: Vite
+- **Cấu trúc thư mục**:
 
--   Sử dụng React với TypeScript
--   Cấu trúc thư mục:
-    -   `/src`: Chứa mã nguồn chính của ứng dụng
-        -   `/components`: Các component UI được sử dụng trong ứng dụng
-            -   `/common`: Các component dùng chung
-            -   `/mainInformation`: Các component hiển thị thông tin chính
-            -   `/horizontalNav`: Component thanh điều hướng ngang
-        -   `/assets`: Lưu trữ các tài nguyên như hình ảnh, biểu tượng
-        -   `App.tsx`: Component gốc của ứng dụng
-        -   `main.tsx`: Điểm khởi đầu của ứng dụng
-    -   `/public`: Chứa các tệp tĩnh được phục vụ trực tiếp
-    -   Các file cấu hình: `vite.config.ts`, `tsconfig.json`, `eslint.config.js`
+```
+client/
+├── src/                        # Mã nguồn chính
+│   ├── components/            # Các component UI
+│   │   ├── common/           # Component dùng chung
+│   │   ├── mainInformation/  # Component hiển thị thông tin chính
+│   │   └── horizontalNav/    # Component thanh điều hướng ngang
+│   ├── assets/               # Tài nguyên (hình ảnh, biểu tượng)
+│   ├── App.tsx              # Component gốc của ứng dụng
+│   └── main.tsx             # Điểm khởi đầu của ứng dụng
+├── public/                   # Tệp tĩnh được phục vụ trực tiếp
+└── [Cấu hình]               # vite.config.ts, tsconfig.json, eslint.config.js
+```
 
 ### Server (Backend)
+- **Framework**: NestJS với TypeScript
+- **Database**: MongoDB
+- **Cấu trúc thư mục**:
 
--   Sử dụng NestJS framework với TypeScript
--   Cấu trúc thư mục:
-    -   `/src`: Chứa mã nguồn chính của server
-        -   `/common`: Các tiện ích, middleware, và filter dùng chung
-        -   `/config`: Cấu hình ứng dụng
-        -   `/types`: Định nghĩa các kiểu dữ liệu
-        -   Các module chức năng và các test của nó:
-            -   `/student`: Quản lý thông tin sinh viên
-            -   `/faculty`: Quản lý khoa
-            -   `/program`: Quản lý chương trình học
-            -   `/student_status`: Quản lý tình trạng sinh viên
-            -   `/course`: Quản lý học phần
-            -   `/enrollment`: Quản lý đăng ký học phần
-            -   `/transcript`: Quản lý bảng điểm
-            -   `/open_class`: Quản lý mở lớp
-            -   `/import`: Chức năng nhập dữ liệu
-            -   `/export`: Chức năng xuất dữ liệu
-        -   `app.module.ts`: Module gốc kết nối các module con
-        -   `main.ts`: Điểm khởi đầu của ứng dụng server
-    -   `/dist`: Thư mục chứa mã đã biên dịch
-    -   `/test`: Khởi tạo test
-    -   Các file cấu hình: `tsconfig.json`, `nest-cli.json`, `.env`
-    -   `/uploads`: Lưu trữ các file được tải lên
-    -   `/exports`: Lưu trữ các file xuất ra
+```
+server/
+├── src/                      # Mã nguồn chính của server
+│   ├── common/              # Tiện ích, middleware, filter dùng chung
+│   ├── config/              # Cấu hình ứng dụng
+│   ├── types/               # Định nghĩa kiểu dữ liệu TypeScript
+│   ├── [Modules]            # Các module chức năng:
+│   │   ├── student/         # Quản lý thông tin sinh viên
+│   │   ├── faculty/         # Quản lý khoa
+│   │   ├── program/         # Quản lý chương trình học
+│   │   ├── student_status/  # Quản lý tình trạng sinh viên
+│   │   ├── course/          # Quản lý học phần
+│   │   ├── enrollment/      # Quản lý đăng ký học phần
+│   │   ├── transcript/      # Quản lý bảng điểm
+│   │   ├── open_class/      # Quản lý mở lớp
+│   │   ├── import/          # Chức năng nhập dữ liệu
+│   │   └── export/          # Chức năng xuất dữ liệu
+│   ├── app.module.ts        # Module gốc kết nối các module con
+│   └── main.ts              # Điểm khởi đầu của server
+├── dist/                    # Mã đã biên dịch
+├── test/                    # Khởi tạo test
+├── uploads/                 # Lưu trữ file tải lên
+├── exports/                 # Lưu trữ file xuất ra
+└── [Cấu hình]              # tsconfig.json, nest-cli.json, .env
+```
 
-Mỗi module trong server được tổ chức theo mô hình MVC với controller, service, DTO, entity và repository riêng biệt, tuân theo kiến trúc NestJS.
+**Lưu ý**: Mỗi module trong server được tổ chức theo mô hình MVC với:
+- **Controller**: Xử lý HTTP request/response
+- **Service**: Logic nghiệp vụ
+- **DTO**: Data Transfer Object cho validation
+- **Entity**: Định nghĩa cấu trúc dữ liệu
+- **Repository**: Tương tác với database
 
-## Hướng dẫn cài đặt & chạy chương trình
+## 🔧 Hướng dẫn cài đặt & chạy chương trình
 
--   Yêu cầu cần cài đặt MongoDB trên máy.
+### Yêu cầu hệ thống
+- **Node.js**: phiên bản 16 trở lên
+- **npm**: đi kèm với Node.js
+- **MongoDB**: phiên bản 4.4 trở lên (cần cài đặt và chạy trước)
 
--   Tạo file `.env` trong thư mục `migration` với nội dung:
+### Cấu hình môi trường
 
-    -   `MONGO_URI=`
+#### 1. Tạo file `.env` trong thư mục `migration`:
+```env
+MONGO_URI=mongodb://localhost:27017/student_management
+```
 
--   Tạo file `.env` trong thư mục `server` với nội dung:
+#### 2. Tạo file `.env` trong thư mục `server`:
+```env
+NODE_ENV=development
+MONGO_URI_DEV=mongodb://localhost:27017/student_management_dev
+MONGO_URI_PROD=mongodb://localhost:27017/student_management_prod
+PORT=3001
+```
 
-    -   `NODE_ENV=development`
-    -   `MONGO_URI_DEV=`
-    -   `MONGO_URI_PROD=`
-    -   `PORT=3001`
+### Các bước cài đặt
 
--   Mở 3 terminal:
-    -   Terminal 1:
-        -   `cd migration`
-        -   `npm install`
-        -   `node migration.js`
-    -   Terminal 2:
-        -   `cd server`
-        -   `npm install`
-        -   `npm run start:dev`
-    -   Terminal 3:
-        -   `cd client`
-        -   `npm install`
-        -   `npm run dev`
+#### Bước 1: Clone repository
+```bash
+git clone [repository-url]
+cd Group12-Ex-Assignment1
+```
 
-## Hướng dẫn đọc document
+#### Bước 2: Cài đặt dependencies gốc
+```bash
+npm install
+```
 
--   Mở terminal:
-    -   `cd document`
-    -   `npm run start`
+#### Bước 3: Khởi động ứng dụng
+
+Cần mở **3 terminal riêng biệt** và thực hiện theo thứ tự:
+
+**Terminal 1 - Khởi tạo Database:**
+```bash
+cd migration
+npm install
+node migration.js
+```
+*Chờ quá trình migration hoàn tất trước khi chuyển sang bước tiếp theo*
+
+**Terminal 2 - Chạy Backend Server:**
+```bash
+cd server
+npm install
+npm run start:dev
+```
+*Server sẽ chạy tại port 3001*
+
+**Terminal 3 - Chạy Frontend Application:**
+```bash
+cd client
+npm install
+npm run dev
+```
+*Ứng dụng sẽ chạy tại port 5173*
+
+### Truy cập ứng dụng
+- **Frontend**: http://localhost:5173
+- **Backend API**: http://localhost:3001
+- **API Documentation**: http://localhost:3001/api
+
+## 📖 Hướng dẫn đọc document
+
+### Cách 1: Xem tài liệu trực tuyến
+
+```bash
+cd document
+npm install
+npm run start
+```
+
+Sau khi chạy lệnh, tài liệu sẽ được mở tự động trên trình duyệt. Nếu không tự động mở, truy cập: http://localhost:3000
+
+### Cách 2: Xem tài liệu offline
+
+Các file tài liệu được lưu trong thư mục `document/` với cấu trúc:
+```
+document/
+├── api-spec/          # Đặc tả API chi tiết
+├── database-design/   # Thiết kế cơ sở dữ liệu
+├── user-guide/        # Hướng dẫn sử dụng
+└── technical-spec/    # Đặc tả kỹ thuật
+```
 
 ## Minh chứng chức năng
 
@@ -164,8 +232,11 @@ Open class add dialog
 ![Open Class Add Dialog](image/openClass_dialog.jpg)
 
 #### Transcript
+**Cách xem bảng điểm**
+Vào trang Student, nhấn vào một student bất kỳ để xem bảng điểm của student đó
 
 ![Transcript](image/transcript.jpg)
+
 
 #### Register Course
 
