@@ -29,7 +29,7 @@ export const FacultiesRoute = {
 
   getAll: async (): Promise<Faculty[]> => {
     try {
-      const response = await axios.get(API_URL);
+      const response = await axios.get(API_URL + '/all');
       return response.data;
     } catch (error) {
       console.error('Error fetching all faculties:', error);
