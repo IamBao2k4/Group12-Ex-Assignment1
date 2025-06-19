@@ -39,25 +39,7 @@ const sidebars: SidebarsConfig = {
             label: "Route and Settings API",
             items: ["registering-new-routes", "settings-api"],
         },
-        {
-            type: "category",
-            label: "Tutorial - Basics",
-            items: [
-                "tutorial-basics/create-a-document",
-                "tutorial-basics/create-a-page",
-                "tutorial-basics/markdown-features",
-                "tutorial-basics/deploy-your-site",
-                "tutorial-basics/congratulations",
-            ],
-        },
-        {
-            type: "category",
-            label: "Tutorial - Extras",
-            items: [
-                "tutorial-extras/manage-docs-versions",
-                "tutorial-extras/translate-your-site",
-            ],
-        },
+        
     ],
 };
 
