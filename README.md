@@ -244,3 +244,39 @@ Bước 1: Chọn vào biểu tượng chi tiết ở mỗi sinh viên trong tra
 ![Register Course Step 1](image/regisCourse_1st.jpg)  
 Bước 2: Kéo xuống cuối trang để thấy khu vực đăng ký học phần  
 ![Register Course Step 2](image/regisCourse.jpg)
+
+
+#### Multi-language
+**Hệ thống hỗ trợ đa ngôn ngữ (tiếng Việt và tiếng Anh) cho giao diện người dùng.**
+
+- Ứng dụng sử dụng thư viện [react-i18next](https://react.i18next.com/) để quản lý và chuyển đổi ngôn ngữ động trên frontend.
+- Các trường dữ liệu đa ngôn ngữ (ví dụ: tên khoa, tên chương trình, tên học phần, tình trạng, giới tính, ...) đều được lưu trữ dưới dạng object:
+
+```json
+{
+  "en": "English value",
+  "vn": "Giá trị tiếng Việt"
+}
+```
+
+- Người dùng có thể chuyển đổi ngôn ngữ giao diện bằng nút chọn ngôn ngữ trên thanh điều hướng.
+- Khi chuyển đổi ngôn ngữ, toàn bộ giao diện và dữ liệu hiển thị sẽ tự động cập nhật theo ngôn ngữ đã chọn.
+- Khi nhập dữ liệu mới, hệ thống sẽ tự động dịch sang ngôn ngữ còn lại bằng Google Translate API (có thể sửa lại thủ công nếu cần).
+- Các file ngôn ngữ được lưu tại: `client/src/i18n/locales/vi/translation.json` và `client/src/i18n/locales/en/translation.json`.
+- Để thêm/chỉnh sửa nội dung dịch, chỉ cần cập nhật các file JSON này.
+
+**Ví dụ chuyển đổi ngôn ngữ:**
+
+| Giao diện tiếng Việt | Giao diện tiếng Anh |
+|---------------------|---------------------|
+| ![VN UI](image/UI_VI.png) | ![EN UI](image/UI_EN.png) |
+
+**Cách thêm ngôn ngữ mới:**
+1. Tạo thư mục mới trong `client/src/i18n/locales/` với mã ngôn ngữ mới (ví dụ: `fr` cho tiếng Pháp).
+2. Thêm file `translation.json` với nội dung dịch tương ứng.
+3. Cập nhật cấu hình i18n để nhận diện ngôn ngữ mới.
+
+**Lưu ý:**
+- Một số trường hợp dịch tự động có thể không chính xác, nên kiểm tra lại nội dung dịch trước khi lưu.
+- Backend lưu trữ song song cả hai ngôn ngữ cho các trường đa ngữ, đảm bảo API trả về đúng dữ liệu theo ngôn ngữ client yêu cầu.
+
