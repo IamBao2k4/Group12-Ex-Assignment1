@@ -3,25 +3,29 @@ const fs = require("fs").promises;
 const path = require("path");
 
 const MONGO_URI =
-  process.env.MONGO_URI || "mongodb://localhost:27017/University";
+  process.env.MONGO_URI || "mongodb://localhost:27017/Group12";
 const client = new MongoClient(MONGO_URI);
 
 const FILES_TO_IMPORT = [
-  "University.faculties.json",
-  "University.programs.json",
-  "University.studentstatuses.json",
-  "University.students.json",
-  "University.courses.json",
-  "University.open_classes.json",
+  "faculties.json",
+  "programs.json",
+  "studentstatuses.json",
+  "students.json",
+  "courses.json",
+  "openclasses.json",
+  "enrollments.json",
+  "transcripts.json",
 ];
 
 const COLLECTION_MAPPING = {
-  "University.faculties.json": "faculties",
-  "University.programs.json": "programs",
-  "University.studentstatuses.json": "studentstatuses",
-  "University.students.json": "students",
-  "University.courses.json": "courses",
-  "University.open_classes.json": "openclasses",
+  "faculties.json": "faculties",
+  "programs.json": "programs",
+  "studentstatuses.json": "studentstatuses",
+  "students.json": "students",
+  "courses.json": "courses",
+  "openclasses.json": "openclasses",
+  "enrollments.json": "enrollments",
+  "transcripts.json": "transcripts",
 };
 
 function transformBSONObjects(obj) {

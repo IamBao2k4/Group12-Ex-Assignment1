@@ -1,0 +1,165 @@
+[{
+  "_id": {
+    "$oid": "680154283f3ffd55e8f10034"
+  },
+  "ma_mon_hoc": {
+    "$oid": "67ecdc3801a8914d025a8df1"
+  },
+  "ma_so_sinh_vien": {
+    "$oid": "67da65cd7ecfb41b077c5ed1"
+  },
+  "diem": 7,
+  "hoc_ky": "2",
+  "nam_hoc": "2023-2024",
+  "trang_thai": "passed"
+},
+{
+  "_id": {
+    "$oid": "6802165a26d9b128f3eb559f"
+  },
+  "ma_mon_hoc": {
+    "$oid": "67ecdc3801a8914d025a8df2"
+  },
+  "ma_so_sinh_vien": {
+    "$oid": "67da65cd7ecfb41b077c5ed1"
+  },
+  "diem": 8,
+  "hoc_ky": "1",
+  "nam_hoc": "2024-2025",
+  "trang_thai": "passed"
+},
+{
+  "_id": {
+    "$oid": "680216e126d9b128f3eb55a0"
+  },
+  "ma_mon_hoc": {
+    "$oid": "67ecdc3801a8914d025a8df3"
+  },
+  "ma_so_sinh_vien": {
+    "$oid": "67da65cd7ecfb41b077c5ed1"
+  },
+  "diem": 6,
+  "hoc_ky": "1",
+  "nam_hoc": "2024-2025",
+  "trang_thai": "passed"
+},
+{
+  "_id": {
+    "$oid": "680216fe26d9b128f3eb55a1"
+  },
+  "ma_mon_hoc": {
+    "$oid": "67ecdc3801a8914d025a8df4"
+  },
+  "ma_so_sinh_vien": {
+    "$oid": "67da65cd7ecfb41b077c5ed1"
+  },
+  "diem": 4,
+  "hoc_ky": "1",
+  "nam_hoc": "2023-2024",
+  "trang_thai": "failed"
+},
+{
+  "_id": {
+    "$oid": "6802173626d9b128f3eb55a2"
+  },
+  "ma_mon_hoc": {
+    "$oid": "67ecdc3801a8914d025a8df5"
+  },
+  "ma_so_sinh_vien": {
+    "$oid": "67da65cd7ecfb41b077c5ed1"
+  },
+  "diem": 10,
+  "hoc_ky": "2",
+  "nam_hoc": "2024-2025",
+  "trang_thai": "passed"
+},
+{
+  "_id": {
+    "$oid": "6802175626d9b128f3eb55a3"
+  },
+  "ma_mon_hoc": {
+    "$oid": "67ecdc3801a8914d025a8df6"
+  },
+  "ma_so_sinh_vien": {
+    "$oid": "67da65cd7ecfb41b077c5ed1"
+  },
+  "diem": 9,
+  "hoc_ky": "2",
+  "nam_hoc": "2024-2025",
+  "trang_thai": "passed"
+},
+{
+  "_id": {
+    "$oid": "6802177e26d9b128f3eb55a4"
+  },
+  "ma_mon_hoc": {
+    "$oid": "67ecdc3801a8914d025a8df6"
+  },
+  "ma_so_sinh_vien": {
+    "$oid": "67da65cd7ecfb41b077c5ed2"
+  },
+  "diem": 8,
+  "hoc_ky": "2",
+  "nam_hoc": "2024-2025",
+  "trang_thai": "passed"
+},
+{
+  "_id": {
+    "$oid": "680218cd26d9b128f3eb55a5"
+  },
+  "ma_mon_hoc": {
+    "$oid": "67ecdc3801a8914d025a8df7"
+  },
+  "ma_so_sinh_vien": {
+    "$oid": "67da65cd7ecfb41b077c5ed2"
+  },
+  "diem": 8,
+  "hoc_ky": "1",
+  "nam_hoc": "2024-2025",
+  "trang_thai": "passed"
+},
+{
+  "_id": {
+    "$oid": "680218e526d9b128f3eb55a6"
+  },
+  "ma_mon_hoc": {
+    "$oid": "67ecdc3801a8914d025a8df8"
+  },
+  "ma_so_sinh_vien": {
+    "$oid": "67da65cd7ecfb41b077c5ed2"
+  },
+  "diem": 8,
+  "hoc_ky": "2",
+  "nam_hoc": "2023-2024",
+  "trang_thai": "passed"
+},
+{
+  "_id": {
+    "$oid": "6802194426d9b128f3eb55a7"
+  },
+  "ma_mon_hoc": {
+    "$oid": "67ecdc3801a8914d025a8df9"
+  },
+  "ma_so_sinh_vien": {
+    "$oid": "67da65cd7ecfb41b077c5ed2"
+  },
+  "diem": 7,
+  "hoc_ky": "1",
+  "nam_hoc": "2022-2023",
+  "trang_thai": "passed"
+},
+{
+  "_id": {
+    "$oid": "6802197e26d9b128f3eb55a9"
+  },
+  "ma_mon_hoc": {
+    "$oid": "67ecdc3801a8914d025a8dfa"
+  },
+  "ma_so_sinh_vien": {
+    "$oid": "67da65cd7ecfb41b077c5ed3"
+  },
+  "diem": 9,
+  "hoc_ky": "1",
+  "nam_hoc": "2022-2023",
+  "trang_thai": "passed"
+}]

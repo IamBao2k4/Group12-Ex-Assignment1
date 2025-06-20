@@ -3,8 +3,14 @@
     "$oid": "67ecdc3801a8914d025a8df0"
   },
   "ma_mon_hoc": "CS101",
-  "ten": "Introduction to Computer Science",
-  "tin_chi": 5,
+  "ten": {
+    "en": "Introduction to Software Engineering",
+    "vi": "Nhập môn Công nghệ phần mềm",
+    "_id": {
+      "$oid": "68537b1a75a664ad0f9c1a27"
+    }
+  },
+  "tin_chi": 4,
   "khoa": {
     "$oid": "67da70117ecfb41b077c5f05"
   },
@@ -14,7 +20,9 @@
     "67ecdc3801a8914d025a8dfc"
   ],
   "created_at": "2024-06-30T06:41:30.284150",
-  "updated_at": "2024-04-23T06:41:30.284165",
+  "updated_at": {
+    "$date": "2025-06-19T02:51:06.387Z"
+  },
   "deleted_at": null
 },
 {
@@ -22,7 +30,10 @@
     "$oid": "67ecdc3801a8914d025a8df1"
   },
   "ma_mon_hoc": "CS102",
-  "ten": "Data Structures and Algorithms",
+  "ten": {
+    "en": "Data Structures and Algorithms",
+    "vi": "Cấu trúc Dữ liệu và Giải thuật"
+  },
   "tin_chi": 3,
   "khoa": {
     "$oid": "67da70117ecfb41b077c5f06"
@@ -39,7 +50,10 @@
     "$oid": "67ecdc3801a8914d025a8df2"
   },
   "ma_mon_hoc": "CS103",
-  "ten": "Operating Systems",
+  "ten": {
+    "en": "Operating Systems",
+    "vi": "Hệ điều hành"
+  },
   "tin_chi": 3,
   "khoa": {
     "$oid": "67da70117ecfb41b077c5f07"
@@ -56,7 +70,10 @@
     "$oid": "67ecdc3801a8914d025a8df3"
   },
   "ma_mon_hoc": "CS104",
-  "ten": "Database Systems",
+  "ten": {
+    "en": "Database Systems",
+    "vi": "Hệ thống Cơ sở Dữ liệu"
+  },
   "tin_chi": 5,
   "khoa": {
     "$oid": "67da70117ecfb41b077c5f08"
@@ -75,10 +92,13 @@
     "$oid": "67ecdc3801a8914d025a8df4"
   },
   "ma_mon_hoc": "CS105",
-  "ten": "Computer Networks",
+  "ten": {
+    "en": "Computer Networks",
+    "vi": "Mạng Máy tính"
+  },
   "tin_chi": 4,
   "khoa": {
-    "$oid": "67da8e98c5b421a8eef31b45"
+    "$oid": "67da70117ecfb41b077c5f05"
   },
   "mon_tien_quyet": [
     "67ecdc3801a8914d025a8df0",
@@ -93,7 +113,10 @@
     "$oid": "67ecdc3801a8914d025a8df5"
   },
   "ma_mon_hoc": "PSY101",
-  "ten": "Introduction to Psychology",
+  "ten": {
+    "en": "Introduction to Psychology",
+    "vi": "Giới thiệu về Tâm lý học"
+  },
   "tin_chi": 5,
   "khoa": {
     "$oid": "67da70117ecfb41b077c5f05"
@@ -110,7 +133,10 @@
     "$oid": "67ecdc3801a8914d025a8df6"
   },
   "ma_mon_hoc": "PSY102",
-  "ten": "Developmental Psychology",
+  "ten": {
+    "en": "Developmental Psychology",
+    "vi": "Tâm lý học Phát triển"
+  },
   "tin_chi": 3,
   "khoa": {
     "$oid": "67da70117ecfb41b077c5f06"
@@ -125,7 +151,10 @@
     "$oid": "67ecdc3801a8914d025a8df7"
   },
   "ma_mon_hoc": "PSY103",
-  "ten": "Cognitive Psychology",
+  "ten": {
+    "en": "Cognitive Psychology",
+    "vi": "Tâm lý học Nhận thức"
+  },
   "tin_chi": 4,
   "khoa": {
     "$oid": "67da70117ecfb41b077c5f07"
@@ -140,7 +169,10 @@
     "$oid": "67ecdc3801a8914d025a8df8"
   },
   "ma_mon_hoc": "PSY104",
-  "ten": "Social Psychology",
+  "ten": {
+    "en": "Social Psychology",
+    "vi": "Tâm lý học Xã hội"
+  },
   "tin_chi": 5,
   "khoa": {
     "$oid": "67da70117ecfb41b077c5f08"
@@ -155,10 +187,13 @@
     "$oid": "67ecdc3801a8914d025a8df9"
   },
   "ma_mon_hoc": "PSY105",
-  "ten": "Clinical Psychology",
+  "ten": {
+    "en": "Clinical Psychology",
+    "vi": "Tâm lý học Lâm sàng"
+  },
   "tin_chi": 2,
   "khoa": {
-    "$oid": "67da8e98c5b421a8eef31b45"
+    "$oid": "67da70117ecfb41b077c5f05"
   },
   "mon_tien_quyet": [
     "67ecdc3801a8914d025a8e02",
@@ -174,14 +209,19 @@
     "$oid": "67ecdc3801a8914d025a8dfa"
   },
   "ma_mon_hoc": "MATH101",
-  "ten": "Calculus I",
+  "ten": {
+    "en": "Calculus I",
+    "vi": "Giải tích I"
+  },
   "tin_chi": 2,
   "khoa": {
     "$oid": "67da70117ecfb41b077c5f05"
   },
   "mon_tien_quyet": [],
   "created_at": "2024-08-07T06:41:30.284339",
-  "updated_at": "2024-12-23T06:41:30.284342",
+  "updated_at": {
+    "$date": "2025-05-06T07:18:37.275Z"
+  },
   "deleted_at": null
 },
 {
@@ -189,7 +229,10 @@
     "$oid": "67ecdc3801a8914d025a8dfb"
   },
   "ma_mon_hoc": "MATH102",
-  "ten": "Linear Algebra",
+  "ten": {
+    "en": "Linear Algebra",
+    "vi": "Đại số Tuyến tính"
+  },
   "tin_chi": 2,
   "khoa": {
     "$oid": "67da70117ecfb41b077c5f06"
@@ -206,7 +249,10 @@
     "$oid": "67ecdc3801a8914d025a8dfc"
   },
   "ma_mon_hoc": "MATH103",
-  "ten": "Probability and Statistics",
+  "ten": {
+    "en": "Probability and Statistics",
+    "vi": "Xác suất và Thống kê"
+  },
   "tin_chi": 5,
   "khoa": {
     "$oid": "67da70117ecfb41b077c5f07"
@@ -223,7 +269,10 @@
     "$oid": "67ecdc3801a8914d025a8dfd"
   },
   "ma_mon_hoc": "MATH104",
-  "ten": "Differential Equations",
+  "ten": {
+    "en": "Differential Equations",
+    "vi": "Phương trình Vi phân"
+  },
   "tin_chi": 3,
   "khoa": {
     "$oid": "67da70117ecfb41b077c5f08"
@@ -242,10 +291,13 @@
     "$oid": "67ecdc3801a8914d025a8dfe"
   },
   "ma_mon_hoc": "MATH105",
-  "ten": "Discrete Mathematics",
+  "ten": {
+    "en": "Discrete Mathematics",
+    "vi": "Toán Rời rạc"
+  },
   "tin_chi": 5,
   "khoa": {
-    "$oid": "67da8e98c5b421a8eef31b45"
+    "$oid": "67da70117ecfb41b077c5f05"
   },
   "mon_tien_quyet": [
     "67ecdc3801a8914d025a8dfe",
@@ -260,7 +312,10 @@
     "$oid": "67ecdc3801a8914d025a8dff"
   },
   "ma_mon_hoc": "BIO101",
-  "ten": "Introduction to Biology",
+  "ten": {
+    "en": "Introduction to Biology",
+    "vi": "Giới thiệu về Sinh học"
+  },
   "tin_chi": 5,
   "khoa": {
     "$oid": "67da70117ecfb41b077c5f05"
@@ -277,7 +332,10 @@
     "$oid": "67ecdc3801a8914d025a8e00"
   },
   "ma_mon_hoc": "BIO102",
-  "ten": "Genetics",
+  "ten": {
+    "en": "Genetics",
+    "vi": "Di truyền học"
+  },
   "tin_chi": 5,
   "khoa": {
     "$oid": "67da70117ecfb41b077c5f06"
@@ -294,13 +352,16 @@
     "$oid": "67ecdc3801a8914d025a8e01"
   },
   "ma_mon_hoc": "BIO103",
-  "ten": "Microbiology",
+  "ten": {
+    "en": "Microbiology",
+    "vi": "Vi sinh vật học"
+  },
   "tin_chi": 5,
   "khoa": {
     "$oid": "67da70117ecfb41b077c5f07"
   },
   "mon_tien_quyet": [],
-  "created_at": "2024-07-27T06:41:30.284413",
+  " HAP": "2024-07-27T06:41:30.284413",
   "updated_at": "2024-04-27T06:41:30.284417",
   "deleted_at": null
 },
@@ -309,7 +370,10 @@
     "$oid": "67ecdc3801a8914d025a8e02"
   },
   "ma_mon_hoc": "BIO104",
-  "ten": "Cell Biology",
+  "ten": {
+    "en": "Cell Biology",
+    "vi": "Sinh học Tế bào"
+  },
   "tin_chi": 4,
   "khoa": {
     "$oid": "67da70117ecfb41b077c5f08"
@@ -326,10 +390,13 @@
     "$oid": "67ecdc3801a8914d025a8e03"
   },
   "ma_mon_hoc": "BIO105",
-  "ten": "Ecology",
+  "ten": {
+    "en": "Ecology",
+    "vi": "Sinh thái học"
+  },
   "tin_chi": 4,
   "khoa": {
-    "$oid": "67da8e98c5b421a8eef31b45"
+    "$oid": "67da70117ecfb41b077c5f05"
   },
   "mon_tien_quyet": [
     "67ecdc3801a8914d025a8dfa",
@@ -338,4 +405,30 @@
   "created_at": "2025-01-27T06:41:30.284434",
   "updated_at": "2024-09-17T06:41:30.284437",
   "deleted_at": null
+},
+{
+  "_id": {
+    "$oid": "6801f82d5307bb3936444506"
+  },
+  "ma_mon_hoc": "CS001",
+  "ten": {
+    "en": "Introduction Database",
+    "vi": "Giới thiệu về Cơ sở Dữ liệu"
+  },
+  "tin_chi": 2,
+  "khoa": {
+    "$oid": "67da70117ecfb41b077c5f06"
+  },
+  "mon_tien_quyet": [],
+  "vo_hieu_hoa": false,
+  "deleted_at": {
+    "$date": "2025-05-06T07:18:19.482Z"
+  },
+  "created_at": {
+    "$date": "2025-04-18T06:58:53.856Z"
+  },
+  "updated_at": {
+    "$date": "2025-05-06T07:18:19.485Z"
+  },
+  "__v": 0
 }]
